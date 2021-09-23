@@ -1,28 +1,58 @@
+body{
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 .login-form {
-    width: 450px;
-    margin: 80px auto;
-  	font-size: 15px;
-    font-family: Arial, Helvetica, sans-serif;
+  width: 450px;
+  margin: 80px auto;
+  font-size: 15px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 .login-form form {
-    margin-bottom: 15px;
-    background: #f9f9f7;
-    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0);
-    padding: 30px;
+  margin-bottom: 15px;
+  background: #f9f9f7;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0);
+  padding: 30px;
 }
 .login-form h2 {
-    margin: 0 0 15px;
+  margin: 0 0 15px;
 }
 .form-control, .btn {
-    min-height: 38px;
-    border-radius: 2px;
+  min-height: 38px;
+  border-radius: 2px;
 }
 .btn {        
-    font-size: 15px;
-    font-weight: bold;
-    background-color: #30D878;
+  font-size: 15px;
+  font-weight: bold;
+  background-color: #30D878;
 }
 
 #chart{
-    padding-top: 10px;
+  padding-top: 10px;
+}
+
+#stock-search-results{
+  padding: 5px;
+  margin: auto;
+  max-width: 75%; 
+  justify-content: center;
+  visibility: collapse;
+}
+
+#stockInfo{
+  text-align: center;
+  border: 2px solid green;
+  background-color: #f8f8ff;
+}
+
+.panel-heading{
+  border-top: 3px dotted green;
+}
+
+#stockHistoryInfo {
+  visibility: show;
+  max-height: 80px;
+  margin-bottom: 10px;
+  overflow-y:auto;
+  -webkit-overflow-scrolling: touch;
 }
