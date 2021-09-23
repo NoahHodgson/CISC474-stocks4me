@@ -27,7 +27,17 @@
   padding-top: 10px;
 }
 
+#stock-search-results{
+  margin: auto;
+  visibility: hidden;
+}
+
+#stockInfo{
+  text-align: center;
+  background-color: green;
+}
+
 #stockHistoryInfo {
-height:200px;
-overflow:scroll;
+  height:200px;
+  overflow:scroll;
 }
