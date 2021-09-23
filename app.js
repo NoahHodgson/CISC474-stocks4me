@@ -40,8 +40,8 @@ function updateUserWallet(change) {
 //Stock Search Info
 function search() {
     let term = document.getElementById("searchInput").value.toUpperCase();
-    
-    if(term == "") {
+
+    if (term == "") {
         alert("please enter a search term");
         return;
     }
@@ -87,7 +87,7 @@ function initWebSocket(object) {
 
             let newDiff = Math.round((currentDiff - (currentPrice - lastPrice)) * 100) / 100;
 
-            document.getElementById("price").innerHTML = "Current: " + lastPrice + " (" + ((newDiff >= 0) ? "+" : "") + newDiff + ") at " + (date.toTimeString());
+            document.getElementById("price").innerHTML = "Current: " + lastPrice + " (" + ((newDiff >= 0) ? "+" : "") + newDiff + ") at " + date.getHours() + ":" + date.getMinutes();
         }
     };
     socket.onopen = function (e) {
@@ -153,14 +153,14 @@ function displayValue(infoObject, priceObject) {
     let d = new Date(priceObject['t']);
 
     document.getElementById("name").innerHTML = infoObject["description"] + " (" + infoObject["symbol"] + ")";
-    document.getElementById("price").innerHTML = "Current: " + priceObject["c"] + " (" + ((priceObject["d"] >= 0) ? "+" : "") + priceObject["d"] + ") at " + d.toTimeString();
+    document.getElementById("price").innerHTML = "Current: " + lastPrice + " (" + ((newDiff >= 0) ? "+" : "") + newDiff + ") at " + date.getHours() + ":" + date.getMinutes();
     document.getElementById("highLow").innerHTML = "High/Low: " + priceObject["h"] + " / " + priceObject["l"];
 }
 
 //search keylistener
 
 function searchOnEnter(e) {
-    if(e.code == "Enter") {
+    if (e.code == "Enter") {
         search();
     }
 }

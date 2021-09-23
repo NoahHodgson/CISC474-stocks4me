@@ -1,3 +1,7 @@
+body{
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 .login-form {
   width: 450px;
   margin: 80px auto;
@@ -28,16 +32,27 @@
 }
 
 #stock-search-results{
+  padding: 5px;
   margin: auto;
-  visibility: hidden;
+  max-width: 75%; 
+  justify-content: center;
+  visibility: collapse;
 }
 
 #stockInfo{
   text-align: center;
-  background-color: green;
+  border: 2px solid green;
+  background-color: #f8f8ff;
+}
+
+.panel-heading{
+  border-top: 3px dotted green;
 }
 
 #stockHistoryInfo {
-  height:200px;
-  overflow:scroll;
+  visibility: show;
+  max-height: 80px;
+  margin-bottom: 10px;
+  overflow-y:auto;
+  -webkit-overflow-scrolling: touch;
 }
