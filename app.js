@@ -39,8 +39,9 @@ function updateUserWallet(change) {
 
 //Stock Search Info
 function search() {
-    let term = document.getElementById("searchInput").value;
-    if (term == "") {
+    let term = document.getElementById("searchInput").value.toUpperCase();
+    
+    if(term == "") {
         alert("please enter a search term");
         return;
     }
@@ -156,3 +157,18 @@ function displayValue(infoObject, priceObject) {
     document.getElementById("highLow").innerHTML = "High/Low: " + priceObject["h"] + " / " + priceObject["l"];
 }
 
+//search keylistener
+
+function searchOnEnter(e) {
+    if(e.code == "Enter") {
+        search();
+    }
+}
+
+function onSearchFocused() {
+    document.addEventListener("keydown", searchOnEnter)
+}
+
+function onSearchBlurred() {
+    document.removeEventListener("keydown", searchOnEnter);
+}
