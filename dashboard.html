@@ -40,8 +40,8 @@
                 <!-- https://mdbootstrap.com/docs/standard/forms/search/ -->
                 <div class="input-group" style="max-width: 50%; margin: auto;">
                     <input type="search" class="form-control rounded" placeholder="Search for stocks" aria-label="Search"
-                      aria-describedby="search-addon" id="searchInput"/>
-                    <button type="button" class="btn btn-outline-primary" onclick="search()">Search</button>
+                      aria-describedby="search-addon" id="searchInput" onfocus="onSearchFocused()" onblur="onSearchBlurred()"/>
+                    <button type="button" class="btn btn-outline-primary" onclick="search()" >Search</button>
                   </div>
                   <div id="stock-search-results">
                     <!-- Search result content goes here -->
