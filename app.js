@@ -84,26 +84,17 @@ function initWebSocket(object) {
             let date = new Date(data["data"][0]["t"]);
             let lastPrice = data["data"][0]["p"];
             
-            document.getElementById("webSocketInfo").innerHTML = "Last Price: "+lastPrice+" at "+(date.toTimeString());
-        } else {
-            document.getElementById("webSocketTest").innerHTML = "WebSocket Pinged";
+            let newDiff = Math.round((currentDiff-(currentPrice-lastPrice))*100)/100;
+            
+            document.getElementById("price").innerHTML = "Current: "+lastPrice+" ("+((newDiff >= 0) ? "+" : "")+newDiff+") at "+(date.toTimeString());
         }
     };
     socket.onopen = function(e) {
         socket.send(JSON.stringify({'type':'subscribe', 'symbol': symbol}))
-        document.getElementById("webSocketTest").innerHTML = "WebSocket Opened";
-        document.getElementById("webSocketInfo").innerHTML = "Listening for trades...";
-        document.getElementById("closeButton").style.display = "block";
     };
     socket.onerror = function(e) {
         console.log(e.data);
     };
-    
-    socket.onclose = function(e) {
-        document.getElementById("webSocketTest").innerHTML = "WebSocket Closed";
-        document.getElementById("webSocketInfo").innerHTML = "Not listening";
-        document.getElementById("closeButton").style.display = "none";
-    }
     
     currentSocket=socket;
 }
@@ -121,6 +112,7 @@ function getPriceForObject(object) {
             let obj = JSON.parse(this.response);
             currentPrice = parseInt(obj["c"]);
             currentDiff = parseInt(obj["d"]);
+            console.log(obj);
             displayValue(object, obj);
         }
     }
@@ -157,8 +149,10 @@ function displayHistory(object) {
 }
 
 function displayValue(infoObject, priceObject) {
+    let d = new Date(priceObject['t']);
+    
     document.getElementById("name").innerHTML = infoObject["description"]+" ("+infoObject["symbol"]+")";
-    document.getElementById("price").innerHTML = "Current: "+priceObject["c"]+" ("+priceObject["d"]+")";
+    document.getElementById("price").innerHTML = "Current: "+priceObject["c"]+" ("+((priceObject["d"] >= 0) ? "+" : "")+priceObject["d"]+") at "+d.toTimeString();
     document.getElementById("highLow").innerHTML = "High/Low: "+priceObject["h"]+" / "+priceObject["l"];
 }
 
