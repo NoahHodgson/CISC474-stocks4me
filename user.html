@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="app.js"></script>
+    <title>stocks4me ◉ Home</title>
+</head>
+
+<body onload="showUsername()">
+    <nav class="navbar navbar-dark py-3" style="background-color: #50C878;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="home.html"><img src="img/logo.png" style="width: 50px" />stocks4me</a>
+            <div class="navbar-nav" style="flex-direction: row;" id="nav">
+                <a class="nav-link active" style="padding:10px;" aria-current="page" href="home.html">Home</a>
+                <a class="nav-link" style="padding:10px;" href="dashboard.html">Dashboard</a>
+                <a class="nav-link" style="padding:10px;" href="about.html">About</a>
+            </div>
+        </div>
+    </nav>
+    <div>
+        <label for="wallet">Number of Dollars You Have</label>
+        <input type="number" id="dollars" name="dollars" min="0">
+        <button>Subit!</button>
+    </div>
+</body>

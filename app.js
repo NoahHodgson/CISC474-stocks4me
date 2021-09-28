@@ -17,7 +17,7 @@ function updateUserName() {
 //displays current user in the nav bar
 function showUsername() {
     username = sessionStorage.getItem("name")
-    document.getElementById("nav").innerHTML += "<span class='navbar-text' style='text-align:center'>Current User: " + username + "</span>"
+    document.getElementById("nav").innerHTML += "<a class='nav-link' style='padding:10px;' href='user.html'>"+ username +"</a>"
 }
 
 //initializes the user wallet at zero. CALL ONLY ONCE.
