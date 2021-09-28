@@ -13,6 +13,13 @@
 </head>
 
 <body onload="showUsernameSpecial()">
+    <script>
+        window.onload=function(){
+            getUserWallet()
+            getUserStocks()
+            console.log("Loaded Page")
+        }
+    </script>
     <nav class="navbar navbar-dark py-3" style="background-color: #50C878;">
         <div class="container-fluid">
             <a class="navbar-brand" href="home.html"><img src="img/logo.png" style="width: 50px" />stocks4me</a>
