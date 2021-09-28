@@ -1,6 +1,7 @@
 //globals
 var username;
 var userwallet;
+var userstocks;
 
 //prevents user from clicking nav before logging in
 function loginBlock() {
@@ -30,12 +31,40 @@ function getUserWallet() {
     userwallet = sessionStorage.getItem("wallet")
 }
 
+
 //call when changing the wallet by adding funds or buying stocks
 function updateUserWallet(change) {
     userwallet = sessionStorage.getItem("wallet")
     userwallet += change
     sessionStorage.setItem("wallet", userwallet)
 }
+
+//initializes the user's stock portfolio as empty. CALL ONLY ONCE.
+function initUserStocks() {
+    userstocks = [];
+    sessionStorage.setItem("stocks", userstocks)
+}
+
+//get stock portfolio on page loads
+function getUserStocks() {
+    userstocks = sessionStorage.getItem("stocks")
+}
+
+//buy a stock, stock should be a string arg, price a float
+function buyStock(stock, price){
+    updateUserWallet((-price))
+    userstocks.push(stock)
+    sessionStorage.setItem("stocks", userstocks)
+}
+
+//sell a stock, stock should be a string arg, price a float
+function sellStock(stock, price){
+    updateUserWallet(price)
+    var index = userstocks.indexOf(stock)
+    userstocks.splice(index, 1)
+    sessionStorage.setItem("stocks", userstocks)
+}
+
 
 //Stock Search Info
 function search() {
