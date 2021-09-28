@@ -1,6 +1,7 @@
 //globals
 var username;
 var userwallet;
+var userstocks;
 
 //prevents user from clicking nav before logging in
 function loginBlock() {
@@ -30,12 +31,40 @@ function getUserWallet() {
     userwallet = sessionStorage.getItem("wallet")
 }
 
+
 //call when changing the wallet by adding funds or buying stocks
 function updateUserWallet(change) {
     userwallet = sessionStorage.getItem("wallet")
     userwallet += change
     sessionStorage.setItem("wallet", userwallet)
 }
+
+//initializes the user's stock portfolio as empty. CALL ONLY ONCE.
+function initUserStocks() {
+    userstocks = [];
+    sessionStorage.setItem("stocks", userstocks)
+}
+
+//get stock portfolio on page loads
+function getUserStocks() {
+    userstocks = sessionStorage.getItem("stocks")
+}
+
+//buy a stock, stock should be a string arg, price a float
+function buyStock(stock, price){
+    updateUserWallet((-price))
+    userstocks.push(stock)
+    sessionStorage.setItem("stocks", userstocks)
+}
+
+//sell a stock, stock should be a string arg, price a float
+function sellStock(stock, price){
+    updateUserWallet(price)
+    var index = userstocks.indexOf(stock)
+    userstocks.splice(index, 1)
+    sessionStorage.setItem("stocks", userstocks)
+}
+
 
 //Stock Search Info
 function search() {
@@ -54,14 +83,18 @@ function search() {
 
     let r = new XMLHttpRequest();
     r.open("GET", "https://finnhub.io/api/v1/search?q=" + term + "&token=c548e3iad3ifdcrdgh80", true);
-    r.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
+    r.onload = function () {
+        if (this.status == 200) {
             document.getElementById("stock-search-results").style["visibility"] = "visible";
             let obj = JSON.parse(this.response);
-            let firstResult = obj["result"][0];
-            getPriceForObject(firstResult);
-            getHistoryForObject(firstResult);
-            initWebSocket(firstResult);
+            if(parseInt(obj["count"]) > 0) {
+                let firstResult = obj["result"][0];
+                getPriceForObject(firstResult);
+                getHistoryForObject(firstResult);
+                initWebSocket(firstResult);
+            } else {
+                document.getElementById("name").innerHTML = "Could not find symbol."
+            }
         }
     }
     r.send();
@@ -87,7 +120,7 @@ function initWebSocket(object) {
 
             let newDiff = Math.round((currentDiff - (currentPrice - lastPrice)) * 100) / 100;
 
-            document.getElementById("price").innerHTML = "Current: " + lastPrice + " (" + ((newDiff >= 0) ? "+" : "") + newDiff + ") at " + date.getHours() + ":" + date.getMinutes();
+            document.getElementById("price").innerHTML = "Current: " + lastPrice + " (" + ((newDiff >= 0) ? "+" : "") + newDiff + ") at " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
         }
     };
     socket.onopen = function (e) {
@@ -109,12 +142,16 @@ function getPriceForObject(object) {
     let r = new XMLHttpRequest();
     r.open("GET", "https://finnhub.io/api/v1/quote?symbol=" + symbol + "&token=c548e3iad3ifdcrdgh80", true);
     r.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            let obj = JSON.parse(this.response);
-            currentPrice = parseInt(obj["c"]);
-            currentDiff = parseInt(obj["d"]);
-            console.log(obj);
-            displayValue(object, obj);
+        if (this.readyState == 4) {
+            if(this.status == 200) {
+                let obj = JSON.parse(this.response);
+                currentPrice = parseFloat(obj["c"]);
+                currentDiff = parseFloat(obj["d"]);
+                console.log(obj);
+                displayValue(object, obj);
+            } else if(this.status == 403) {
+               document.getElementById("name").innerHTML = "Cannot access this symbol." 
+            }
         }
     }
     r.send();
@@ -153,7 +190,7 @@ function displayValue(infoObject, priceObject) {
     let d = new Date(priceObject['t']);
 
     document.getElementById("name").innerHTML = infoObject["description"] + " (" + infoObject["symbol"] + ")";
-    document.getElementById("price").innerHTML = "Current: " + lastPrice + " (" + ((newDiff >= 0) ? "+" : "") + newDiff + ") at " + date.getHours() + ":" + date.getMinutes();
+    document.getElementById("price").innerHTML = "Current: " + currentPrice + " (" + ((currentDiff < 0) ? "" : "+") + currentDiff + ") at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
     document.getElementById("highLow").innerHTML = "High/Low: " + priceObject["h"] + " / " + priceObject["l"];
 }
 
