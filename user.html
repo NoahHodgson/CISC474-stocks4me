@@ -9,23 +9,23 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="app.js"></script>
-    <title>stocks4me ◉ Home</title>
+    <title>stocks4me ◉ User</title>
 </head>
 
-<body onload="showUsername()">
+<body onload="showUsernameSpecial()">
     <nav class="navbar navbar-dark py-3" style="background-color: #50C878;">
         <div class="container-fluid">
             <a class="navbar-brand" href="home.html"><img src="img/logo.png" style="width: 50px" />stocks4me</a>
             <div class="navbar-nav" style="flex-direction: row;" id="nav">
-                <a class="nav-link active" style="padding:10px;" aria-current="page" href="home.html">Home</a>
+                <a class="nav-link" style="padding:10px;" aria-current="page" href="home.html">Home</a>
                 <a class="nav-link" style="padding:10px;" href="dashboard.html">Dashboard</a>
                 <a class="nav-link" style="padding:10px;" href="about.html">About</a>
             </div>
         </div>
     </nav>
-    <div>
-        <label for="wallet">Number of Dollars You Have</label>
-        <input type="number" id="dollars" name="dollars" min="0">
-        <button>Subit!</button>
+    <div style="padding: 5px;">
+        <label for="wallet">Dollars in Wallet:</label>
+        <input type="text" id="wallet" name="wallet">
+        <button onclick="userInputWallet()">Submit!</button>
     </div>
 </body>
