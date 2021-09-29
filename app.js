@@ -2,6 +2,12 @@
 var username;
 var userwallet;
 var userstocks;
+var stockLoaded;
+var priceLoaded;
+
+
+//SITE CODE
+
 
 //prevents user from clicking nav before logging in
 function loginBlock() {
@@ -41,7 +47,8 @@ function getUserWallet() {
 //call when changing the wallet by adding funds or buying stocks
 function updateUserWallet(change) {
     userwallet = sessionStorage.getItem("wallet")
-    userwallet += change
+    userwallet = parseFloat(userwallet)
+    userwallet += parseFloat(change)
     sessionStorage.setItem("wallet", userwallet)
 }
 
@@ -66,9 +73,16 @@ function getUserStocks() {
 
 //buy a stock, stock should be a string arg, price a float
 function buyStock(stock, price){
-    updateUserWallet((-price))
-    userstocks.push(stock)
-    sessionStorage.setItem("stocks", JSON.stringify(userstocks))
+    price = parseFloat(price)
+    console.log(price +" "+ userwallet)
+    if(price <= userwallet){
+        price = -price
+        updateUserWallet(price)
+        userstocks.push(stock)
+        sessionStorage.setItem("stocks", JSON.stringify(userstocks))
+    } else{
+        alert("Price of Stock exceeds wallet!")
+    }
 }
 
 //sell a stock, stock should be a string arg, price a float
@@ -78,6 +92,17 @@ function sellStock(stock, price){
     userstocks.splice(index, 1)
     sessionStorage.setItem("stocks", JSON.stringify(userstocks))
 }
+
+//
+function userSelectsStock(){
+    var newStock = stockLoaded
+    var newPrice = priceLoaded
+    buyStock(newStock, newPrice)
+    console.log(userstocks)
+}
+
+
+//API CODE
 
 
 //Stock Search Info
@@ -133,7 +158,8 @@ function initWebSocket(object) {
             let lastPrice = data["data"][0]["p"];
 
             let newDiff = Math.round((currentDiff - (currentPrice - lastPrice)) * 100) / 100;
-
+            priceLoaded = lastPrice
+            console.log("loaded price")
             document.getElementById("price").innerHTML = "Current: " + lastPrice + " (" + ((newDiff >= 0) ? "+" : "") + newDiff + ") at " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
         }
     };
@@ -202,7 +228,7 @@ function displayHistory(object) {
 
 function displayValue(infoObject, priceObject) {
     let d = new Date(priceObject['t']);
-
+    stockLoaded = infoObject["symbol"]
     document.getElementById("name").innerHTML = infoObject["description"] + " (" + infoObject["symbol"] + ")";
     document.getElementById("price").innerHTML = "Current: " + currentPrice + " (" + ((currentDiff < 0) ? "" : "+") + currentDiff + ") at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
     document.getElementById("highLow").innerHTML = "High/Low: " + priceObject["h"] + " / " + priceObject["l"];

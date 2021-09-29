@@ -10,7 +10,7 @@
     <title>stocks4me ◉ Dashboard</title>
 </head>
 
-<body onload="showUsername()">
+<body>
     <script>
         window.onload=function(){
             getUserWallet()
@@ -77,6 +77,7 @@
                     <p id="name">Name</p>
                     <p id="price">Price</p>
                     <p id="highLow">High / Low</p>
+                    <button onclick="userSelectsStock()" style="background-color: green; color: white;">Add to portfolio</button>
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <h3 style="text-decoration: underline;" class="panel-title">Weekly Report</h3>
