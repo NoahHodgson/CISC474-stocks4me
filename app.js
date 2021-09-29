@@ -93,12 +93,26 @@ function sellStock(stock, price){
     sessionStorage.setItem("stocks", JSON.stringify(userstocks))
 }
 
+//render stock info in the correct port when bought
+//https://stackoverflow.com/questions/37365512/count-the-number-of-times-a-same-value-appears-in-a-javascript-array
+function renderStockPortData(){
+    var stocksObj = {}
+    var countFunc = keys => {
+        stocksObj[keys] = ++stocksObj[keys] || 1;
+    }
+    userstocks.forEach(countFunc);
+    document.getElementById("stock-port-data").innerHTML = "";
+    for (const [key, value] of Object.entries(stocksObj)){
+        document.getElementById("stock-port-data").innerHTML += key+ ": " +value + " shares"+"<br>"
+    }
+}
+
 //
 function userSelectsStock(){
     var newStock = stockLoaded
     var newPrice = priceLoaded
     buyStock(newStock, newPrice)
-    console.log(userstocks)
+    renderStockPortData()
 }
 
 
