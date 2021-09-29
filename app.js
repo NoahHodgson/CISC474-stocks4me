@@ -2,6 +2,12 @@
 var username;
 var userwallet;
 var userstocks;
+var stockLoaded;
+var priceLoaded;
+
+
+//SITE CODE
+
 
 //prevents user from clicking nav before logging in
 function loginBlock() {
@@ -17,7 +23,13 @@ function updateUserName() {
 //displays current user in the nav bar
 function showUsername() {
     username = sessionStorage.getItem("name")
-    document.getElementById("nav").innerHTML += "<span class='navbar-text' style='text-align:center'>Current User: " + username + "</span>"
+    document.getElementById("nav").innerHTML += "<a class='nav-link' style='padding:10px;' href='user.html'>User: "+ username +"<br>Wallet: "+userwallet.toFixed(2)+"</a>"
+}
+
+//displays current user in the nav bar highlighted
+function showUsernameSpecial(){
+    username = sessionStorage.getItem("name")
+    document.getElementById("nav").innerHTML += "<a class='nav-link active' style='padding:10px;' href='user.html'>User: "+ username +"<br>Wallet: $"+userwallet.toFixed(2)+"</a>"
 }
 
 //initializes the user wallet at zero. CALL ONLY ONCE.
@@ -28,33 +40,50 @@ function initUserWallet() {
 
 //get wallet on page loads
 function getUserWallet() {
-    userwallet = sessionStorage.getItem("wallet")
+    userwallet = parseFloat(sessionStorage.getItem("wallet"))
 }
 
 
 //call when changing the wallet by adding funds or buying stocks
 function updateUserWallet(change) {
     userwallet = sessionStorage.getItem("wallet")
-    userwallet += change
+    userwallet = parseFloat(userwallet)
+    userwallet += parseFloat(change)
     sessionStorage.setItem("wallet", userwallet)
+}
+
+//wallet updated in the user-page
+function userInputWallet(){
+    var dollars = parseFloat(document.getElementById("wallet").value)
+    userwallet = dollars
+    sessionStorage.setItem("wallet", userwallet)
+    console.log(sessionStorage.getItem("wallet"))
+    window.location = window.location;
 }
 
 //initializes the user's stock portfolio as empty. CALL ONLY ONCE.
 function initUserStocks() {
     userstocks = [];
-    sessionStorage.setItem("stocks", userstocks)
+    sessionStorage.setItem("stocks", JSON.stringify(userstocks))
 }
 
 //get stock portfolio on page loads
 function getUserStocks() {
-    userstocks = sessionStorage.getItem("stocks")
+    userstocks = JSON.parse(sessionStorage.getItem("stocks"))
 }
 
 //buy a stock, stock should be a string arg, price a float
 function buyStock(stock, price){
-    updateUserWallet((-price))
-    userstocks.push(stock)
-    sessionStorage.setItem("stocks", userstocks)
+    price = parseFloat(price)
+    console.log(price +" "+ userwallet)
+    if(price <= userwallet){
+        price = -price
+        updateUserWallet(price)
+        userstocks.push(stock)
+        sessionStorage.setItem("stocks", JSON.stringify(userstocks))
+    } else{
+        alert("Price of Stock exceeds wallet!")
+    }
 }
 
 //sell a stock, stock should be a string arg, price a float
@@ -62,8 +91,33 @@ function sellStock(stock, price){
     updateUserWallet(price)
     var index = userstocks.indexOf(stock)
     userstocks.splice(index, 1)
-    sessionStorage.setItem("stocks", userstocks)
+    sessionStorage.setItem("stocks", JSON.stringify(userstocks))
 }
+
+//render stock info in the correct port when bought
+//https://stackoverflow.com/questions/37365512/count-the-number-of-times-a-same-value-appears-in-a-javascript-array
+function renderStockPortData(){
+    var stocksObj = {}
+    var countFunc = keys => {
+        stocksObj[keys] = ++stocksObj[keys] || 1;
+    }
+    userstocks.forEach(countFunc);
+    document.getElementById("stock-port-data").innerHTML = "";
+    for (const [key, value] of Object.entries(stocksObj)){
+        document.getElementById("stock-port-data").innerHTML += key+ ": " +value + " shares"+"<br>"
+    }
+}
+
+//
+function userSelectsStock(){
+    var newStock = stockLoaded
+    var newPrice = priceLoaded
+    buyStock(newStock, newPrice)
+    renderStockPortData()
+}
+
+
+//API CODE
 
 
 //Stock Search Info
@@ -119,7 +173,8 @@ function initWebSocket(object) {
             let lastPrice = data["data"][0]["p"];
 
             let newDiff = Math.round((currentDiff - (currentPrice - lastPrice)) * 100) / 100;
-
+            priceLoaded = lastPrice
+            console.log("loaded price")
             document.getElementById("price").innerHTML = "Current: " + lastPrice + " (" + ((newDiff >= 0) ? "+" : "") + newDiff + ") at " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
         }
     };
@@ -188,7 +243,7 @@ function displayHistory(object) {
 
 function displayValue(infoObject, priceObject) {
     let d = new Date(priceObject['t']);
-
+    stockLoaded = infoObject["symbol"]
     document.getElementById("name").innerHTML = infoObject["description"] + " (" + infoObject["symbol"] + ")";
     document.getElementById("price").innerHTML = "Current: " + currentPrice + " (" + ((currentDiff < 0) ? "" : "+") + currentDiff + ") at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
     document.getElementById("highLow").innerHTML = "High/Low: " + priceObject["h"] + " / " + priceObject["l"];
