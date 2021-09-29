@@ -23,13 +23,13 @@ function updateUserName() {
 //displays current user in the nav bar
 function showUsername() {
     username = sessionStorage.getItem("name")
-    document.getElementById("nav").innerHTML += "<a class='nav-link' style='padding:10px;' href='user.html'>"+ username +"</a>"
+    document.getElementById("nav").innerHTML += "<a class='nav-link' style='padding:10px;' href='user.html'>User: "+ username +"<br>Wallet: "+userwallet.toFixed(2)+"</a>"
 }
 
 //displays current user in the nav bar highlighted
 function showUsernameSpecial(){
     username = sessionStorage.getItem("name")
-    document.getElementById("nav").innerHTML += "<a class='nav-link active' style='padding:10px;' href='user.html'>"+ username +"</a>"
+    document.getElementById("nav").innerHTML += "<a class='nav-link active' style='padding:10px;' href='user.html'>User: "+ username +"<br>Wallet: $"+userwallet.toFixed(2)+"</a>"
 }
 
 //initializes the user wallet at zero. CALL ONLY ONCE.
@@ -58,6 +58,7 @@ function userInputWallet(){
     userwallet = dollars
     sessionStorage.setItem("wallet", userwallet)
     console.log(sessionStorage.getItem("wallet"))
+    window.location = window.location;
 }
 
 //initializes the user's stock portfolio as empty. CALL ONLY ONCE.
