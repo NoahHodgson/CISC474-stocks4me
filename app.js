@@ -23,13 +23,13 @@ function updateUserName() {
 //displays current user in the nav bar
 function showUsername() {
     username = sessionStorage.getItem("name")
-    document.getElementById("nav").innerHTML += "<a class='nav-link' style='padding:10px;' href='user.html'>User: "+ username +"<br>Wallet: "+userwallet.toFixed(2)+"</a>"
+    document.getElementById("nav-user").innerHTML = "<a class='nav-link' style='padding:10px;' href='user.html'>User: "+ username +"<br>Wallet: "+userwallet.toFixed(2)+"</a>"
 }
 
 //displays current user in the nav bar highlighted
 function showUsernameSpecial(){
     username = sessionStorage.getItem("name")
-    document.getElementById("nav").innerHTML += "<a class='nav-link active' style='padding:10px;' href='user.html'>User: "+ username +"<br>Wallet: $"+userwallet.toFixed(2)+"</a>"
+    document.getElementById("nav-user").innerHTML += "<a class='nav-link active' style='padding:10px;' href='user.html'>User: "+ username +"<br>Wallet: $"+userwallet.toFixed(2)+"</a>"
 }
 
 //initializes the user wallet at zero. CALL ONLY ONCE.
@@ -50,6 +50,7 @@ function updateUserWallet(change) {
     userwallet = parseFloat(userwallet)
     userwallet += parseFloat(change)
     sessionStorage.setItem("wallet", userwallet)
+    showUsername()
 }
 
 //wallet updated in the user-page
@@ -88,10 +89,21 @@ function buyStock(stock, price){
 
 //sell a stock, stock should be a string arg, price a float
 function sellStock(stock, price){
+    price = parseFloat(price)
+    console.log(price +" "+ userwallet)
     updateUserWallet(price)
     var index = userstocks.indexOf(stock)
     userstocks.splice(index, 1)
     sessionStorage.setItem("stocks", JSON.stringify(userstocks))
+}
+
+function renderSellButton(){
+    if(userstocks.includes(stockLoaded)){
+        document.getElementById("sell-button").innerHTML = "<button onclick='userSellsShare()' style='background-color: #F42C04; color: white;'>Sell share from portfolio</button>"
+    }
+    else{
+        document.getElementById("sell-button").innerHTML = ""
+    }
 }
 
 //render stock info in the correct port when bought
@@ -108,14 +120,23 @@ function renderStockPortData(){
     }
 }
 
-//
+//curry function that handles buying a new stock
 function userSelectsStock(){
     var newStock = stockLoaded
     var newPrice = priceLoaded
     buyStock(newStock, newPrice)
     renderStockPortData()
+    renderSellButton()
 }
 
+//curry function that handles selling a new stock
+function userSellsShare(){
+    var soldStock = stockLoaded
+    var soldPrice = priceLoaded
+    sellStock(soldStock, soldPrice)
+    renderStockPortData()
+    renderSellButton()
+}
 
 //API CODE
 
@@ -171,9 +192,7 @@ function initWebSocket(object) {
         if (data["type"] == "trade") {
             let date = new Date(data["data"][0]["t"]);
             let lastPrice = data["data"][0]["p"];
-
             let newDiff = Math.round((currentDiff - (currentPrice - lastPrice)) * 100) / 100;
-            priceLoaded = lastPrice
             console.log("loaded price")
             document.getElementById("price").innerHTML = "Current: " + lastPrice + " (" + ((newDiff >= 0) ? "+" : "") + newDiff + ") at " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
         }
@@ -244,9 +263,11 @@ function displayHistory(object) {
 function displayValue(infoObject, priceObject) {
     let d = new Date(priceObject['t']);
     stockLoaded = infoObject["symbol"]
+    priceLoaded = currentPrice
     document.getElementById("name").innerHTML = infoObject["description"] + " (" + infoObject["symbol"] + ")";
     document.getElementById("price").innerHTML = "Current: " + currentPrice + " (" + ((currentDiff < 0) ? "" : "+") + currentDiff + ") at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
     document.getElementById("highLow").innerHTML = "High/Low: " + priceObject["h"] + " / " + priceObject["l"];
+    renderSellButton()
 }
 
 //search keylistener
