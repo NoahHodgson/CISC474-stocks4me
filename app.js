@@ -34,7 +34,7 @@ function initUserWallet() {
 
 //get wallet on page loads
 function getUserWallet() {
-    userwallet = sessionStorage.getItem("wallet")
+    userwallet = parseFloat(sessionStorage.getItem("wallet"))
 }
 
 
@@ -56,19 +56,19 @@ function userInputWallet(){
 //initializes the user's stock portfolio as empty. CALL ONLY ONCE.
 function initUserStocks() {
     userstocks = [];
-    sessionStorage.setItem("stocks", userstocks)
+    sessionStorage.setItem("stocks", JSON.stringify(userstocks))
 }
 
 //get stock portfolio on page loads
 function getUserStocks() {
-    userstocks = sessionStorage.getItem("stocks")
+    userstocks = JSON.parse(sessionStorage.getItem("stocks"))
 }
 
 //buy a stock, stock should be a string arg, price a float
 function buyStock(stock, price){
     updateUserWallet((-price))
     userstocks.push(stock)
-    sessionStorage.setItem("stocks", userstocks)
+    sessionStorage.setItem("stocks", JSON.stringify(userstocks))
 }
 
 //sell a stock, stock should be a string arg, price a float
@@ -76,7 +76,7 @@ function sellStock(stock, price){
     updateUserWallet(price)
     var index = userstocks.indexOf(stock)
     userstocks.splice(index, 1)
-    sessionStorage.setItem("stocks", userstocks)
+    sessionStorage.setItem("stocks", JSON.stringify(userstocks))
 }
 
 
