@@ -20,7 +20,7 @@
             console.log("Loaded Page")
         }
     </script>
-    <nav class="navbar navbar-dark py-3" style="background-color: #50C878;">
+    <nav class="navbar navbar-dark py-3">
         <div class="container-fluid">
             <a class="navbar-brand" href="home.html"><img src="img/logo.png" style="width: 50px" />stocks4me</a>
             <div class="navbar-nav" style="flex-direction: row;" id="nav">
@@ -40,7 +40,7 @@
                 gyroscope; picture-in-picture" allowfullscreen style="padding: 10px;"></iframe>
             <div style="justify-content: center; text-align: center; padding: 5px;">
                 <h2>Stock Menu</h2>
-                <div style="border: 5px solid green; padding: 10px;">
+                <div class="module">
                     <div class="col-xs-4">
                         <button>Test</button>
                         <button>Test</button>
@@ -61,7 +61,7 @@
         </div>
         <div class="col-md-4">
             <br>
-            <div class="jumbotron" style="border: 5px solid green; padding: 10px; width: 90%;">
+            <div class="jumbotron module">
                 <h2 style="text-align: center;">Stock Prices:</h2>
                 <p id="stock-port-data">
                 </p>
@@ -70,16 +70,16 @@
             <div class="input-group" style="max-width: 50%; margin: auto; padding: 5px;">
                 <input type="search" class="form-control rounded" placeholder="Search for stocks" aria-label="Search"
                     aria-describedby="search-addon" id="searchInput" />
-                <button type="button" class="btn btn-outline-primary" onclick="search()">Search</button>
+                <button type="button" class="btn" onclick="search()" id="searchButton">Search</button>
             </div>
             <div id="stock-search-results">
                 <!-- Search result content goes here -->
-                <div id="stockInfo">
+                <div class="module" id="stockInfo">
                     <h2 style="text-decoration: underline;">Stock Info</h2>
                     <p id="name">Name</p>
                     <p id="price">Price</p>
                     <p id="highLow">High / Low</p>
-                    <button onclick="userSelectsStock()" style="background-color: green; color: white;">Add to portfolio</button>
+                    <button onclick="userSelectsStock()" class="btn interactStockButton">Add to portfolio</button>
                     <div id="sell-button">
                     </div>
                     <div class="panel panel-primary">

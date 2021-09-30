@@ -99,7 +99,7 @@ function sellStock(stock, price){
 
 function renderSellButton(){
     if(userstocks.includes(stockLoaded)){
-        document.getElementById("sell-button").innerHTML = "<button onclick='userSellsShare()' style='background-color: #F42C04; color: white;'>Sell share from portfolio</button>"
+        document.getElementById("sell-button").innerHTML = "<button id=\"sellButton\" onclick=\"userSellsShare()\" class=\"btn interactStockButton\">Sell share from portfolio</button>"
     }
     else{
         document.getElementById("sell-button").innerHTML = ""
@@ -154,7 +154,7 @@ function search() {
         currentSocket.close();
     }
 
-    document.getElementById("name").innerHTML = "Searching..."
+    document.getElementById("searchButton").innerHTML = "Searching..."
 
     let r = new XMLHttpRequest();
     r.open("GET", "https://finnhub.io/api/v1/search?q=" + term + "&token=c548e3iad3ifdcrdgh80", true);
@@ -194,7 +194,7 @@ function initWebSocket(object) {
             let lastPrice = data["data"][0]["p"];
             let newDiff = Math.round((currentDiff - (currentPrice - lastPrice)) * 100) / 100;
             console.log("loaded price")
-            document.getElementById("price").innerHTML = "Current: " + lastPrice + " (" + ((newDiff >= 0) ? "+" : "") + newDiff + ") at " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+            document.getElementById("price").innerHTML = "Current: " + lastPrice + " (<span class=\"" + ((newDiff < 0) ? "negativeStock\">" : "positiveStock\">+") + newDiff + "</span>) at " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
         }
     };
     socket.onopen = function (e) {
@@ -264,8 +264,9 @@ function displayValue(infoObject, priceObject) {
     let d = new Date(priceObject['t']);
     stockLoaded = infoObject["symbol"]
     priceLoaded = currentPrice
+    document.getElementById("searchButton").innerHTML = "Search";
     document.getElementById("name").innerHTML = infoObject["description"] + " (" + infoObject["symbol"] + ")";
-    document.getElementById("price").innerHTML = "Current: " + currentPrice + " (" + ((currentDiff < 0) ? "" : "+") + currentDiff + ") at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+    document.getElementById("price").innerHTML = "Current: " + currentPrice + " (<span class=\"" + ((currentDiff < 0) ? "negativeStock\">" : "positiveStock\">+") + currentDiff + "</span>) at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
     document.getElementById("highLow").innerHTML = "High/Low: " + priceObject["h"] + " / " + priceObject["l"];
     renderSellButton()
 }
