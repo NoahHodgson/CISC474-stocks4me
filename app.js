@@ -127,6 +127,7 @@ function userSelectsStock(){
     buyStock(newStock, newPrice)
     renderStockPortData()
     renderSellButton()
+    getNews()
 }
 
 //curry function that handles selling a new stock
@@ -136,10 +137,53 @@ function userSellsShare(){
     sellStock(soldStock, soldPrice)
     renderStockPortData()
     renderSellButton()
+    getNews()
 }
 
 //API CODE
 
+//New API functions
+function getNews() { 
+    if(userstocks === []){
+        return 0
+    } 
+    column_flip = "news-c1" // flip this back and forth to fill collumns
+    uniq_stocks = [new Set(userstocks)]
+    let input = uniq_stocks[0]
+    const newsList = document.getElementById(column_flip)
+    console.log(input)
+
+    const apiKey = '94381b289d5b494eae3bea618848ad38'
+
+    let url = `https://newsapi.org/v2/everything?q=${input}&apiKey=${apiKey}`
+    
+    console.log(url);
+
+    fetch(url).then((res) => {
+        return res.json()
+    }).then((data) => {
+        console.log(data);
+
+        data.articles.forEach(article => {
+            let li = document.createElement('li');
+            let a = document.createElement('a');
+
+            let img = document.createElement('img')
+            let imgURL = article.urlToImage;
+            img.src = imgURL;
+            img.width = 300;
+            img.height = 200;
+            a.setAttribute('href', article.url);
+            a.setAttribute('target', '_blank');
+            a.textContent = article.title;
+            img.setAttribute('image', article.urlToImage);
+
+            li.appendChild(a);
+            li.appendChild(img);
+            newsList.appendChild(li);
+        })
+    })
+}
 
 //Stock Search Info
 function search() {
