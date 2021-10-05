@@ -143,14 +143,25 @@ function userSellsShare(){
 //API CODE
 
 //New API functions
+function columnFlipper(val){
+    console.log("flipper :)")
+    if(val === "news-c1"){
+        return "news-c2"
+    }
+    else{
+        return "news-c1"
+    }   
+}
+
 function getNews() { 
     if(userstocks === []){
-        return 0
+        console.log("idiot")
+        return;
     } 
-    column_flip = "news-c1" // flip this back and forth to fill collumns
-    uniq_stocks = [new Set(userstocks)]
-    let input = uniq_stocks[0]
-    const newsList = document.getElementById(column_flip)
+    var newsList;
+    var column_flip = "news-c1" // flip this back and forth to fill collumns
+    uniq_stocks = Array.from(new Set(userstocks))
+    input = uniq_stocks[2]
     console.log(input)
 
     const apiKey = '94381b289d5b494eae3bea618848ad38'
@@ -165,22 +176,30 @@ function getNews() {
         console.log(data);
 
         data.articles.forEach(article => {
-            let li = document.createElement('li');
-            let a = document.createElement('a');
+            if(article.urlToImage === null || !article.title.includes(input)){
+                console.log("no image")
+            }
+            else{
+                newsList = document.getElementById(column_flip)
+                let li = document.createElement('li');
+                let a = document.createElement('a');
 
-            let img = document.createElement('img')
-            let imgURL = article.urlToImage;
-            img.src = imgURL;
-            img.width = 300;
-            img.height = 200;
-            a.setAttribute('href', article.url);
-            a.setAttribute('target', '_blank');
-            a.textContent = article.title;
-            img.setAttribute('image', article.urlToImage);
+                let img = document.createElement('img')
+                let imgURL = article.urlToImage;
+                img.src = imgURL;
+                img.width = 300;
+                img.height = 200;
+                a.setAttribute('href', article.url);
+                a.setAttribute('target', '_blank');
+                //a.textContent = article.title;
+                img.setAttribute('image', article.urlToImage);
 
-            li.appendChild(a);
-            li.appendChild(img);
-            newsList.appendChild(li);
+                li.appendChild(a);
+                li.appendChild(img);
+                newsList.appendChild(li);
+                column_flip = columnFlipper(column_flip);
+                newsList = document.getElementById(column_flip)
+            }
         })
     })
 }
