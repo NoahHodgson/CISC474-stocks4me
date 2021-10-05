@@ -143,6 +143,7 @@ function userSellsShare(){
 
 //Stock Search Info
 function search() {
+    console.log("TEST");
     let term = document.getElementById("searchInput").value.toUpperCase();
 
     if (term == "") {
@@ -246,10 +247,11 @@ function getHistoryForObject(object) {
 }
 
 function displayHistory(object) {
-    let limit = 30;
     let container = document.getElementById("stockHistoryInfo");
     var lowerBound = new Date();
     lowerBound.setDate(lowerBound.getDate() - 7);
+    var newObject = [];
+    
     for (key in object) {
         let d = new Date(key.replace(" ", "T"));
         if (d < lowerBound) { break; }
@@ -257,7 +259,16 @@ function displayHistory(object) {
         let openPrice = (object[key]["1. open"]);
         p.innerHTML = key + ": " + openPrice;
         container.appendChild(p);
+        
+        var dateObject = {};
+        
+        dateObject.date = d;
+        dateObject.value = openPrice;
+        
+        newObject.push(dateObject);
     }
+    
+    loadChart(newObject);
 }
 
 function displayValue(infoObject, priceObject) {
@@ -268,7 +279,7 @@ function displayValue(infoObject, priceObject) {
     document.getElementById("name").innerHTML = infoObject["description"] + " (" + infoObject["symbol"] + ")";
     document.getElementById("price").innerHTML = "Current: " + currentPrice + " (<span class=\"" + ((currentDiff < 0) ? "negativeStock\">" : "positiveStock\">+") + currentDiff + "</span>) at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
     document.getElementById("highLow").innerHTML = "High/Low: " + priceObject["h"] + " / " + priceObject["l"];
-    renderSellButton()
+    renderSellButton();
 }
 
 //search keylistener

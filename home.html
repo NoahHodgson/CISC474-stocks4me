@@ -9,6 +9,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="app.js"></script>
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="chart.js"></script>
     <title>stocks4me ◉ Home</title>
 </head>
 
@@ -35,11 +37,7 @@
     </nav>
     <!--Everything from here on out is placeholders for the actual content-->
     <div class="row">
-        <div class="col-md-8">
-            <iframe id="chart" width="90%" height="80%" src="https://www.youtube.com/embed/t8UHC7aoRq4"
-                title="YouTube video player" frameborder="0" allow="accelerometer; 
-                autoplay; clipboard-write; encrypted-media; 
-                gyroscope; picture-in-picture" allowfullscreen style="padding: 10px;"></iframe>
+        <div class="col-md-8" id="stockChartContainer">
         </div>
         <div class="col-md-4">
             <br>
@@ -63,6 +61,7 @@
                     <button onclick="userSelectsStock()" class="btn interactStockButton">Add to portfolio</button>
                     <div id="sell-button">
                     </div>
+                    
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <h3 style="text-decoration: underline;" class="panel-title">Weekly Report</h3>
