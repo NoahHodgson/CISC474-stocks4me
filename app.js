@@ -350,8 +350,6 @@ function displayHistory(object) {
         if (d < lowerBound) { break; }
         let p = document.createElement("p");
         let openPrice = (object[key]["1. open"]);
-        p.innerHTML = key + ": " + openPrice;
-        container.appendChild(p);
         
         var dateObject = {};
         

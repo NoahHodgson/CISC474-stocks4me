@@ -4,6 +4,7 @@ function loadChart(data) {
   
   // append the svg object to the body of the page
   var container = d3.select("#stockChartContainer");
+  container.html("");
   console.log(container.node());
   let width = container.node().scrollWidth;
   let height = container.node().scrollHeight;
@@ -80,7 +81,7 @@ function loadChart(data) {
   graphContainer.append("path")
     .datum(data)
     .attr("fill", "none")
-    .attr("stroke", "blue")
+    .attr("stroke", getGraphColor())
     .attr("stroke-width", 1.75)
     .attr("d", d3.line()
       .x(function(d) { return x(d.date) })
@@ -93,10 +94,57 @@ function isDarkMode() {
   return window.matchMedia("(prefers-color-scheme:dark)").matches;
 }
 
+let graphColors = [
+  {
+    light: "#923043",
+    dark: "#ed4d6d"
+  },
+  {
+    light: "#894633",
+    dark: "#ed7658"
+  },
+  {
+    light: "#8d6525",
+    dark: "#eda83f"
+  },
+  {
+    light: "#847632",
+    dark: "#f2d65d"
+  },
+  {
+    light: "#407f38",
+    dark: "#74de66"
+  },
+  {
+    light: "#47846a",
+    dark: "#79d9b1"
+  },
+  {
+    light: "#457382",
+    dark: "#70b4cf"
+  },
+  {
+    light: "#685a79",
+    dark: "#c1a3de"
+  },
+  {
+    light: "#845c7c",
+    dark: "#eda3de"
+  }
+];
+
+function getGraphColor() {
+  let colorSelect = document.getElementById("colorSelect").value;
+  if(isDarkMode()) {
+    return(graphColors[colorSelect].dark);
+  }
+  return(graphColors[colorSelect].light);
+}
+
 function updateChartColors() {
   d3.select(".chart")
     .selectAll('.graphLine')
-    .attr("stroke",(isDarkMode()) ? "red" : "blue");
+    .attr("stroke",getGraphColor());
   
   d3.select(".chart")
     .selectAll(".axis")
@@ -110,5 +158,4 @@ function updateChartColors() {
   d3.select(".chart")
     .selectAll('text')
     .style("fill",(isDarkMode()) ? "white" : "black");
-  
 }
