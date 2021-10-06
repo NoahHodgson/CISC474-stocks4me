@@ -1,5 +1,5 @@
 function loadChart(data) {
-  console.log("LOADING CHART");
+  document.getElementById("emptyStockMessage").display = "none";
   var margin = 50;
   
   // append the svg object to the body of the page
@@ -64,7 +64,7 @@ function loadChart(data) {
   var x = d3.scaleTime()
     .domain(d3.extent(data, function(d) { return d.date; }))
     .range([ 0, width ]);
-  graphContainer.append("g")
+  var xAxis = graphContainer.append("g")
     .attr("transform", "translate(0," + (height) + ")")
     .call(d3.axisBottom(x))
     .classed("axis", true);
@@ -88,6 +88,18 @@ function loadChart(data) {
       .y(function(d) { return y(d.value) })
       )
     .classed("graphLine", true);
+    
+  svg
+    .selectAll('text')
+    .style("fill",(isDarkMode()) ? "white" : "black");
+  svg
+    .selectAll(".axis")
+    .selectAll("path")
+    .attr("stroke", (isDarkMode()) ? "white" : "black");
+  svg
+    .selectAll(".axis")
+    .selectAll("line")
+    .attr("stroke", (isDarkMode()) ? "white" : "black");
 }
 
 function isDarkMode() {

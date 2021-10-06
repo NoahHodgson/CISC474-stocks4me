@@ -25,6 +25,10 @@ body{
   
 }
 
+#stockChartContainer {
+  margin-top:10px;
+}
+
 .navbar {
   background-color:var(--header-background-color);
   color: var(--header-text-color);
