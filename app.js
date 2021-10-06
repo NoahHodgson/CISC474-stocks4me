@@ -1,7 +1,7 @@
 //globals
 var username;
 var userwallet;
-var userstocks;
+var userstocks=[];
 var stockLoaded;
 var priceLoaded;
 
@@ -23,13 +23,13 @@ function updateUserName() {
 //displays current user in the nav bar
 function showUsername() {
     username = sessionStorage.getItem("name")
-    document.getElementById("nav-user").innerHTML = "<a class='nav-link' style='padding:10px;' href='user.html'>User: "+ username +"<br>Wallet: "+userwallet.toFixed(2)+"</a>"
+    document.getElementById("nav-user").innerHTML = "<a class='nav-link' style='padding:10px;' href='user.html'>User: " + username + "<br>Wallet: " + userwallet.toFixed(2) + "</a>"
 }
 
 //displays current user in the nav bar highlighted
-function showUsernameSpecial(){
+function showUsernameSpecial() {
     username = sessionStorage.getItem("name")
-    document.getElementById("nav-user").innerHTML += "<a class='nav-link active' style='padding:10px;' href='user.html'>User: "+ username +"<br>Wallet: $"+userwallet.toFixed(2)+"</a>"
+    document.getElementById("nav-user").innerHTML += "<a class='nav-link active' style='padding:10px;' href='user.html'>User: " + username + "<br>Wallet: $" + userwallet.toFixed(2) + "</a>"
 }
 
 //initializes the user wallet at zero. CALL ONLY ONCE.
@@ -54,7 +54,7 @@ function updateUserWallet(change) {
 }
 
 //wallet updated in the user-page
-function userInputWallet(){
+function userInputWallet() {
     var dollars = parseFloat(document.getElementById("wallet").value)
     userwallet = dollars
     sessionStorage.setItem("wallet", userwallet)
@@ -74,72 +74,165 @@ function getUserStocks() {
 }
 
 //buy a stock, stock should be a string arg, price a float
-function buyStock(stock, price){
+function buyStock(stock, price) {
     price = parseFloat(price)
-    console.log(price +" "+ userwallet)
-    if(price <= userwallet){
+    console.log(price + " " + userwallet)
+    if (price <= userwallet) {
         price = -price
         updateUserWallet(price)
         userstocks.push(stock)
         sessionStorage.setItem("stocks", JSON.stringify(userstocks))
-    } else{
+    } else {
         alert("Price of Stock exceeds wallet!")
     }
 }
 
 //sell a stock, stock should be a string arg, price a float
-function sellStock(stock, price){
+function sellStock(stock, price) {
     price = parseFloat(price)
-    console.log(price +" "+ userwallet)
+    console.log(price + " " + userwallet)
     updateUserWallet(price)
     var index = userstocks.indexOf(stock)
     userstocks.splice(index, 1)
     sessionStorage.setItem("stocks", JSON.stringify(userstocks))
 }
 
-function renderSellButton(){
-    if(userstocks.includes(stockLoaded)){
+function renderSellButton() {
+    if (userstocks.includes(stockLoaded)) {
         document.getElementById("sell-button").innerHTML = "<button id=\"sellButton\" onclick=\"userSellsShare()\" class=\"btn interactStockButton\">Sell share from portfolio</button>"
     }
-    else{
+    else {
         document.getElementById("sell-button").innerHTML = ""
     }
 }
 
 //render stock info in the correct port when bought
 //https://stackoverflow.com/questions/37365512/count-the-number-of-times-a-same-value-appears-in-a-javascript-array
-function renderStockPortData(){
+function renderStockPortData() {
     var stocksObj = {}
     var countFunc = keys => {
         stocksObj[keys] = ++stocksObj[keys] || 1;
     }
     userstocks.forEach(countFunc);
     document.getElementById("stock-port-data").innerHTML = "";
-    for (const [key, value] of Object.entries(stocksObj)){
-        document.getElementById("stock-port-data").innerHTML += key+ ": " +value + " shares"+"<br>"
+    for (const [key, value] of Object.entries(stocksObj)) {
+        document.getElementById("stock-port-data").innerHTML += key + ": " + value + " shares" + "<br>"
     }
 }
 
 //curry function that handles buying a new stock
-function userSelectsStock(){
+function userSelectsStock() {
     var newStock = stockLoaded
     var newPrice = priceLoaded
     buyStock(newStock, newPrice)
     renderStockPortData()
     renderSellButton()
+    getNews()
 }
 
 //curry function that handles selling a new stock
-function userSellsShare(){
+function userSellsShare() {
     var soldStock = stockLoaded
     var soldPrice = priceLoaded
     sellStock(soldStock, soldPrice)
     renderStockPortData()
     renderSellButton()
+    getNews()
 }
 
 //API CODE
 
+//New API functions
+function columnFlipper(val) {
+    if (val === "news-c1") {
+        return "news-c2"
+    }
+    else {
+        return "news-c1"
+    }
+}
+
+function getNews() {
+    var table = document.getElementById('table_holder')
+    table.innerHTML = `<div class="row justify-content-center" style="padding: 10px;" id="table_holder">
+        <div class="col justify-content-center" id="news-c1">
+        </div>
+        <div class="col justify-content-center" id="news-c2">
+        </div>
+    </div>`
+    if (!userstocks.length) {
+        console.log("idiot")
+        return;
+    }
+    var newsList;
+    var column_flip = "news-c1" // flip this back and forth to fill collumns
+    uniq_stocks = Array.from(new Set(userstocks))
+    console.log(uniq_stocks)
+    var i = 0;
+    //trying Promises - https://codeburst.io/javascript-making-asynchronous-calls-inside-a-loop-and-pause-block-loop-execution-1cb713fbdf2d
+    function processData(url) {
+        return new Promise((resolve, reject) => {
+            console.log(url);
+            fetch(url).then((res) => {
+                return res.json()
+            }).then((data) => {
+                console.log(data.articles);
+                resolve(data)
+            })
+        })
+    }
+
+    //loading stories
+    var all_articles = []
+        uniq_stocks.forEach(
+        (stock) => {
+            const apiKey = '94381b289d5b494eae3bea618848ad38'
+            let url = `https://newsapi.org/v2/everything?q=${stock}&apiKey=${apiKey}`
+            all_articles = all_articles.concat(processData(url))
+        })
+    Promise.all(all_articles).then((full_article_list) => {
+        console.log(full_article_list)
+        cleaned_list=[]
+        full_article_list.forEach(obj=>{
+            cleaned_list.push(obj.articles)
+        })
+        cleaned_list = cleaned_list.flat()
+        console.log(cleaned_list)
+        //shuffling list -
+        function fy(a,b,c,d){//array,placeholder,placeholder,placeholder
+            c=a.length;while(c)b=Math.random()*(--c+1)|0,d=a[c],a[c]=a[b],a[b]=d
+        }
+        fy(cleaned_list,[],[])
+        //creating pages - https://stackoverflow.com/questions/55331172/pass-array-to-includes-javascript
+        cleaned_list.forEach(article => {
+            if (article.urlToImage === null || userstocks.some(o=>article.title.includes(o))) {
+                console.log("no image or bad title")
+            }
+            else {
+                newsList = document.getElementById(column_flip)
+                let div = document.createElement('div')
+                let a = document.createElement('a');
+
+                let img = document.createElement('img')
+                let imgURL = article.urlToImage;
+                img.src = imgURL;
+                img.width = 300;
+                img.height = 200;
+                //a.textContent = article.title;
+                div.innerHTML = `<div style="margin: auto; width: 50%; text-allign:center">
+                    <a href=${article.url} target="_blank">
+                        <img src=${img.src}
+                        width=${img.width} height=${img.height} style="display: blocked">
+                    </a>
+                    <div style="margin-top:4%; max-width:200px text-allign:center"><h4>${article.title}</h4></div>
+                </div>`
+                newsList.appendChild(div);
+                column_flip = columnFlipper(column_flip);
+                newsList = document.getElementById(column_flip)
+            }
+        })
+    })
+}
 
 //Stock Search Info
 function search() {
@@ -163,7 +256,7 @@ function search() {
         if (this.status == 200) {
             document.getElementById("stock-search-results").style["visibility"] = "visible";
             let obj = JSON.parse(this.response);
-            if(parseInt(obj["count"]) > 0) {
+            if (parseInt(obj["count"]) > 0) {
                 let firstResult = obj["result"][0];
                 getPriceForObject(firstResult);
                 getHistoryForObject(firstResult);
@@ -218,14 +311,14 @@ function getPriceForObject(object) {
     r.open("GET", "https://finnhub.io/api/v1/quote?symbol=" + symbol + "&token=c548e3iad3ifdcrdgh80", true);
     r.onreadystatechange = function () {
         if (this.readyState == 4) {
-            if(this.status == 200) {
+            if (this.status == 200) {
                 let obj = JSON.parse(this.response);
                 currentPrice = parseFloat(obj["c"]);
                 currentDiff = parseFloat(obj["d"]);
                 console.log(obj);
                 displayValue(object, obj);
-            } else if(this.status == 403) {
-               document.getElementById("name").innerHTML = "Cannot access this symbol." 
+            } else if (this.status == 403) {
+                document.getElementById("name").innerHTML = "Cannot access this symbol."
             }
         }
     }
