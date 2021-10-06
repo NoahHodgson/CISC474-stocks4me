@@ -1,10 +1,12 @@
-function loadChart(data) {
+function loadChart(data, id, replace = false) {
   document.getElementById("emptyStockMessage").display = "none";
   var margin = 50;
   
   // append the svg object to the body of the page
-  var container = d3.select("#stockChartContainer");
-  container.html("");
+  var container = d3.select("#"+id);
+  if(replace) {
+    container.html("");
+  }
   console.log(container.node());
   let width = container.node().scrollWidth;
   let height = container.node().scrollHeight;
@@ -154,20 +156,20 @@ function getGraphColor() {
 }
 
 function updateChartColors() {
-  d3.select(".chart")
+  d3.selectAll(".chart")
     .selectAll('.graphLine')
     .attr("stroke",getGraphColor());
   
-  d3.select(".chart")
+  d3.selectAll(".chart")
     .selectAll(".axis")
     .selectAll("path")
     .attr("stroke", (isDarkMode()) ? "white" : "black");
-  d3.select(".chart")
+  d3.selectAll(".chart")
     .selectAll(".axis")
     .selectAll("line")
     .attr("stroke", (isDarkMode()) ? "white" : "black");
   
-  d3.select(".chart")
+  d3.selectAll(".chart")
     .selectAll('text')
     .style("fill",(isDarkMode()) ? "white" : "black");
 }
