@@ -168,17 +168,60 @@ function getNews() {
     var column_flip = "news-c1" // flip this back and forth to fill collumns
     uniq_stocks = Array.from(new Set(userstocks))
     console.log(uniq_stocks)
-    var i = 0;
+    var first_symb=[]
+    uniq_stocks.forEach(
+        s=>{
+            var array = s.split(" ")
+            first_symb.push(array[0])
+    })
+    //awful code
+    uniq_stocks = first_symb;
+    console.log(uniq_stocks)
+    //date setup 
+    var currentDate = new Date();
+    var pastDateNum = currentDate.getDate()-14;
+    var pastDate = new Date();
+    pastDate.setDate(pastDateNum)
+    function add_zero(str){
+        if(str.length==1){
+            return "0"+str;
+        }
+        else{
+            return str;
+        }
+    }
+    current_string = currentDate.getFullYear().toString() + add_zero(currentDate.getMonth().toString()) + add_zero(currentDate.getDay().toString())
+    past_string = pastDate.getFullYear().toString() + add_zero(pastDate.getMonth().toString()) + add_zero(pastDate.getDay().toString())
+    console.log(past_string +" " + current_string)
     //trying Promises - https://codeburst.io/javascript-making-asynchronous-calls-inside-a-loop-and-pause-block-loop-execution-1cb713fbdf2d
     function processData(url) {
         return new Promise((resolve, reject) => {
             console.log(url);
-            fetch(url).then((res) => {
-                return res.json()
-            }).then((data) => {
-                console.log(data.articles);
-                resolve(data)
-            })
+            const options = {
+                method: "GET",
+                headers: {
+                  "Accept": "application/json"
+                },
+            };
+            fetch(url, options).then(
+                response => {
+                  if (response.ok) {
+                    return response;
+                  }
+                  return response.text().then(err => {
+                    return Promise.reject({
+                      status: response.status,
+                      statusText: response.statusText,
+                      errorMessage: err,
+                    });
+                  });
+                })
+                .then(data => {
+                  console.log(data);
+                })
+                .catch(err => {
+                  console.error(err);
+                });
         })
     }
 
@@ -186,8 +229,8 @@ function getNews() {
     var all_articles = []
         uniq_stocks.forEach(
         (stock) => {
-            const apiKey = '94381b289d5b494eae3bea618848ad38'
-            let url = `https://newsapi.org/v2/everything?q=${stock}&apiKey=${apiKey}`
+            const apiKey = '0lRut9I2IboC0FlDg5wVabXmfIfb2hRU'
+            const url = `https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${past_string}&end_date=${current_string}&facet=false&q=${stock}&sort=relevance&api-key=${apiKey}`;
             all_articles = all_articles.concat(processData(url))
         })
     Promise.all(all_articles).then((full_article_list) => {
@@ -366,7 +409,7 @@ function displayHistory(object) {
 
 function displayValue(infoObject, priceObject) {
     let d = new Date(priceObject['t']);
-    stockLoaded = infoObject["symbol"]
+    stockLoaded = infoObject["description"]
     priceLoaded = currentPrice
     document.getElementById("searchButton").innerHTML = "Search";
     document.getElementById("name").innerHTML = infoObject["description"] + " (" + infoObject["symbol"] + ")";
