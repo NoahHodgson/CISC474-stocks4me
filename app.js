@@ -128,6 +128,7 @@ function userSelectsStock() {
     renderStockPortData()
     renderSellButton()
     getNews()
+    initAllStockViews()
 }
 
 //curry function that handles selling a new stock
@@ -138,6 +139,7 @@ function userSellsShare() {
     renderStockPortData()
     renderSellButton()
     getNews()
+    initAllStockViews()
 }
 
 //API CODE
@@ -385,10 +387,6 @@ function displayValue(infoObject, priceObject, id, shareCount) {
     document.getElementById(id).append(title);
     document.getElementById(id).append(price);
     document.getElementById(id).append(highLow);
-    
-    // document.getElementById("name").innerHTML = infoObject["description"] + " (" + infoObject["symbol"] + ")";
-    // document.getElementById("price").innerHTML = "Current: " + currentPrice + " (<span class=\"" + ((currentDiff < 0) ? "negativeStock\">" : "positiveStock\">+") + currentDiff + "</span>) at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
-    // document.getElementById("highLow").innerHTML = "High/Low: " + priceObject["h"] + " / " + priceObject["l"];
     renderSellButton();
     
     
@@ -421,6 +419,7 @@ function initAllStockViews() {
     }
     
     userstocks.forEach(countFunc);
+    document.getElementById("allStocksHolder").innerHTML = "";
     document.getElementById("stock-port-data").innerHTML = "";
     for (const [key, value] of Object.entries(stocksObj)) {
         let div = document.createElement("div");
@@ -435,6 +434,5 @@ function initAllStockViews() {
         
         getPriceForObject({"symbol":key}, key, value);
         getHistoryForObject({"symbol":key}, key);
-        
     }
 }
