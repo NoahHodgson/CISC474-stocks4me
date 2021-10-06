@@ -4,7 +4,7 @@ body{
   /* color definitions */
   --light: #f0eeed;
   --dark: #2e4052;
-  --green: #50c878;
+  --primary: #50c878;
   --red: #f42c04;
   --dark-green: #008000;
   
@@ -13,11 +13,11 @@ body{
   color: var(--dark);
   
   /* header colors */
-  --header-background-color: var(--green); 
+  --header-background-color: var(--primary); 
   --header-text-color: var(--light);
   
   /* UI Element Colors */
-  --element-highlight-color: var(--green);
+  --element-highlight-color: var(--primary);
   --content-background-color: var(--light);
   --content-text-color: var(--dark);
   --element-negative-color: var(--red);
@@ -56,7 +56,7 @@ body{
 .btn {        
   font-size: 15px;
   font-weight: bold;
-  background-color: var(--green);
+  background-color: var(--primary);
   color: var(--light);
   border:none;
 }
@@ -78,7 +78,7 @@ body{
 }
 
 .panel-heading{
-  border-top: 3px dotted var(--green);
+  border-top: 3px dotted var(--primary);
 }
 
 #stockHistoryInfo {
@@ -106,7 +106,7 @@ body{
 }
 
 .module {
-  border: 5px solid var(--green);
+  border: 5px solid var(--primary);
   padding: 10px;
 }
 
@@ -124,6 +124,6 @@ body{
   }
   
   .positiveStock {
-    color: var(--green);
+    color: var(--primary);
   }
 }
