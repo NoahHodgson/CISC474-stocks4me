@@ -171,15 +171,26 @@ function getNews() {
     var first_symb=[]
     uniq_stocks.forEach(
         s=>{
+            flag=1;
             var array = s.split(" ")
-            first_symb.push(array[0])
+            array.forEach(o=>{
+                if(o.length <= 3){ 
+                    flag = 0;
+                }
+            })
+            if(flag){
+                first_symb.push(s);
+            }
+            else{
+                first_symb.push(array[0]);
+            }
     })
     //awful code
     uniq_stocks = first_symb;
     console.log(uniq_stocks)
     //date setup 
     var currentDate = new Date();
-    var pastDateNum = currentDate.getDate()-14;
+    var pastDateNum = currentDate.getDate()-30;
     var pastDate = new Date();
     pastDate.setDate(pastDateNum)
     function add_zero(str){
@@ -203,28 +214,15 @@ function getNews() {
                   "Accept": "application/json"
                 },
             };
-            fetch(url, options).then(
-                response => {
-                  if (response.ok) {
-                    return response;
-                  }
-                  return response.text().then(err => {
-                    return Promise.reject({
-                      status: response.status,
-                      statusText: response.statusText,
-                      errorMessage: err,
-                    });
-                  });
-                })
-                .then(data => {
-                  console.log(data);
-                })
-                .catch(err => {
-                  console.error(err);
-                });
+            fetch(url, options).then((res) => {
+                return res.text()
+            }).then((data) => {
+                data = JSON.parse(data);
+                data = data.response.docs
+                resolve(data)
+            })
         })
     }
-
     //loading stories
     var all_articles = []
         uniq_stocks.forEach(
@@ -235,10 +233,7 @@ function getNews() {
         })
     Promise.all(all_articles).then((full_article_list) => {
         console.log(full_article_list)
-        cleaned_list=[]
-        full_article_list.forEach(obj=>{
-            cleaned_list.push(obj.articles)
-        })
+        cleaned_list=full_article_list
         cleaned_list = cleaned_list.flat()
         console.log(cleaned_list)
         //shuffling list -
@@ -248,7 +243,7 @@ function getNews() {
         fy(cleaned_list,[],[])
         //creating pages - https://stackoverflow.com/questions/55331172/pass-array-to-includes-javascript
         cleaned_list.forEach(article => {
-            if (article.urlToImage === null || userstocks.some(o=>article.title.includes(o))) {
+            if (article.multimedia.length === 0 || userstocks.some(o=>article.headline.main.includes(o))) {
                 console.log("no image or bad title")
             }
             else {
@@ -257,7 +252,7 @@ function getNews() {
                 let a = document.createElement('a');
 
                 let img = document.createElement('img')
-                let imgURL = article.urlToImage;
+                let imgURL="https://www.nytimes.com/"+article.multimedia[0].url;
                 img.src = imgURL;
                 img.width = 300;
                 img.height = 200;
@@ -267,7 +262,7 @@ function getNews() {
                         <img src=${img.src}
                         width=${img.width} height=${img.height} style="display: blocked">
                     </a>
-                    <div style="margin-top:4%; max-width:200px text-allign:center"><h4>${article.title}</h4></div>
+                    <div style="margin-top:4%; max-width:200px text-allign:center"><h4>${article.headline.main}</h4></div>
                 </div>`
                 newsList.appendChild(div);
                 column_flip = columnFlipper(column_flip);
