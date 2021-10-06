@@ -82,7 +82,7 @@ function loadChart(data) {
     .datum(data)
     .attr("fill", "none")
     .attr("stroke", getGraphColor())
-    .attr("stroke-width", 1.75)
+    .attr("stroke-width", 3)
     .attr("d", d3.line()
       .x(function(d) { return x(d.date) })
       .y(function(d) { return y(d.value) })
@@ -108,39 +108,39 @@ function isDarkMode() {
 
 let graphColors = [
   {
-    light: "#923043",
+    light: "#ed4d6d",
     dark: "#ed4d6d"
   },
   {
-    light: "#894633",
+    light: "#ed7658",
     dark: "#ed7658"
   },
   {
-    light: "#8d6525",
+    light: "#eda83f",
     dark: "#eda83f"
   },
   {
-    light: "#847632",
+    light: "#f2c93f",
     dark: "#f2d65d"
   },
   {
-    light: "#407f38",
+    light: "#74de66",
     dark: "#74de66"
   },
   {
-    light: "#47846a",
+    light: "#79d9b1",
     dark: "#79d9b1"
   },
   {
-    light: "#457382",
+    light: "#70b4cf",
     dark: "#70b4cf"
   },
   {
-    light: "#685a79",
+    light: "#c1a3de",
     dark: "#c1a3de"
   },
   {
-    light: "#845c7c",
+    light: "#eda3de",
     dark: "#eda3de"
   }
 ];
