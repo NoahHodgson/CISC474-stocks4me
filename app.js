@@ -390,3 +390,7 @@ function onSearchFocused() {
 function onSearchBlurred() {
     document.removeEventListener("keydown", searchOnEnter);
 }
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener("change", function(e) {
+       updateChartColors();
+});
