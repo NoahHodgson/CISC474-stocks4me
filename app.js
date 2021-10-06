@@ -366,7 +366,7 @@ function displayHistory(object) {
 
 function displayValue(infoObject, priceObject) {
     let d = new Date(priceObject['t']);
-    stockLoaded = infoObject["symbol"]
+    stockLoaded = infoObject["description"]
     priceLoaded = currentPrice
     document.getElementById("searchButton").innerHTML = "Search";
     document.getElementById("name").innerHTML = infoObject["description"] + " (" + infoObject["symbol"] + ")";
