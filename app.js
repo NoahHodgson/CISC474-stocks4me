@@ -168,34 +168,72 @@ function getNews() {
     var column_flip = "news-c1" // flip this back and forth to fill collumns
     uniq_stocks = Array.from(new Set(userstocks))
     console.log(uniq_stocks)
-    var i = 0;
+    var first_symb=[]
+    uniq_stocks.forEach(
+        s=>{
+            flag=1;
+            var array = s.split(" ")
+            array.forEach(o=>{
+                if(o.length <= 3){ 
+                    flag = 0;
+                }
+            })
+            if(flag){
+                first_symb.push(s);
+            }
+            else{
+                first_symb.push(array[0]);
+            }
+    })
+    //awful code
+    uniq_stocks = first_symb;
+    console.log(uniq_stocks)
+    //date setup 
+    var currentDate = new Date();
+    var pastDateNum = currentDate.getDate()-30;
+    var pastDate = new Date();
+    pastDate.setDate(pastDateNum)
+    function add_zero(str){
+        if(str.length==1){
+            return "0"+str;
+        }
+        else{
+            return str;
+        }
+    }
+    current_string = currentDate.getFullYear().toString() + add_zero(currentDate.getMonth().toString()) + add_zero(currentDate.getDay().toString())
+    past_string = pastDate.getFullYear().toString() + add_zero(pastDate.getMonth().toString()) + add_zero(pastDate.getDay().toString())
+    console.log(past_string +" " + current_string)
     //trying Promises - https://codeburst.io/javascript-making-asynchronous-calls-inside-a-loop-and-pause-block-loop-execution-1cb713fbdf2d
     function processData(url) {
         return new Promise((resolve, reject) => {
             console.log(url);
-            fetch(url).then((res) => {
-                return res.json()
+            const options = {
+                method: "GET",
+                headers: {
+                  "Accept": "application/json"
+                },
+            };
+            fetch(url, options).then((res) => {
+                return res.text()
             }).then((data) => {
-                console.log(data.articles);
+                data = JSON.parse(data);
+                data = data.response.docs
                 resolve(data)
             })
         })
     }
-
     //loading stories
     var all_articles = []
         uniq_stocks.forEach(
         (stock) => {
-            const apiKey = '94381b289d5b494eae3bea618848ad38'
-            let url = `https://newsapi.org/v2/everything?q=${stock}&apiKey=${apiKey}`
+            const apiKey = '0lRut9I2IboC0FlDg5wVabXmfIfb2hRU'
+            const url = `https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${past_string}&end_date=${current_string}&facet=false&q=${stock}&sort=relevance&api-key=${apiKey}`;
             all_articles = all_articles.concat(processData(url))
         })
     Promise.all(all_articles).then((full_article_list) => {
         console.log(full_article_list)
-        cleaned_list=[]
-        full_article_list.forEach(obj=>{
-            cleaned_list.push(obj.articles)
-        })
+        cleaned_list=full_article_list
         cleaned_list = cleaned_list.flat()
         console.log(cleaned_list)
         //shuffling list -
@@ -205,7 +243,7 @@ function getNews() {
         fy(cleaned_list,[],[])
         //creating pages - https://stackoverflow.com/questions/55331172/pass-array-to-includes-javascript
         cleaned_list.forEach(article => {
-            if (article.urlToImage === null || userstocks.some(o=>article.title.includes(o))) {
+            if (article.multimedia.length === 0 || userstocks.some(o=>article.headline.main.includes(o))) {
                 console.log("no image or bad title")
             }
             else {
@@ -214,7 +252,7 @@ function getNews() {
                 let a = document.createElement('a');
 
                 let img = document.createElement('img')
-                let imgURL = article.urlToImage;
+                let imgURL="https://www.nytimes.com/"+article.multimedia[0].url;
                 img.src = imgURL;
                 img.width = 300;
                 img.height = 200;
@@ -224,7 +262,7 @@ function getNews() {
                         <img src=${img.src}
                         width=${img.width} height=${img.height} style="display: blocked">
                     </a>
-                    <div style="margin-top:4%; max-width:200px text-allign:center"><h4>${article.title}</h4></div>
+                    <div style="margin-top:4%; max-width:200px text-allign:center"><h4>${article.headline.main}</h4></div>
                 </div>`
                 newsList.appendChild(div);
                 column_flip = columnFlipper(column_flip);
