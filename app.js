@@ -258,7 +258,7 @@ function getNews() {
                 img.height = 200;
                 //a.textContent = article.title;
                 div.innerHTML = `<div style="margin: auto; width: 50%; text-allign:center">
-                    <a href=${article.url} target="_blank">
+                    <a href=${article.web_url} target="_blank">
                         <img src=${img.src}
                         width=${img.width} height=${img.height} style="display: blocked">
                     </a>
