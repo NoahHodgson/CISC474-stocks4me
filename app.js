@@ -128,6 +128,7 @@ function userSelectsStock() {
     renderStockPortData()
     renderSellButton()
     getNews()
+    initAllStockViews()
 }
 
 //curry function that handles selling a new stock
@@ -138,6 +139,7 @@ function userSellsShare() {
     renderStockPortData()
     renderSellButton()
     getNews()
+    initAllStockViews()
 }
 
 //API CODE
@@ -406,9 +408,22 @@ function displayValue(infoObject, priceObject) {
     stockLoaded = infoObject["description"]
     priceLoaded = currentPrice
     document.getElementById("searchButton").innerHTML = "Search";
-    document.getElementById("name").innerHTML = infoObject["description"] + " (" + infoObject["symbol"] + ")";
-    document.getElementById("price").innerHTML = "Current: " + currentPrice + " (<span class=\"" + ((currentDiff < 0) ? "negativeStock\">" : "positiveStock\">+") + currentDiff + "</span>) at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
-    document.getElementById("highLow").innerHTML = "High/Low: " + priceObject["h"] + " / " + priceObject["l"];
+    
+    let title = document.createElement("h2");
+    title.innerHTML = infoObject["symbol"]+" ("+shareCount+" Shares)";
+    title.className = "stockViewTitle";
+    
+    let price = document.createElement("p");
+    price.innerHTML = "Current: " + currentPrice + " (<span class=\"" + ((currentDiff < 0) ? "negativeStock\">" : "positiveStock\">+") + currentDiff + "</span>) at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+    price.className = "stockViewPrice";
+    
+    let highLow = document.createElement("p");
+    highLow.innerHTML = "High/Low: " + priceObject["h"] + " / " + priceObject["l"];
+    highLow.className = "stockViewHighLow";
+    
+    document.getElementById(id).append(title);
+    document.getElementById(id).append(price);
+    document.getElementById(id).append(highLow);
     renderSellButton();
 }
 
@@ -426,4 +441,33 @@ function onSearchFocused() {
 
 function onSearchBlurred() {
     document.removeEventListener("keydown", searchOnEnter);
+}
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener("change", function(e) {
+       updateChartColors();
+});
+
+function initAllStockViews() {
+    var stocksObj = {}
+    var countFunc = keys => {
+        stocksObj[keys] = ++stocksObj[keys] || 1;
+    }
+    
+    userstocks.forEach(countFunc);
+    document.getElementById("allStocksHolder").innerHTML = "";
+    document.getElementById("stock-port-data").innerHTML = "";
+    for (const [key, value] of Object.entries(stocksObj)) {
+        let div = document.createElement("div");
+        div.className = "stockViewContainer module";
+        div.id = key;
+        
+        let title = document.createElement("h1");
+        title.innerHTML = key;
+        
+        div.appendChild(title);
+        document.getElementById("allStocksHolder").appendChild(div);
+        
+        getPriceForObject({"symbol":key}, key, value);
+        getHistoryForObject({"symbol":key}, key);
+    }
 }

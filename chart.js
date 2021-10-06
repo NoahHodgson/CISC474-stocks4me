@@ -1,9 +1,6 @@
 function loadChart(data) {
   console.log("LOADING CHART");
   var margin = 50;
-  //clear chart
-  chart = document.getElementById("stockChartContainer")
-  chart.innerHTML = ''
   // append the svg object to the body of the page
   var container = d3.select("#stockChartContainer");
   console.log(container.node());
