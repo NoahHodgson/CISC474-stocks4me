@@ -274,7 +274,8 @@ function getNews() {
 
 //Stock Search Info
 function search() {
-    console.log("TEST");
+    let id = "stockChartContainer";
+    let infoID = "stockInfo";
     let term = document.getElementById("searchInput").value.toUpperCase();
 
     if (term == "") {
@@ -296,9 +297,9 @@ function search() {
             let obj = JSON.parse(this.response);
             if (parseInt(obj["count"]) > 0) {
                 let firstResult = obj["result"][0];
-                getPriceForObject(firstResult);
-                getHistoryForObject(firstResult);
-                initWebSocket(firstResult);
+                getPriceForObject(firstResult, infoID);
+                getHistoryForObject(firstResult, id, true);
+                initWebSocket(firstResult, infoID);
             } else {
                 document.getElementById("name").innerHTML = "Could not find symbol."
             }
@@ -315,8 +316,9 @@ function closeWebSocket() {
     }
 }
 
-function initWebSocket(object) {
+function initWebSocket(object, id) {
     let symbol = object["symbol"];
+    
 
     let socket = new WebSocket("wss://ws.finnhub.io?token=c548e3iad3ifdcrdgh80");
     socket.onmessage = function (e) {
@@ -342,7 +344,7 @@ function initWebSocket(object) {
 var currentPrice;
 var currentDiff;
 
-function getPriceForObject(object) {
+function getPriceForObject(object, id, shareCount) {
     let symbol = object["symbol"];
 
     let r = new XMLHttpRequest();
@@ -354,7 +356,7 @@ function getPriceForObject(object) {
                 currentPrice = parseFloat(obj["c"]);
                 currentDiff = parseFloat(obj["d"]);
                 console.log(obj);
-                displayValue(object, obj);
+                displayValue(object, obj, id, shareCount);
             } else if (this.status == 403) {
                 document.getElementById("name").innerHTML = "Cannot access this symbol."
             }
@@ -364,20 +366,20 @@ function getPriceForObject(object) {
 
 }
 
-function getHistoryForObject(object) {
+function getHistoryForObject(object, id, replace = false) {
     let symbol = object["symbol"];
     let r = new XMLHttpRequest();
     r.open("GET", "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=60min&outputsize=full&apikey=AN5BTH22T0R74PI0", true);
     r.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             let responseObject = JSON.parse(this.response);
-            displayHistory(responseObject["Time Series (60min)"]);
+            displayHistory(responseObject["Time Series (60min)"], id, replace);
         }
     }
     r.send();
 }
 
-function displayHistory(object) {
+function displayHistory(object, id, replace = false) {
     let container = document.getElementById("stockHistoryInfo");
     var lowerBound = new Date();
     lowerBound.setDate(lowerBound.getDate() - 7);
@@ -388,8 +390,6 @@ function displayHistory(object) {
         if (d < lowerBound) { break; }
         let p = document.createElement("p");
         let openPrice = (object[key]["1. open"]);
-        p.innerHTML = key + ": " + openPrice;
-        container.appendChild(p);
         
         var dateObject = {};
         
@@ -399,18 +399,37 @@ function displayHistory(object) {
         newObject.push(dateObject);
     }
     
-    loadChart(newObject);
+    loadChart(newObject, id, replace);
 }
 
-function displayValue(infoObject, priceObject) {
+function displayValue(infoObject, priceObject, id, shareCount) {
     let d = new Date(priceObject['t']);
     stockLoaded = infoObject["description"]
     priceLoaded = currentPrice
     document.getElementById("searchButton").innerHTML = "Search";
-    document.getElementById("name").innerHTML = infoObject["description"] + " (" + infoObject["symbol"] + ")";
-    document.getElementById("price").innerHTML = "Current: " + currentPrice + " (<span class=\"" + ((currentDiff < 0) ? "negativeStock\">" : "positiveStock\">+") + currentDiff + "</span>) at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
-    document.getElementById("highLow").innerHTML = "High/Low: " + priceObject["h"] + " / " + priceObject["l"];
+    
+    let title = document.createElement("h2");
+    title.innerHTML = infoObject["symbol"]+" ("+shareCount+" Shares)";
+    title.className = "stockViewTitle";
+    
+    let price = document.createElement("p");
+    price.innerHTML = "Current: " + currentPrice + " (<span class=\"" + ((currentDiff < 0) ? "negativeStock\">" : "positiveStock\">+") + currentDiff + "</span>) at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+    price.className = "stockViewPrice";
+    
+    let highLow = document.createElement("p");
+    highLow.innerHTML = "High/Low: " + priceObject["h"] + " / " + priceObject["l"];
+    highLow.className = "stockViewHighLow";
+    
+    document.getElementById(id).append(title);
+    document.getElementById(id).append(price);
+    document.getElementById(id).append(highLow);
+    
+    // document.getElementById("name").innerHTML = infoObject["description"] + " (" + infoObject["symbol"] + ")";
+    // document.getElementById("price").innerHTML = "Current: " + currentPrice + " (<span class=\"" + ((currentDiff < 0) ? "negativeStock\">" : "positiveStock\">+") + currentDiff + "</span>) at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+    // document.getElementById("highLow").innerHTML = "High/Low: " + priceObject["h"] + " / " + priceObject["l"];
     renderSellButton();
+    
+    
 }
 
 //search keylistener
@@ -427,4 +446,33 @@ function onSearchFocused() {
 
 function onSearchBlurred() {
     document.removeEventListener("keydown", searchOnEnter);
+}
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener("change", function(e) {
+       updateChartColors();
+});
+
+function initAllStockViews() {
+    var stocksObj = {}
+    var countFunc = keys => {
+        stocksObj[keys] = ++stocksObj[keys] || 1;
+    }
+    
+    userstocks.forEach(countFunc);
+    document.getElementById("stock-port-data").innerHTML = "";
+    for (const [key, value] of Object.entries(stocksObj)) {
+        let div = document.createElement("div");
+        div.className = "stockViewContainer module";
+        div.id = key;
+        
+        let title = document.createElement("h1");
+        title.innerHTML = key;
+        
+        div.appendChild(title);
+        document.getElementById("allStocksHolder").appendChild(div);
+        
+        getPriceForObject({"symbol":key}, key, value);
+        getHistoryForObject({"symbol":key}, key);
+        
+    }
 }
