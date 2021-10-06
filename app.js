@@ -237,6 +237,7 @@ function getNews() {
 //Stock Search Info
 function search() {
     let id = "stockChartContainer";
+    let infoID = "stockInfo";
     let term = document.getElementById("searchInput").value.toUpperCase();
 
     if (term == "") {
@@ -258,9 +259,9 @@ function search() {
             let obj = JSON.parse(this.response);
             if (parseInt(obj["count"]) > 0) {
                 let firstResult = obj["result"][0];
-                getPriceForObject(firstResult, id);
+                getPriceForObject(firstResult, infoID);
                 getHistoryForObject(firstResult, id, true);
-                initWebSocket(firstResult, id);
+                initWebSocket(firstResult, infoID);
             } else {
                 document.getElementById("name").innerHTML = "Could not find symbol."
             }

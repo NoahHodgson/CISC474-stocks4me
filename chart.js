@@ -4,9 +4,6 @@ function loadChart(data, id, replace = false) {
   
   // append the svg object to the body of the page
   var container = d3.select("#"+id);
-  if(replace) {
-    container.html("");
-  }
   console.log(container.node());
   let width = container.node().scrollWidth;
   let height = container.node().scrollHeight;
