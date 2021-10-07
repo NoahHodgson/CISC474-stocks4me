@@ -193,7 +193,7 @@ function getNews() {
             flag=1;
             var array = s.split(" ")
             array.forEach(o=>{
-                filter="LTD CO CORP INC"
+                filter="LTD CO CORP INC INC-CLASS"
                 if(filter.includes(o)){ 
                     flag = 0;
                 }
