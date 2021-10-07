@@ -190,7 +190,7 @@ function getNews() {
             var array = s.split(" ")
             array.forEach(o=>{
                 filter="LTD CO CORP INC"
-                if(o.length <= 3 || filter.includes(o)){ 
+                if(filter.includes(o)){ 
                     flag = 0;
                 }
             })
