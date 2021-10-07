@@ -7,6 +7,10 @@ function loadChart(data, id, replace = false) {
   let width = container.node().scrollWidth;
   let height = container.node().scrollHeight;
   
+  if(replace) {
+    container.html("");
+  }
+  
   console.log(width, height);
   var svg = container
   .append("svg")
@@ -15,7 +19,7 @@ function loadChart(data, id, replace = false) {
     .classed("chart", true);
   
   var graphContainer = svg.append("g")
-    .attr("transform","scale("+((width-margin*2)/width)+") translate("+margin+",0)")
+    .attr("transform","scale("+((width-margin*2)/width)+") translate("+margin+",0)");
   
   console.log(d3.extent(data, function(d) {return d.date;}));
   

@@ -2,9 +2,7 @@
 var username;
 var userwallet;
 var userstocks=[];
-var usernews=[];
 var stockLoaded;
-var newsLoaded;
 var priceLoaded;
 
 
@@ -32,7 +30,6 @@ function showUsername() {
 function showUsernameSpecial() {
     username = sessionStorage.getItem("name")
     document.getElementById("nav-user").innerHTML += "<a class='nav-link active' style='padding:10px;' href='user.html'>User: " + username + "<br>Wallet: $" + userwallet.toFixed(2) + "</a>"
-    document.getElementById("user-username").innerHTML=username;
 }
 
 //initializes the user wallet at zero. CALL ONLY ONCE.
@@ -46,9 +43,6 @@ function getUserWallet() {
     userwallet = parseFloat(sessionStorage.getItem("wallet"))
 }
 
-function displayUserPageWallet(){
-    document.getElementById("user-userwallet").innerHTML="$"+userwallet;
-}
 
 //call when changing the wallet by adding funds or buying stocks
 function updateUserWallet(change) {
@@ -71,19 +65,16 @@ function userInputWallet() {
 //initializes the user's stock portfolio as empty. CALL ONLY ONCE.
 function initUserStocks() {
     userstocks = [];
-    usernews = [];
     sessionStorage.setItem("stocks", JSON.stringify(userstocks))
-    sessionStorage.setItem("news", JSON.stringify(usernews))
 }
 
 //get stock portfolio on page loads
 function getUserStocks() {
     userstocks = JSON.parse(sessionStorage.getItem("stocks"))
-    usernews = JSON.parse(sessionStorage.getItem("news"))
 }
 
 //buy a stock, stock should be a string arg, price a float
-function buyStock(stock, news, price) {
+function buyStock(stock, price) {
     price = parseFloat(price)
     console.log(price + " " + userwallet)
     if (price <= userwallet) {
@@ -91,25 +82,19 @@ function buyStock(stock, news, price) {
         updateUserWallet(price)
         userstocks.push(stock)
         sessionStorage.setItem("stocks", JSON.stringify(userstocks))
-        usernews.push(news)
-        sessionStorage.setItem("news", JSON.stringify(usernews))
     } else {
         alert("Price of Stock exceeds wallet!")
     }
 }
 
 //sell a stock, stock should be a string arg, price a float
-function sellStock(stock, news, price) {
+function sellStock(stock, price) {
     price = parseFloat(price)
     console.log(price + " " + userwallet)
     updateUserWallet(price)
     var index = userstocks.indexOf(stock)
     userstocks.splice(index, 1)
     sessionStorage.setItem("stocks", JSON.stringify(userstocks))
-
-    var index = usernews.indexOf(news)
-    usernews.splice(index, 1)
-    sessionStorage.setItem("news", JSON.stringify(usernews))
 }
 
 function renderSellButton() {
@@ -139,24 +124,20 @@ function renderStockPortData() {
 function userSelectsStock() {
     var newStock = stockLoaded
     var newPrice = priceLoaded
-    var newNews = newsLoaded
-    buyStock(newStock, newNews, newPrice)
+    buyStock(newStock, newPrice)
     renderStockPortData()
     renderSellButton()
     getNews()
-    initAllStockViews()
 }
 
 //curry function that handles selling a new stock
 function userSellsShare() {
     var soldStock = stockLoaded
     var soldPrice = priceLoaded
-    var soldNews = newsLoaded
-    sellStock(soldStock, soldNews, soldPrice)
+    sellStock(soldStock, soldPrice)
     renderStockPortData()
     renderSellButton()
     getNews()
-    initAllStockViews()
 }
 
 //API CODE
@@ -179,81 +160,42 @@ function getNews() {
         <div class="col justify-content-center" id="news-c2">
         </div>
     </div>`
-    if (!usernews.length) {
+    if (!userstocks.length) {
         console.log("idiot")
         return;
     }
     var newsList;
     var column_flip = "news-c1" // flip this back and forth to fill collumns
-    uniq_stocks = Array.from(new Set(usernews))
+    uniq_stocks = Array.from(new Set(userstocks))
     console.log(uniq_stocks)
-    var first_symb=[]
-    uniq_stocks.forEach(
-        s=>{
-            flag=1;
-            var array = s.split(" ")
-            array.forEach(o=>{
-                filter="LTD CO CORP INC INC-CLASS"
-                if(filter.includes(o)){ 
-                    flag = 0;
-                }
-            })
-            if(flag){
-                first_symb.push(s);
-            }
-            else{
-                first_symb.push(array[0]);
-            }
-    })
-    //awful code
-    uniq_stocks = first_symb;
-    console.log(uniq_stocks)
-    //date setup 
-    var currentDate = new Date();
-    var pastDateNum = currentDate.getDate()-30;
-    var pastDate = new Date();
-    pastDate.setDate(pastDateNum)
-    function add_zero(str){
-        if(str.length==1){
-            return "0"+str;
-        }
-        else{
-            return str;
-        }
-    }
-    current_string = currentDate.getFullYear().toString() + add_zero(currentDate.getMonth().toString()) + add_zero(currentDate.getDay().toString())
-    past_string = pastDate.getFullYear().toString() + add_zero(pastDate.getMonth().toString()) + add_zero(pastDate.getDay().toString())
-    console.log(past_string +" " + current_string)
+    var i = 0;
     //trying Promises - https://codeburst.io/javascript-making-asynchronous-calls-inside-a-loop-and-pause-block-loop-execution-1cb713fbdf2d
     function processData(url) {
         return new Promise((resolve, reject) => {
             console.log(url);
-            const options = {
-                method: "GET",
-                headers: {
-                  "Accept": "application/json"
-                },
-            };
-            fetch(url, options).then((res) => {
-                return res.text()
+            fetch(url).then((res) => {
+                return res.json()
             }).then((data) => {
-                data = JSON.parse(data);
-                data = data.response.docs
+                console.log(data.articles);
                 resolve(data)
             })
         })
     }
+
     //loading stories
     var all_articles = []
         uniq_stocks.forEach(
         (stock) => {
-            const apiKey = '0lRut9I2IboC0FlDg5wVabXmfIfb2hRU'
-            const url = `https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${past_string}&end_date=${current_string}&facet=false&q=${stock}&sort=relevance&api-key=${apiKey}`;
+            const apiKey = '94381b289d5b494eae3bea618848ad38'
+            let url = `https://newsapi.org/v2/everything?q=${stock}&apiKey=${apiKey}`
             all_articles = all_articles.concat(processData(url))
         })
     Promise.all(all_articles).then((full_article_list) => {
         console.log(full_article_list)
-        cleaned_list=full_article_list
+        cleaned_list=[]
+        full_article_list.forEach(obj=>{
+            cleaned_list.push(obj.articles)
+        })
         cleaned_list = cleaned_list.flat()
         console.log(cleaned_list)
         //shuffling list -
@@ -263,7 +205,7 @@ function getNews() {
         fy(cleaned_list,[],[])
         //creating pages - https://stackoverflow.com/questions/55331172/pass-array-to-includes-javascript
         cleaned_list.forEach(article => {
-            if (article.multimedia.length === 0) {
+            if (article.urlToImage === null || userstocks.some(o=>article.title.includes(o))) {
                 console.log("no image or bad title")
             }
             else {
@@ -272,16 +214,17 @@ function getNews() {
                 let a = document.createElement('a');
 
                 let img = document.createElement('img')
-                let imgURL="https://www.nytimes.com/"+article.multimedia[0].url;
+                let imgURL = article.urlToImage;
                 img.src = imgURL;
                 img.width = 300;
                 img.height = 200;
+                //a.textContent = article.title;
                 div.innerHTML = `<div style="margin: auto; width: 50%; text-allign:center">
-                    <a href=${article.web_url} target="_blank">
+                    <a href=${article.url} target="_blank">
                         <img src=${img.src}
                         width=${img.width} height=${img.height} style="display: blocked">
                     </a>
-                    <div style="margin-top:4%; max-width:200px text-allign:center"><h4>${article.headline.main}</h4></div>
+                    <div style="margin-top:4%; max-width:200px text-allign:center"><h4>${article.title}</h4></div>
                 </div>`
                 newsList.appendChild(div);
                 column_flip = columnFlipper(column_flip);
@@ -294,16 +237,9 @@ function getNews() {
 //Stock Search Info
 function search() {
     let id = "stockChartContainer";
-    document.getElementById(id).innerHTML="";
     let infoID = "stockInfo";
     let term = document.getElementById("searchInput").value.toUpperCase();
-    document.getElementById("stock-search-results").innerHTML=`<div class="module" id="stockInfo">
-    <h2 style="text-decoration: underline;">Stock Info</h2>
-    <p id="price">Price</p>
-    <button onclick="userSelectsStock()" class="btn interactStockButton">Add to portfolio</button>
-    <div id="sell-button">
-    </div>
-    </div>`
+
     if (term == "") {
         alert("please enter a search term");
         return;
@@ -430,15 +366,12 @@ function displayHistory(object, id, replace = false) {
 
 function displayValue(infoObject, priceObject, id, shareCount) {
     let d = new Date(priceObject['t']);
-    console.log(infoObject)
     stockLoaded = infoObject["symbol"]
-    newsLoaded = infoObject["description"]
-    console.log(newsLoaded)
     priceLoaded = currentPrice
     document.getElementById("searchButton").innerHTML = "Search";
     
     let title = document.createElement("h2");
-    title.innerHTML = newsLoaded;
+    title.innerHTML = infoObject["symbol"]+((shareCount == undefined) ? "" : " ("+shareCount+" Shares)");
     title.className = "stockViewTitle";
     
     let price = document.createElement("p");
@@ -449,9 +382,15 @@ function displayValue(infoObject, priceObject, id, shareCount) {
     highLow.innerHTML = "High/Low: " + priceObject["h"] + " / " + priceObject["l"];
     highLow.className = "stockViewHighLow";
     
+    document.getElementById(id).innerHTML = "";
+    
     document.getElementById(id).append(title);
     document.getElementById(id).append(price);
     document.getElementById(id).append(highLow);
+    
+    // document.getElementById("name").innerHTML = infoObject["description"] + " (" + infoObject["symbol"] + ")";
+    // document.getElementById("price").innerHTML = "Current: " + currentPrice + " (<span class=\"" + ((currentDiff < 0) ? "negativeStock\">" : "positiveStock\">+") + currentDiff + "</span>) at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+    // document.getElementById("highLow").innerHTML = "High/Low: " + priceObject["h"] + " / " + priceObject["l"];
     renderSellButton();
     
     
@@ -481,26 +420,23 @@ function initAllStockViews() {
     var stocksObj = {}
     var countFunc = keys => {
         stocksObj[keys] = ++stocksObj[keys] || 1;
-    }   
+    }
+    
     userstocks.forEach(countFunc);
-    document.getElementById("allStocksHolder").innerHTML = "";
     document.getElementById("stock-port-data").innerHTML = "";
-    //evil i, change later
-    var i = 0;
     for (const [key, value] of Object.entries(stocksObj)) {
-        console.log(stocksObj);
         let div = document.createElement("div");
         div.className = "stockViewContainer module";
         div.id = key;
         
         let title = document.createElement("h1");
-        title.innerHTML = key + "(Shares: " + value +")";
+        title.innerHTML = key;
         
         div.appendChild(title);
         document.getElementById("allStocksHolder").appendChild(div);
         
-        getPriceForObject({"symbol":key, "description":usernews[i]}, key, value);
+        getPriceForObject({"symbol":key}, key, value);
         getHistoryForObject({"symbol":key}, key);
-        i++;
+        
     }
 }
