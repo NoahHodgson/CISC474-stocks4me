@@ -148,7 +148,7 @@ function userSellsShare() {
     var soldStock = stockLoaded
     var soldPrice = priceLoaded
     var soldNews = newsLoaded
-    sellStock(soldStock, newsLoaded, soldPrice)
+    sellStock(soldStock, soldNews, soldPrice)
     renderStockPortData()
     renderSellButton()
     getNews()
@@ -258,7 +258,7 @@ function getNews() {
         fy(cleaned_list,[],[])
         //creating pages - https://stackoverflow.com/questions/55331172/pass-array-to-includes-javascript
         cleaned_list.forEach(article => {
-            if (article.multimedia.length === 0 || userstocks.some(o=>article.headline.main.includes(o))) {
+            if (article.multimedia.length === 0) {
                 console.log("no image or bad title")
             }
             else {
@@ -289,9 +289,16 @@ function getNews() {
 //Stock Search Info
 function search() {
     let id = "stockChartContainer";
+    document.getElementById(id).innerHTML="";
     let infoID = "stockInfo";
     let term = document.getElementById("searchInput").value.toUpperCase();
-
+    document.getElementById("stock-search-results").innerHTML=`<div class="module" id="stockInfo">
+    <h2 style="text-decoration: underline;">Stock Info</h2>
+    <p id="price">Price</p>
+    <button onclick="userSelectsStock()" class="btn interactStockButton">Add to portfolio</button>
+    <div id="sell-button">
+    </div>
+    </div>`
     if (term == "") {
         alert("please enter a search term");
         return;
@@ -418,13 +425,15 @@ function displayHistory(object, id, replace = false) {
 
 function displayValue(infoObject, priceObject, id, shareCount) {
     let d = new Date(priceObject['t']);
+    console.log(infoObject)
     stockLoaded = infoObject["symbol"]
     newsLoaded = infoObject["description"]
+    console.log(newsLoaded)
     priceLoaded = currentPrice
     document.getElementById("searchButton").innerHTML = "Search";
     
     let title = document.createElement("h2");
-    title.innerHTML = infoObject["symbol"]+" ("+shareCount+" Shares)";
+    title.innerHTML = newsLoaded;
     title.className = "stockViewTitle";
     
     let price = document.createElement("p");
@@ -467,12 +476,14 @@ function initAllStockViews() {
     var stocksObj = {}
     var countFunc = keys => {
         stocksObj[keys] = ++stocksObj[keys] || 1;
-    }
-    
+    }   
     userstocks.forEach(countFunc);
     document.getElementById("allStocksHolder").innerHTML = "";
     document.getElementById("stock-port-data").innerHTML = "";
+    //evil i, change later
+    var i = 0;
     for (const [key, value] of Object.entries(stocksObj)) {
+        console.log(stocksObj);
         let div = document.createElement("div");
         div.className = "stockViewContainer module";
         div.id = key;
@@ -483,7 +494,8 @@ function initAllStockViews() {
         div.appendChild(title);
         document.getElementById("allStocksHolder").appendChild(div);
         
-        getPriceForObject({"symbol":key}, key, value);
+        getPriceForObject({"symbol":key, "description":usernews[i]}, key, value);
         getHistoryForObject({"symbol":key}, key);
+        i++;
     }
 }

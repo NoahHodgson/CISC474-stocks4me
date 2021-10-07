@@ -1,5 +1,4 @@
 function loadChart(data, id, replace = false) {
-  document.getElementById("emptyStockMessage").display = "none";
   var margin = 50;
 
   // append the svg object to the body of the page
