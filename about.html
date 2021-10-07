@@ -12,7 +12,7 @@
 
 <body>
     <script>
-        window.onload=function(){
+        window.onload = function () {
             getUserWallet()
             getUserStocks()
             showUsername();
@@ -35,26 +35,41 @@
         <div class="col-md-3">
 
         </div>
-        <div class="col-md-6" style="justify-content: center; text-align: center;">
-            <h1>About:</h1>
+        <div class="col-md-6" style="justify-content: center;">
+            <h1 style="text-align: center;">About:</h1>
             <div style="border: 5px solid green; padding: 10px;">
                 <p>
                     The stocks4me web application is the brainchild of
                     Noah Hodgson, Justin Hamilton, Himanshu Patel, Matt
-                    Pangilinan, and Vraj Patel. It's goal is to set up
-                    users with the tools needed to experiment with their
-                    stock portfolio.
+                    Pangilinan, and Vraj Patel.
+                    <br>
+                    <br>
+                    Going into this project we had a goal to create a simple, clean stock
+                    application that allowed a user to plan out their portfolio in real time. The user would be able to
+                    buy and sell shares of stocks. The user would be able to modify a chart that displayed stock
+                    information. Also, the user would be fed a custom news feed that would feed them information about
+                    the stocks in their portfolio, so they can keep up with the companies that they invest in. Currently
+                    it uses the following API:
+                    <br>
+                    <br>
+                    D3:
+                    Build charts as svg files so we can display graph of our fed in data
+                    <br>
+                    <br>
+                    Finnhub:
+                    Checks current prices of stocks, and provides real-time updates using WebSockets.
+                    <br>
+                    <br>
+                    Alpha Vantage:
+                    Provides a history of a stock symbol, going back over 10 years. This is the data for the chart.
+                    <br>
+                    <br>
+                    News API:
+                    Returns JSON object with all necessary information such as author, title, description, url, image,
+                    and date published
 
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                    aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                    culpa qui officia deserunt mollit anim id est laborum.
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                    aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                    culpa qui officia deserunt mollit anim id est laborum.
+
+
                 </p>
             </div>
         </div>
