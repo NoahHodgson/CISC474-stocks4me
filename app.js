@@ -32,6 +32,7 @@ function showUsername() {
 function showUsernameSpecial() {
     username = sessionStorage.getItem("name")
     document.getElementById("nav-user").innerHTML += "<a class='nav-link active' style='padding:10px;' href='user.html'>User: " + username + "<br>Wallet: $" + userwallet.toFixed(2) + "</a>"
+    document.getElementById("user-username").innerHTML=username;
 }
 
 //initializes the user wallet at zero. CALL ONLY ONCE.
@@ -45,6 +46,9 @@ function getUserWallet() {
     userwallet = parseFloat(sessionStorage.getItem("wallet"))
 }
 
+function displayUserPageWallet(){
+    document.getElementById("user-userwallet").innerHTML="$"+userwallet;
+}
 
 //call when changing the wallet by adding funds or buying stocks
 function updateUserWallet(change) {
