@@ -494,7 +494,7 @@ function initAllStockViews() {
         div.id = key;
         
         let title = document.createElement("h1");
-        title.innerHTML = key;
+        title.innerHTML = key + "(Shares: " + value +")";
         
         div.appendChild(title);
         document.getElementById("allStocksHolder").appendChild(div);
