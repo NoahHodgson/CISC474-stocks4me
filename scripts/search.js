@@ -14,7 +14,9 @@ function onSearchBlurred() {
 
 async function search(value) {
 	let result = await searchForSymbol(value);
-	let stockObject = await loadStock(result["symbol"]);
+	console.log(result);
+	
+	let stockObject = await loadStock(result);
 	console.log(stockObject);
 }
 

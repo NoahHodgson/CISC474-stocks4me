@@ -30,23 +30,25 @@ function loadStockHistory(symbol) {
 	});
 }
 
-async function loadStock(symbol) {
+async function loadStock(object) {
+	let symbol = object["symbol"]
+	
 	let priceObject = await loadStockPrice(symbol);
 	let historyObject = await loadStockHistory(symbol);
 	
 	let outputObj = {
+		"name":object["description"],
 		"symbol":symbol,
-		"current":priceObject["p"],
+		"current":priceObject["c"],
 		"delta":priceObject["d"],
 		"high":priceObject["h"],
 		"low":priceObject["l"],
 		"history":historyObject["Time Series (60min)"]
 	}
 	
-	console.log(outputObj);
-	
 	return outputObj;
 }
+
 function displayStock(stockObject, id) {
 	
 }
