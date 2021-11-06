@@ -1,7 +1,3 @@
-function onload() {
-	
-}
-
 function checkLogin() {
 	
 }

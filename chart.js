@@ -17,7 +17,9 @@ function loadChart(data, id, replace = false) {
   var graphContainer = svg.append("g")
     .attr("transform","scale("+((width-margin*2)/width)+") translate("+margin+",0)")
   
+  console.log(data);
   console.log(d3.extent(data, function(d) {return d.date;}));
+  console.log(d3.extent(data, function(d) {return d.value;}));
   
   // x axis 
   var x = d3.scaleTime()

@@ -114,6 +114,30 @@ body{
   width: 90%;
 }
 
+.stockInfoContainerInList {
+  width:50%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+
+#table_holder {
+  display:flex;
+  flex-direction:row;
+  align-items:stretch;
+  justify-content:flex-start;
+}
+
+.newsArticle {
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  align-items:center;
+  width:calc(100% / 3);
+}
+
 @media screen and (prefers-color-scheme:dark) {
   body {
     background-color: var(--dark);
