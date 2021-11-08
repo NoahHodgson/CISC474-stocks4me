@@ -111,8 +111,7 @@ function generateNewsArticleObject(article) {
 	let img = document.createElement('img')
 	let imgURL="https://www.nytimes.com/"+article.multimedia[0].url;
 	img.src = imgURL;
-	img.width = 300;
-	img.height = 200;
+	img.style.width = "75%";
 	
 	let link = document.createElement("a");
 	link.href=article.web_url;
@@ -131,6 +130,65 @@ function generateNewsArticleObject(article) {
 	return container;
 }
 
-function displayNews(articles) {
+function processHomeNewsData(url) {
+	return new Promise((resolve, reject) => {
+		console.log(url);
+		const options = {
+			method: "GET",
+			headers: {
+				"Accept": "application/json"
+			},
+		};
+		fetch(url, options).then((res) => {
+			//console.log(res.text())
+			return res.text()
+		}).then((data) => {
+			data = JSON.parse(data);
+			resolve(data)
+		})
+	})
+}
+
+function generateTopNewsStoryObject(article) {
+	let title = article.title;
+	let url = article.url;
+	let imageURL = article.multimedia[0].url;
 	
+	let container = document.createElement("div");
+	container.className = "topNewsArticle";
+	container.style.textAlign = "center";
+	
+	let img = document.createElement('img')
+	let imgURL=imageURL;
+	img.src = imgURL;
+	img.style.width = "75%";
+	
+	let link = document.createElement("a");
+	link.href=url;
+	link.target = "_blank";
+	
+	link.appendChild(img);
+	
+	let headlineContent = document.createElement("p");
+	headlineContent.innerHTML = title;
+	headlineContent.style.maxWidth = "200px";
+	headlineContent.style.marginTop = "10px";
+	
+	var titleLine = document.createElement("h2");
+	titleLine.innerHTML = "Today's Top Story";
+	
+	container.appendChild(titleLine);
+	container.appendChild(link);
+	container.appendChild(headlineContent);
+	
+	return container;
+}
+
+async function getTopNewsStory() {
+	var homeNewsDiv = document.getElementById("stockChartContainer");
+	var topStoryURL = 'https://api.nytimes.com/svc/topstories/v2/business.json?api-key=0lRut9I2IboC0FlDg5wVabXmfIfb2hRU'
+	var topStoryObj = await processHomeNewsData(topStoryURL)
+	console.log(topStoryObj.results[0]);
+	
+	homeNewsDiv.appendChild(generateTopNewsStoryObject(topStoryObj.results[0]));
 }

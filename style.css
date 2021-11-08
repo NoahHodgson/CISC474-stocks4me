@@ -138,6 +138,14 @@ body{
   width:calc(100% / 3);
 }
 
+.topNewsArticle {
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  align-items:center;
+}
+
 @media screen and (prefers-color-scheme:dark) {
   body {
     background-color: var(--dark);

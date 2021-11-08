@@ -38,15 +38,17 @@ async function search(value) {
 	if(value == undefined) {
 		value = document.getElementById("searchInput").value;
 	}
+	
+	document.getElementById("searchButton").innerHTML = "Searching...";
+	
 	var searchContainer = document.getElementById("stockInfo");
 	var stockChartContainer = document.getElementById("stockChartContainer");
 	
-	searchContainer.innerHTML = "";
-	stockChartContainer.innerHTML = "";
-	
-	
 	let result = await searchForSymbol(value);
 	let stockObject = await loadStock(result);
+	
+	searchContainer.innerHTML = "";
+	stockChartContainer.innerHTML = "";
 	
 	let stockContainer = displayStock(stockObject, "stockInfo", false, false);
 	
@@ -54,6 +56,8 @@ async function search(value) {
 	stockContainer.appendChild(createSellShareButton(stockObject));
 	
 	generateChart("stockChartContainer", stockObject["history"]);
+	
+	document.getElementById("searchButton").innerHTML = "Search";
 }
 
 function searchForSymbol(symbol) {
