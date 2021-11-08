@@ -121,7 +121,7 @@ function generateNewsArticleObject(article) {
 	
 	let headlineContent = document.createElement("p");
 	headlineContent.innerHTML = article.headline.main;
-	headlineContent.style.maxWidth = "200px";
+	headlineContent.style.maxWidth = "50%";
 	headlineContent.style.marginTop = "10px";
 	
 	container.appendChild(link);
@@ -171,11 +171,14 @@ function generateTopNewsStoryObject(article) {
 	
 	let headlineContent = document.createElement("p");
 	headlineContent.innerHTML = title;
-	headlineContent.style.maxWidth = "200px";
+	headlineContent.style.maxWidth = "60%";
 	headlineContent.style.marginTop = "10px";
+	headlineContent.style.textWeight = "bold";
+	headlineContent.style.fontSize = "1.3em";
 	
 	var titleLine = document.createElement("h2");
 	titleLine.innerHTML = "Today's Top Story";
+	titleLine.style.fontWeight = "bold";
 	
 	container.appendChild(titleLine);
 	container.appendChild(link);
