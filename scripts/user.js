@@ -20,7 +20,6 @@ function updatePFP(newPFP) {
 
 function updateWallet(newAmount) {
 	sessionStorage.setItem("wallet", (Math.round(newAmount*100))/100);
-	console.log(sessionStorage.getItem("wallet"))
 }
 
 function updateStocks(newStocks) {

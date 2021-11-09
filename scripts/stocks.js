@@ -189,13 +189,20 @@ function sellShare(stockObject, numShares) {
 
 function loadAllStocks() {
 	var stocks = getUserInfo()["stocks"];
+	var allStocksContainer = document.getElementById("allStocksHolder");
+	var newsStoriesContainer = document.getElementById("table_holder");
+	if(stocks == null) {
+		allStocksContainer.innerHTML = "No stocks in your portfolio.";
+		newsStoriesContainer.innerHTML = "News stories will show up after you add stocks to your portfolio.";
+		return;
+	}
 	console.log(stocks);
 	
-	var allStocksContainer = document.getElementById("allStocksHolder");
 	allStocksHolder.innerHTML = "";
 	
 	if(stocks.length == 0) {
 		allStocksContainer.innerHTML = "No stocks in your portfolio.";
+		newsStoriesContainer.innerHTML = "News stories will show up after you add stocks to your portfolio.";
 	} else {
 		for(var stock of Object.keys(stocks)) {
 			displayStock(stocks[stock], "allStocksHolder", true, true);

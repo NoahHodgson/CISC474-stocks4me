@@ -237,6 +237,11 @@ body{
     background-color: var(--dark);
     color: var(--light);
   }
+  
+  .module {
+    color: var(--dark);
+  }
+  
   .login-form form {
     background: var(--dark);
   }
