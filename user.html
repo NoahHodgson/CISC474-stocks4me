@@ -8,17 +8,18 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <script src="app.js"></script>
+    <script src="scripts/user.js"></script>
     <title>stocks4me ◉ User</title>
 </head>
 
 <body>
     <script>
         window.onload=function(){
-            getUserWallet()
-            getUserStocks()
-            showUsernameSpecial()
-            displayUserPageWallet()
+            let userInfo = getUserInfo();
+            document.getElementById("user-username").innerHTML = userInfo["username"];
+            document.getElementById("wallet").value = userInfo["wallet"];
+            displayUserInfo();
+            
             console.log("Loaded Page")
         }
     </script>
@@ -45,7 +46,7 @@
         <p id="user-userwallet"></p>
         <label for="wallet">Update Wallet:</label>
         <input type="text" id="wallet" name="wallet">
-            <button onclick="userInputWallet()">Submit!</button>
+        <button onclick="updateWallet(document.getElementById('wallet').value); window.location = window.location;">Submit!</button>
         </input>
     </div>
 </body>
