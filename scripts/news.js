@@ -7,6 +7,7 @@ function processData(url) {
 			  "Accept": "application/json"
 			},
 		};
+		
 		fetch(url, options).then((res) => {
 			return res.text()
 		}).then((data) => {
@@ -68,16 +69,24 @@ function getNews() {
 	var pastDateNum = currentDate.getDate()-30;
 	var pastDate = new Date();
 	pastDate.setDate(pastDateNum)
-	current_string = currentDate.getFullYear().toString() + add_zero(currentDate.getMonth().toString()) + add_zero(currentDate.getDay().toString())
-	past_string = pastDate.getFullYear().toString() + add_zero(pastDate.getMonth().toString()) + add_zero(pastDate.getDay().toString())
+	
+	current_string = currentDate.getFullYear().toString() + ((currentDate.getMonth() < 10) ? "0" : "") + currentDate.getMonth().toString() + ((currentDate.getDay() < 10) ? "0" : "") + currentDate.getDay().toString()
+	
+	past_string = currentDate.getFullYear().toString() + ((currentDate.getMonth() < 10) ? "0" : "") + currentDate.getMonth().toString() + ((currentDate.getDay() < 10) ? "0" : "") + currentDate.getDay().toString()
+	
+	// current_string = currentDate.getFullYear().toString() + add_zero(currentDate.getMonth().toString()) + add_zero(currentDate.getDay().toString())
+	// past_string = pastDate.getFullYear().toString() + add_zero(pastDate.getMonth().toString()) + add_zero(pastDate.getDay().toString())
 	console.log(past_string +" " + current_string)
 	//trying Promises - https://codeburst.io/javascript-making-asynchronous-calls-inside-a-loop-and-pause-block-loop-execution-1cb713fbdf2d
 	//loading stories
-	var all_articles = []
+	var all_articles = [];
 		uniq_stocks.forEach(
 		(stock) => {
 			const apiKey = '0lRut9I2IboC0FlDg5wVabXmfIfb2hRU'
 			const url = `https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${past_string}&end_date=${current_string}&facet=false&q=${stock}&sort=relevance&api-key=${apiKey}`;
+			
+			console.log(url);
+			
 			all_articles = all_articles.concat(processData(url))
 		})
 	Promise.all(all_articles).then((full_article_list) => {
