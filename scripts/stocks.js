@@ -100,6 +100,7 @@ function displayStock(stockObject, id, addChart, showBorder) {
 	if(addChart) {
 		var graphContainer = document.createElement("div");
 		graphContainer.id = "graphFor"+stockObject["symbol"];
+		graphContainer.className = "graphContainer";
 		graphContainer.style.width = "500px";
 		graphContainer.style.height = "250px";
 		stockContainerObject.appendChild(graphContainer);

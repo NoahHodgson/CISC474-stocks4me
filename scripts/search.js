@@ -39,6 +39,11 @@ async function search(value) {
 		value = document.getElementById("searchInput").value;
 	}
 	
+	if(value == "") {
+		alert("Please enter a search term.");
+		return;
+	}
+	
 	document.getElementById("searchButton").innerHTML = "Searching...";
 	
 	var searchContainer = document.getElementById("stockInfo");

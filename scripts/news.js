@@ -111,6 +111,7 @@ function generateNewsArticleObject(article) {
 	let imgURL="https://www.nytimes.com/"+article.multimedia[0].url;
 	img.src = imgURL;
 	img.style.width = "75%";
+	img.className = "articleImage";
 	
 	let link = document.createElement("a");
 	link.href=article.web_url;
@@ -151,16 +152,17 @@ function processHomeNewsData(url) {
 function generateTopNewsStoryObject(article) {
 	let title = article.title;
 	let url = article.url;
+	let abstract = article.abstract;
 	let imageURL = article.multimedia[0].url;
 	
 	let container = document.createElement("div");
 	container.className = "topNewsArticle";
-	container.style.textAlign = "center";
 	
 	let img = document.createElement('img')
 	let imgURL=imageURL;
 	img.src = imgURL;
-	img.style.width = "75%";
+	img.className = "articleImage";
+	img.style.width = "100%";
 	
 	let link = document.createElement("a");
 	link.href=url;
@@ -168,20 +170,46 @@ function generateTopNewsStoryObject(article) {
 	
 	link.appendChild(img);
 	
-	let headlineContent = document.createElement("p");
+	var headlineContent = document.createElement("p");
 	headlineContent.innerHTML = title;
-	headlineContent.style.maxWidth = "60%";
-	headlineContent.style.marginTop = "10px";
-	headlineContent.style.textWeight = "bold";
+	headlineContent.style.marginBottom = "5px";
+	headlineContent.style.fontWeight = "bold";
 	headlineContent.style.fontSize = "1.3em";
+	
+	let headlineLink = document.createElement("a");
+	headlineLink.href=url;
+	headlineLink.target = "_blank";
+	headlineLink.style.color = "var(--dark)";
+	headlineLink.style.textDecoration = "none";
+	
+	headlineLink.appendChild(headlineContent);
+	
+	var abstractContent = document.createElement("p");
+	abstractContent.innerHTML = abstract;
+	abstractContent.style.fontSize = "1.3em";
 	
 	var titleLine = document.createElement("h2");
 	titleLine.innerHTML = "Today's Top Story";
 	titleLine.style.fontWeight = "bold";
+	titleLine.style.marginBottom = "20px";
+	
+	let topNewsArticleContentContainer = document.createElement("div");
+	topNewsArticleContentContainer.id = "topNewsArticleContentContainer";
+	let leftTopNewsContent = document.createElement("div");
+	leftTopNewsContent.id = "leftTopNewsContent";
+	let rightTopNewsContent = document.createElement("div");
+	rightTopNewsContent.id = "rightTopNewsContent";
 	
 	container.appendChild(titleLine);
-	container.appendChild(link);
-	container.appendChild(headlineContent);
+	leftTopNewsContent.appendChild(link);
+	
+	rightTopNewsContent.appendChild(headlineLink);
+	rightTopNewsContent.appendChild(abstractContent);
+	
+	topNewsArticleContentContainer.appendChild(leftTopNewsContent);
+	topNewsArticleContentContainer.appendChild(rightTopNewsContent);
+	
+	container.appendChild(topNewsArticleContentContainer)
 	
 	return container;
 }
