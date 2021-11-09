@@ -18,14 +18,6 @@ function processData(url) {
 	})
 }
 
-function add_zero(str){
-	if(str.length==1){
-		return "0"+str;
-	} else {
-		return str;
-	}
-}
-
 function getNews() {
 	var table = document.getElementById('table_holder')
 	table.innerHTML = ""
@@ -74,8 +66,6 @@ function getNews() {
 	
 	past_string = currentDate.getFullYear().toString() + ((currentDate.getMonth() < 10) ? "0" : "") + currentDate.getMonth().toString() + ((currentDate.getDay() < 10) ? "0" : "") + currentDate.getDay().toString()
 	
-	// current_string = currentDate.getFullYear().toString() + add_zero(currentDate.getMonth().toString()) + add_zero(currentDate.getDay().toString())
-	// past_string = pastDate.getFullYear().toString() + add_zero(pastDate.getMonth().toString()) + add_zero(pastDate.getDay().toString())
 	console.log(past_string +" " + current_string)
 	//trying Promises - https://codeburst.io/javascript-making-asynchronous-calls-inside-a-loop-and-pause-block-loop-execution-1cb713fbdf2d
 	//loading stories
