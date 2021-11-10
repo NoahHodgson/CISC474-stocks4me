@@ -5,7 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/userInfo.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="scripts/user.js"></script>
@@ -16,7 +17,8 @@
     <script>
         window.onload=function(){
             let userInfo = getUserInfo();
-            document.getElementById("user-username").innerHTML = userInfo["username"];
+            document.getElementById("username").value = userInfo["username"];
+            document.getElementById("password").value = userInfo["password"];
             document.getElementById("wallet").value = userInfo["wallet"];
             displayUserInfo();
             
@@ -34,12 +36,48 @@
             </div>
         </div>
     </nav>
-    <h1 style="text-align: center; text-decoration:wavy">-=- User Information -=-</h1>   
+    
+    <div id="content">
+        <div id="container">
+            <h1 id="title">User Profile</h1><br />
+            <div class="module" id="userInfoContent">
+                <div id="userPfp">
+                    <img id="pfpPreview" src="/img/pfpPlaceholder.svg" /><br />
+                    <button class="updateUserInfoButton btn" id="updatePFPButton" onclick="updatePFP()">Update Profile Picture</button>
+                </div>
+                <div id="userInfo">
+                    <div class="userInfoOption">
+                        <div class="userInfoOptionInput">
+                        <label for="username">Username</label>
+                        <input class="form-control rounded" id="username" type="text" name="username" placeholder="Enter a username...">
+                        </div>
+                        <button class="updateUserInfoButton btn" onclick="updateUsername(document.getElementById('username').value)">Update Username</button>
+                    </div><br />
+                    <div class="userInfoOption">
+                        <div class="userInfoOptionInput">
+                            <label for="password">Password</label>
+                            <input class="form-control rounded" id="password" type="text" name="password" placeholder="Enter a password...">
+                        </div>
+                        <button class="updateUserInfoButton btn" onclick="updatePassword()">Update Password</button>
+                    </div><br />
+                    <div class="userInfoOption">
+                        <div class="userInfoOptionInput">
+                        <label for="wallet">Wallet</label>
+                        <input class="form-control rounded" id="wallet" type="text" name="wallet" placeholder="Enter a wallet...">
+                        </div>
+                        <button class="updateUserInfoButton btn" onclick="updateWallet(document.getElementById('wallet').value, true)">Update Wallet</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- <h1 style="text-align: center; text-decoration:wavy">-=- User Information -=-</h1>   
     <div style="padding: 5px; margin: auto; width: 20%; text-align: center;">
         <h2 style="text-decoration: underline;">Username:</h2>
         <p id="user-username"></p>
         <h2 style="text-decoration: underline;">Profile Picture:</h2>
-        <img src="data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9JzMwMHB4JyB3aWR0aD0nMzAwcHgnICBmaWxsPSIjMDA4MDAwIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMzIgMzIiIHZlcnNpb249IjEuMSIgeD0iMHB4IiB5PSIwcHgiPjxnIHN0eWxlPSIiIGRpc3BsYXk9ImlubGluZSI+PHBhdGggc3R5bGU9ImNvbG9yOiMwMDAwMDA7Zm9udC1zdHlsZTpub3JtYWw7Zm9udC12YXJpYW50Om5vcm1hbDtmb250LXdlaWdodDpub3JtYWw7Zm9udC1zdHJldGNoOm5vcm1hbDtmb250LXNpemU6bWVkaXVtO2xpbmUtaGVpZ2h0Om5vcm1hbDtmb250LWZhbWlseTpzYW5zLXNlcmlmO2ZvbnQtdmFyaWFudC1saWdhdHVyZXM6bm9ybWFsO2ZvbnQtdmFyaWFudC1wb3NpdGlvbjpub3JtYWw7Zm9udC12YXJpYW50LWNhcHM6bm9ybWFsO2ZvbnQtdmFyaWFudC1udW1lcmljOm5vcm1hbDtmb250LXZhcmlhbnQtYWx0ZXJuYXRlczpub3JtYWw7Zm9udC12YXJpYW50LWVhc3QtYXNpYW46bm9ybWFsO2ZvbnQtZmVhdHVyZS1zZXR0aW5nczpub3JtYWw7Zm9udC12YXJpYXRpb24tc2V0dGluZ3M6bm9ybWFsO3RleHQtaW5kZW50OjA7dGV4dC1hbGlnbjpzdGFydDt0ZXh0LWRlY29yYXRpb246bm9uZTt0ZXh0LWRlY29yYXRpb24tbGluZTpub25lO3RleHQtZGVjb3JhdGlvbi1zdHlsZTpzb2xpZDt0ZXh0LWRlY29yYXRpb24tY29sb3I6IzAwMDAwMDtsZXR0ZXItc3BhY2luZzpub3JtYWw7d29yZC1zcGFjaW5nOm5vcm1hbDt0ZXh0LXRyYW5zZm9ybTpub25lO3dyaXRpbmctbW9kZTpsci10YjtkaXJlY3Rpb246bHRyO3RleHQtb3JpZW50YXRpb246bWl4ZWQ7ZG9taW5hbnQtYmFzZWxpbmU6YXV0bztiYXNlbGluZS1zaGlmdDpiYXNlbGluZTt0ZXh0LWFuY2hvcjpzdGFydDt3aGl0ZS1zcGFjZTpub3JtYWw7c2hhcGUtcGFkZGluZzowO3NoYXBlLW1hcmdpbjowO2lubGluZS1zaXplOjA7Y2xpcC1ydWxlOm5vbnplcm87ZGlzcGxheTppbmxpbmU7b3ZlcmZsb3c6dmlzaWJsZTt2aXNpYmlsaXR5OnZpc2libGU7b3BhY2l0eToxO2lzb2xhdGlvbjphdXRvO21peC1ibGVuZC1tb2RlOm5vcm1hbDtjb2xvci1pbnRlcnBvbGF0aW9uOnNSR0I7Y29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzOmxpbmVhclJHQjtzb2xpZC1jb2xvcjojMDAwMDAwO3NvbGlkLW9wYWNpdHk6MTt2ZWN0b3ItZWZmZWN0Om5vbmU7ZmlsbDojMDA4MDAwO2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpub256ZXJvO3N0cm9rZTpub25lO3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDo0O3N0cm9rZS1kYXNoYXJyYXk6bm9uZTtzdHJva2UtZGFzaG9mZnNldDowO3N0cm9rZS1vcGFjaXR5OjE7Y29sb3ItcmVuZGVyaW5nOmF1dG87aW1hZ2UtcmVuZGVyaW5nOmF1dG87c2hhcGUtcmVuZGVyaW5nOmF1dG87dGV4dC1yZW5kZXJpbmc6YXV0bztlbmFibGUtYmFja2dyb3VuZDphY2N1bXVsYXRlO3N0b3AtY29sb3I6IzAwMDAwMDtzdG9wLW9wYWNpdHk6MSIgZD0ibSAxNiwxMjIgYyAtMy44NjEwNSwwIC03LjAxMTcxODgsMy4xNTA2NyAtNy4wMTE3MTg4LDcuMDExNzIgMCwzLjg2MTA1IDMuMTUwNjY4OCw3LjAxMzY3IDcuMDExNzE4OCw3LjAxMzY3IDMuODYxMDUsMCA3LjAxMTcxOSwtMy4xNTI2MiA3LjAxMTcxOSwtNy4wMTM2NyBDIDIzLjAxMTcxOSwxMjUuMTUwNjcgMTkuODYxMDUsMTIyIDE2LDEyMiBaIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLC0xMjApIj48L3BhdGg+PHBhdGggc3R5bGU9ImNvbG9yOiMwMDAwMDA7Zm9udC1zdHlsZTpub3JtYWw7Zm9udC12YXJpYW50Om5vcm1hbDtmb250LXdlaWdodDpub3JtYWw7Zm9udC1zdHJldGNoOm5vcm1hbDtmb250LXNpemU6bWVkaXVtO2xpbmUtaGVpZ2h0Om5vcm1hbDtmb250LWZhbWlseTpzYW5zLXNlcmlmO2ZvbnQtdmFyaWFudC1saWdhdHVyZXM6bm9ybWFsO2ZvbnQtdmFyaWFudC1wb3NpdGlvbjpub3JtYWw7Zm9udC12YXJpYW50LWNhcHM6bm9ybWFsO2ZvbnQtdmFyaWFudC1udW1lcmljOm5vcm1hbDtmb250LXZhcmlhbnQtYWx0ZXJuYXRlczpub3JtYWw7Zm9udC12YXJpYW50LWVhc3QtYXNpYW46bm9ybWFsO2ZvbnQtZmVhdHVyZS1zZXR0aW5nczpub3JtYWw7Zm9udC12YXJpYXRpb24tc2V0dGluZ3M6bm9ybWFsO3RleHQtaW5kZW50OjA7dGV4dC1hbGlnbjpzdGFydDt0ZXh0LWRlY29yYXRpb246bm9uZTt0ZXh0LWRlY29yYXRpb24tbGluZTpub25lO3RleHQtZGVjb3JhdGlvbi1zdHlsZTpzb2xpZDt0ZXh0LWRlY29yYXRpb24tY29sb3I6IzAwMDAwMDtsZXR0ZXItc3BhY2luZzpub3JtYWw7d29yZC1zcGFjaW5nOm5vcm1hbDt0ZXh0LXRyYW5zZm9ybTpub25lO3dyaXRpbmctbW9kZTpsci10YjtkaXJlY3Rpb246bHRyO3RleHQtb3JpZW50YXRpb246bWl4ZWQ7ZG9taW5hbnQtYmFzZWxpbmU6YXV0bztiYXNlbGluZS1zaGlmdDpiYXNlbGluZTt0ZXh0LWFuY2hvcjpzdGFydDt3aGl0ZS1zcGFjZTpub3JtYWw7c2hhcGUtcGFkZGluZzowO3NoYXBlLW1hcmdpbjowO2lubGluZS1zaXplOjA7Y2xpcC1ydWxlOm5vbnplcm87ZGlzcGxheTppbmxpbmU7b3ZlcmZsb3c6dmlzaWJsZTt2aXNpYmlsaXR5OnZpc2libGU7b3BhY2l0eToxO2lzb2xhdGlvbjphdXRvO21peC1ibGVuZC1tb2RlOm5vcm1hbDtjb2xvci1pbnRlcnBvbGF0aW9uOnNSR0I7Y29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzOmxpbmVhclJHQjtzb2xpZC1jb2xvcjojMDAwMDAwO3NvbGlkLW9wYWNpdHk6MTt2ZWN0b3ItZWZmZWN0Om5vbmU7ZmlsbDojMDA4MDAwO2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpub256ZXJvO3N0cm9rZTpub25lO3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDo0O3N0cm9rZS1kYXNoYXJyYXk6bm9uZTtzdHJva2UtZGFzaG9mZnNldDowO3N0cm9rZS1vcGFjaXR5OjE7Y29sb3ItcmVuZGVyaW5nOmF1dG87aW1hZ2UtcmVuZGVyaW5nOmF1dG87c2hhcGUtcmVuZGVyaW5nOmF1dG87dGV4dC1yZW5kZXJpbmc6YXV0bztlbmFibGUtYmFja2dyb3VuZDphY2N1bXVsYXRlO3N0b3AtY29sb3I6IzAwMDAwMDtzdG9wLW9wYWNpdHk6MSIgZD0ibSA4LDEzOSBjIC0zLjI1MzAzLDAgLTYsMi40MTA2NiAtNiw1LjUgMCwzLjA4OTM0IDIuNzQ2OTcsNS41IDYsNS41IGggMTYgYyAzLjI1MzAzLDAgNiwtMi40MTA2NiA2LC01LjUgMCwtMy4wODkzNCAtMi43NDY5NywtNS41IC02LC01LjUgeiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwtMTIwKSI+PC9wYXRoPjwvZz48L3N2Zz4="
+        <img src="/img/pfpPlaceholder.svg"
         >
         <br>
         <h2 style="text-decoration: underline;">Wallet Amount:</h2>
@@ -48,5 +86,5 @@
         <input type="text" id="wallet" name="wallet">
         <button onclick="updateWallet(document.getElementById('wallet').value); window.location = window.location;">Submit!</button>
         </input>
-    </div>
+    </div> -->
 </body>
