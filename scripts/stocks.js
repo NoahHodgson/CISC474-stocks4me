@@ -1,23 +1,35 @@
 function loadStockPrice(symbol) {
 	return new Promise(resolve => {
-		let r = new XMLHttpRequest();
-		r.open("GET", "https://finnhub.io/api/v1/quote?symbol=" + symbol + "&token=c548e3iad3ifdcrdgh80", true);
-		r.onreadystatechange = function () {
-			if (this.readyState == 4) {
-				if (this.status == 200) {
-					let obj = JSON.parse(this.response);
+		// let r = new XMLHttpRequest();
+		fetch("https://finnhub.io/api/v1/quote?symbol=" + symbol + "&token=c548e3iad3ifdcrdgh80")
+			.then(async response => {
+				if(response.status == 200) {
+					let obj = response.json();
 					resolve(obj);
-				} else if (this.status == 403) {
+				} else if(response.status == 403) {
 					resolve("Cannot access this symbol.");
+				} else {
+					resolve("nope");
 				}
-			}
-		}
-		r.send();
+			})
+		// r.onreadystatechange = function () {
+		// 	if (this.readyState == 4) {
+		// 		if (this.status == 200) {
+		// 			let obj = JSON.parse(this.response);
+		// 			resolve(obj);
+		// 		} else if (this.status == 403) {
+		// 			resolve("Cannot access this symbol.");
+		// 		}
+		// 	}
+		// }
+		// r.send();
 	});
 }
 
 function loadStockHistory(symbol) {
 	return new Promise(resolve => {
+		resolve("test");
+		
 		let r = new XMLHttpRequest();
 		r.open("GET", "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=60min&outputsize=full&apikey=AN5BTH22T0R74PI0", true);
 		r.onreadystatechange = function () {
@@ -287,3 +299,7 @@ function openWebSocket(symbol) {
 
 	currentSocket = socket;
 }
+
+module.exports = {loadStock};
+
+const fetch = require('cross-fetch');
