@@ -10,17 +10,21 @@ const stocks = require('./scripts/stocks.js');
 const search = require('./scripts/search.js');
 const https = require('https');
 
-app.post("/getUserData", function(req, res) {
+app.get("/getUserData", function(req, res) {
 	
 });
 
-app.post("/searchForStock", function(req, res) {
+app.get("/searchForSymbol", function(req, res) {
 	(async () => {
 		let response = await search.searchForSymbol("AAPL");
-		res.send(response);
+		let stockObject = await stocks.loadStock(response);
+		
+		console.log(stockObject);
+		
+		res.send(stockObject);
 	})();
 });
 
-app.post("/getNews", function(req, res) {
+app.get("/getNews", function(req, res) {
 	
 });
