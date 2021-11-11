@@ -31,7 +31,6 @@ function updateWallet(newAmount, reload = false) {
 
 function updateStocks(newStocks) {
 	sessionStorage.setItem("stocks", JSON.stringify(newStocks));
-	console.log(sessionStorage.getItem("stocks"))
 }
 
 function updateNews(newNews) {

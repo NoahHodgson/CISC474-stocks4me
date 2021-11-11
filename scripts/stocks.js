@@ -61,7 +61,8 @@ async function loadStock(object) {
 		"high":priceObject["h"],
 		"low":priceObject["l"],
 		"history":historyObject,
-		"lastUpdated":new Date()
+		"lastUpdated":new Date(),
+		"color": 0
 	}
 	
 	return outputObj;
@@ -73,13 +74,13 @@ function createStockObjectContainer(stockObject, addChart, showBorder) {
 	var hiLoObject = document.createElement("p");
 	var lastUpdatedObject = document.createElement("p");
 	
-	titleObject.innerHTML = (stockObject["name"]+" ("+stockObject["symbol"]+")")+((stockObject["numShares"] != undefined) ? (": "+stockObject["numShares"]+" Share"+((parseInt(stockObject["numShares"]) == 1) ? "" : "s")) : "");
-	priceObject.innerHTML = ("Current: "+stockObject["current"]);
+	titleObject.innerHTML = (stockObject["name"]+" ("+stockObject["symbol"]+")")
+	priceObject.innerHTML = ("Current: "+stockObject["current"]+((stockObject["numShares"] != undefined) ? (" | "+stockObject["numShares"]+" Share"+((parseInt(stockObject["numShares"]) == 1) ? "" : "s")) : ""));
 	hiLoObject.innerHTML = ("High/Low: "+stockObject["high"]+"/"+stockObject["low"]);
 	lastUpdatedObject.innerHTML = "Last Updated: "+stockObject["lastUpdated"];
 	
 	let container = document.createElement("div");
-	container.className = "stockInfoContainer";
+	container.className = "stockInfoContainer ";
 	if(showBorder) {
 		container.className += " module stockInfoContainerInList";
 	}
@@ -109,7 +110,25 @@ function displayStock(stockObject, id, addChart, showBorder) {
 			date["date"] = new Date(date["date"]);
 		}
 		
-		generateChart(graphContainer.id, stockObject["history"]);
+		generateChart(graphContainer.id, stockObject);
+		
+		let chartColorPicker = document.createElement("select");
+		chartColorPicker.className = "chartColorPicker";
+		chartColorPicker.oninput = function() {
+			setChartColor(stockObject, this.value);
+		}
+		
+		for(var i = 0; i < graphColors.length; i++) {
+			let option = document.createElement("option");
+			option.value = i;
+			option.innerHTML = graphColors[i].name;
+			chartColorPicker.appendChild(option);
+		}
+		
+		chartColorPicker.value = (stockObject["color"] == undefined) ? 0 : stockObject["color"];
+		
+		
+		stockContainerObject.appendChild(chartColorPicker);
 	}
 	
 	return stockContainerObject;
@@ -136,10 +155,13 @@ function buyShare(stockObject, numShares) {
 			storedStocks = {};
 		}
 		
+		var loadNews = false;
+		
 		if(storedStocks[stockObject["name"]] == undefined) {
 			storedStocks[stockObject["name"]] = stockObject;
 			storedStocks[stockObject["name"]]["numShares"] = 1;
 			storedNews.push(stockObject["name"]);
+			loadNews = true;
 		} else {
 			oldObject = storedStocks[stockObject["name"]];
 			storedStocks[stockObject["name"]] = stockObject;
@@ -151,7 +173,7 @@ function buyShare(stockObject, numShares) {
 		updateStocks(storedStocks);
 		updateNews(storedNews);
 		displayUserInfo();
-		loadAllStocks();
+		loadAllStocks(loadNews);
 	} else {
 		alert("Price of Stock exceeds wallet!")
 	}
@@ -187,7 +209,7 @@ function sellShare(stockObject, numShares) {
 	loadAllStocks();
 }
 
-function loadAllStocks() {
+function loadAllStocks(loadNews = true) {
 	var stocks = getUserInfo()["stocks"];
 	var allStocksContainer = document.getElementById("allStocksHolder");
 	var newsStoriesContainer = document.getElementById("table_holder");
@@ -207,7 +229,8 @@ function loadAllStocks() {
 		for(var stock of Object.keys(stocks)) {
 			displayStock(stocks[stock], "allStocksHolder", true, true);
 		}
-		
-		getNews();
+		if(loadNews) {
+			getNews();
+		}
 	}
 }

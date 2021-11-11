@@ -60,7 +60,7 @@ async function search(value) {
 	stockContainer.appendChild(createBuyShareButton(stockObject));
 	stockContainer.appendChild(createSellShareButton(stockObject));
 	
-	generateChart("stockChartContainer", stockObject["history"]);
+	generateChart("stockChartContainer", stockObject);
 	
 	document.getElementById("searchButton").innerHTML = "Search";
 }
