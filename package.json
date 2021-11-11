@@ -1,0 +1,19 @@
+{
+  "name": "cisc474-stocks4me",
+  "version": "2.0.0",
+  "description": "stonks",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NoahHodgson/CISC474-stocks4me.git"
+  },
+  "author": "Noah Hodgson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NoahHodgson/CISC474-stocks4me/issues"
+  },
+  "homepage": "https://github.com/NoahHodgson/CISC474-stocks4me#readme"
+}
