@@ -109,7 +109,7 @@ body{
   visibility: collapse;
 }
 
-#stockInfo{
+#searchStockInfo{
   text-align: center;
 }
 
@@ -263,6 +263,14 @@ body{
 .chartColorPicker {
   width: 40%;
   margin:10px;
+}
+
+.loadInSearchButton {
+  width: 40%;
+}
+
+.axis, .chart {
+  user-select:none;
 }
 
 @media screen and (prefers-color-scheme:dark) {

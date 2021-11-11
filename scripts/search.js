@@ -1,3 +1,5 @@
+var searchLoaded = false
+
 function searchOnEnter(e) {
 	if (e.code == "Enter") {
 		search(e.originalTarget.value);
@@ -44,9 +46,11 @@ async function search(value) {
 		return;
 	}
 	
+	searchLoaded = false;
+	
 	document.getElementById("searchButton").innerHTML = "Searching...";
 	
-	var searchContainer = document.getElementById("stockInfo");
+	var searchContainer = document.getElementById("searchStockInfo");
 	var stockChartContainer = document.getElementById("stockChartContainer");
 	
 	let result = await searchForSymbol(value);
@@ -55,7 +59,7 @@ async function search(value) {
 	searchContainer.innerHTML = "";
 	stockChartContainer.innerHTML = "";
 	
-	let stockContainer = displayStock(stockObject, "stockInfo", false, false);
+	let stockContainer = displayStock(stockObject, "searchStockInfo", false, false, true);
 	
 	stockContainer.appendChild(createBuyShareButton(stockObject));
 	stockContainer.appendChild(createSellShareButton(stockObject));
@@ -63,6 +67,10 @@ async function search(value) {
 	generateChart("stockChartContainer", stockObject);
 	
 	document.getElementById("searchButton").innerHTML = "Search";
+	
+	searchLoaded = true;
+	
+	openWebSocket(stockObject["symbol"]);
 }
 
 function searchForSymbol(symbol) {
@@ -71,7 +79,7 @@ function searchForSymbol(symbol) {
 		r.open("GET", "https://finnhub.io/api/v1/search?q=" + symbol + "&token=c548e3iad3ifdcrdgh80", true);
 		r.onload = function () {
 			if (this.status == 200) {
-				document.getElementById("stockInfo").style["visibility"] = "visible";
+				document.getElementById("searchStockInfo").style["visibility"] = "visible";
 				let obj = JSON.parse(this.response);
 				if (parseInt(obj["count"]) > 0) {
 					let firstResult = obj["result"][0];

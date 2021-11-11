@@ -68,19 +68,23 @@ async function loadStock(object) {
 	return outputObj;
 }
 
-function createStockObjectContainer(stockObject, addChart, showBorder) {
+function createStockObjectContainer(stockObject, addChart, showBorder, isSearch) {
 	var titleObject = document.createElement("h2");
+	titleObject.className = "stockObjectTitle";
 	var priceObject = document.createElement("p");
+	priceObject.className = "stockObjectPrice";
 	var hiLoObject = document.createElement("p");
+	hiLoObject.className = "stockObjectHiLo";
 	var lastUpdatedObject = document.createElement("p");
+	lastUpdatedObject.className = "stockObjectLastUpdated";
 	
 	titleObject.innerHTML = (stockObject["name"]+" ("+stockObject["symbol"]+")")
 	priceObject.innerHTML = ("Current: "+stockObject["current"]+((stockObject["numShares"] != undefined) ? (" | "+stockObject["numShares"]+" Share"+((parseInt(stockObject["numShares"]) == 1) ? "" : "s")) : ""));
 	hiLoObject.innerHTML = ("High/Low: "+stockObject["high"]+"/"+stockObject["low"]);
-	lastUpdatedObject.innerHTML = "Last Updated: "+stockObject["lastUpdated"];
+	lastUpdatedObject.innerHTML = "Last Updated: "+dateToString(new Date(stockObject["lastUpdated"]))+" (Cached)";
 	
 	let container = document.createElement("div");
-	container.className = "stockInfoContainer ";
+	container.className = "stockInfoContainer";
 	if(showBorder) {
 		container.className += " module stockInfoContainerInList";
 	}
@@ -88,13 +92,12 @@ function createStockObjectContainer(stockObject, addChart, showBorder) {
 	container.appendChild(priceObject);
 	container.appendChild(hiLoObject);
 	container.appendChild(lastUpdatedObject);
-	container.id = "stockContainer"+stockObject["symbol"];
-	
+	container.id = "stockContainer"+((isSearch) ? "Search" : stockObject["symbol"]);
 	return container;
 }
 
-function displayStock(stockObject, id, addChart, showBorder) {
-	let stockContainerObject = createStockObjectContainer(stockObject, addChart, showBorder);
+function displayStock(stockObject, id, addChart, showBorder, isSearch = false) {
+	let stockContainerObject = createStockObjectContainer(stockObject, addChart, showBorder, isSearch);
 	
 	document.getElementById(id).appendChild(stockContainerObject);
 	
@@ -129,6 +132,19 @@ function displayStock(stockObject, id, addChart, showBorder) {
 		
 		
 		stockContainerObject.appendChild(chartColorPicker);
+	}
+	
+	if(!isSearch) {
+		let loadInSearchContainer = document.createElement("button");
+		loadInSearchContainer.className = "btn loadInSearchButton";
+		loadInSearchContainer.addEventListener("click", () => {
+			document.body.scrollTop = 0;
+			document.documentElement.scrollTop = 0;
+			document.getElementById("searchInput").value = "";
+			search(stockObject["symbol"]);
+		})
+		loadInSearchContainer.innerHTML = "View Realtime Info";
+		stockContainerObject.appendChild(loadInSearchContainer);
 	}
 	
 	return stockContainerObject;
@@ -209,6 +225,10 @@ function sellShare(stockObject, numShares) {
 	loadAllStocks();
 }
 
+function dateToString(date) {
+	return ((date.getHours() < 10) ? "0" : "") + date.getHours() + ":" + ((date.getMinutes() < 10) ? "0" : "") + date.getMinutes() + ":" + ((date.getSeconds() < 10) ? "0" : "") + date.getSeconds();
+}
+
 function loadAllStocks(loadNews = true) {
 	var stocks = getUserInfo()["stocks"];
 	var allStocksContainer = document.getElementById("allStocksHolder");
@@ -233,4 +253,37 @@ function loadAllStocks(loadNews = true) {
 			getNews();
 		}
 	}
+}
+
+var currentSocket;
+
+function closeWebSocket() {
+	if (currentSocket != undefined) {
+		currentSocket.close();
+	}
+}
+
+function openWebSocket(symbol) {
+	let socket = new WebSocket("wss://ws.finnhub.io?token=c548e3iad3ifdcrdgh80");
+	socket.onmessage = function (e) {
+		let data = JSON.parse(e.data);
+		if (data["type"] == "trade") {
+			let date = new Date(data["data"][0]["t"]);
+			let lastPrice = data["data"][0]["p"];
+			// let newDiff = Math.round((currentDiff - (currentPrice - lastPrice)) * 100) / 100;
+			
+			let searchStockContainer = document.getElementById("searchStockInfo");
+			
+			searchStockContainer.getElementsByClassName("stockObjectPrice")[0].innerHTML = "Current: "+lastPrice;
+			searchStockContainer.getElementsByClassName("stockObjectLastUpdated")[0].innerHTML = "Last Updated: "+dateToString(date)+" (Realtime)";
+		}
+	};
+	socket.onopen = function (e) {
+		socket.send(JSON.stringify({ 'type': 'subscribe', 'symbol': symbol }))
+	};
+	socket.onerror = function (e) {
+		console.log(e.data);
+	};
+
+	currentSocket = socket;
 }
