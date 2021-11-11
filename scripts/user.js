@@ -45,7 +45,7 @@ function getUserInfo() {
 		"wallet": parseFloat((sessionStorage.getItem("wallet") == null) ? 0 : sessionStorage.getItem("wallet")),
 		"stocks": JSON.parse(sessionStorage.getItem("stocks")),
 		"news": JSON.parse(sessionStorage.getItem("news")),
-		"pfp": "/img/pfpPlaceholder.svg"
+		"pfp": "img/pfpPlaceholder.svg"
 	};
 }
 
