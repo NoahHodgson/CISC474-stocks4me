@@ -92,5 +92,5 @@ async function search(value) {
 	
 	searchLoaded = true;
 	
-	openWebSocket(stockObject["symbol"]);
+	openWebSocket(stockObject);
 }

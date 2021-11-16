@@ -9,8 +9,8 @@ function createStockObjectContainer(stockObject, addChart, showBorder, isSearch)
 	lastUpdatedObject.className = "stockObjectLastUpdated";
 	
 	titleObject.innerHTML = (stockObject["name"]+" ("+stockObject["symbol"]+")")
-	priceObject.innerHTML = ("Current: "+stockObject["current"]+((stockObject["numShares"] != undefined) ? (" | "+stockObject["numShares"]+" Share"+((parseInt(stockObject["numShares"]) == 1) ? "" : "s")) : ""));
-	hiLoObject.innerHTML = ("High/Low: "+stockObject["high"]+"/"+stockObject["low"]);
+	priceObject.innerHTML = ("Current: "+stockObject["current"]+" (<span class='"+((stockObject["delta"] < 0) ? "negativeStock" : "positiveStock")+"'>"+((stockObject["delta"] >= 0) ? "+" : "")+stockObject["delta"]+"</span>)"+((stockObject["numShares"] != undefined) ? (" | "+stockObject["numShares"]+" Share"+((parseInt(stockObject["numShares"]) == 1) ? "" : "s")) : ""));
+	hiLoObject.innerHTML = ("High: "+stockObject["high"]+" | Low: "+stockObject["low"]);
 	lastUpdatedObject.innerHTML = "Last Updated: "+dateToString(new Date(stockObject["lastUpdated"]))+" (Cached)";
 	
 	let container = document.createElement("div");
@@ -161,8 +161,6 @@ function dateToString(date) {
 	return ((date.getHours() < 10) ? "0" : "") + date.getHours() + ":" + ((date.getMinutes() < 10) ? "0" : "") + date.getMinutes() + ":" + ((date.getSeconds() < 10) ? "0" : "") + date.getSeconds();
 }
 
-
-
 function loadAllStocks(loadNews = true) {
 	var stocks = getUserInfo()["stocks"];
 	var allStocksContainer = document.getElementById("allStocksHolder");
@@ -191,7 +189,11 @@ function loadAllStocks(loadNews = true) {
 
 var currentWebSocket;
 
-function openWebSocket(symbol) {
+function openWebSocket(stockObject) {
+	let symbol = stockObject["symbol"];
+	let price = stockObject["current"];
+	let delta = stockObject["delta"];
+	
 	const url = "ws://localhost:5000";
 	currentWebSocket = new WebSocket(url);
 	
@@ -205,8 +207,11 @@ function openWebSocket(symbol) {
 		if(data["type"] == "trade") {
 			let date = new Date(data["date"]);
 			let lastPrice = data["lastPrice"];
+			
+			let newDiff = Math.round((delta - (price - lastPrice)) * 100) / 100;
+			
 			let searchStockContainer = document.getElementById("searchStockInfo");
-			searchStockContainer.getElementsByClassName("stockObjectPrice")[0].innerHTML = "Current: "+lastPrice;
+			searchStockContainer.getElementsByClassName("stockObjectPrice")[0].innerHTML = "Current: "+lastPrice+" (<span class='"+((newDiff < 0) ? "negativeStock" : "positiveStock")+"'>"+((newDiff >= 0) ? "+" : "")+newDiff+"</span>)";
 			searchStockContainer.getElementsByClassName("stockObjectLastUpdated")[0].innerHTML = "Last Updated: "+dateToString(date)+" (Realtime)";
 		} else {
 			if(data["type"] == "error") {
