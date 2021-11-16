@@ -27,7 +27,7 @@ function createUser(e) {
 }
 
 function logout() {
-	clearSessionStorage();
+	clearlocalStorage();
 	window.location = "/";
 }
 
@@ -47,11 +47,12 @@ function login(e) {
 			}
 			if(response["code"] == 200) {
 				let userData = response["userData"];
-				sessionStorage.setItem("name", userData["username"]);
-				sessionStorage.setItem("wallet", parseFloat(userData["wallet"]));
-				sessionStorage.setItem("stocks", JSON.stringify(userData["stocks"]));
-				sessionStorage.setItem("news", JSON.stringify(userData["news"]));
-				sessionStorage.setItem("pfp", userData["pfp"]);
+				localStorage.setItem("loggedin", true);
+				localStorage.setItem("name", userData["username"]);
+				localStorage.setItem("wallet", parseFloat(userData["wallet"]));
+				localStorage.setItem("stocks", JSON.stringify(userData["stocks"]));
+				localStorage.setItem("news", JSON.stringify(userData["news"]));
+				localStorage.setItem("pfp", userData["pfp"]);
 				window.location = "/home.html";
 			}
 		}
@@ -68,13 +69,13 @@ function login(e) {
 /***********************/
 
 function resetStocksAndNews() {
-	sessionStorage.removeItem("news");
-	sessionStorage.removeItem("stocks");
+	localStorage.removeItem("news");
+	localStorage.removeItem("stocks");
 	window.location.reload();
 }
 
 function updateUsername(newUsername) {
-	sessionStorage.setItem("name", newUsername);
+	localStorage.setItem("name", newUsername);
 	window.location.reload();
 }
 
@@ -87,37 +88,45 @@ function updatePFP() {
 }
 
 function updateWallet(newAmount, reload = false) {
-	sessionStorage.setItem("wallet", (Math.round(newAmount*100))/100);
+	localStorage.setItem("wallet", (Math.round(newAmount*100))/100);
 	if(reload) {
 		window.location.reload();
 	}
 }
 
 function updateStocks(newStocks) {
-	sessionStorage.setItem("stocks", JSON.stringify(newStocks));
+	localStorage.setItem("stocks", JSON.stringify(newStocks));
 }
 
 function updateNews(newNews) {
-	sessionStorage.setItem("news", JSON.stringify(newNews));
-	console.log(sessionStorage.getItem("news"))
+	localStorage.setItem("news", JSON.stringify(newNews));
+	console.log(localStorage.getItem("news"))
 }
 
-function clearSessionStorage() {
-	sessionStorage.removeItem("username");
-	sessionStorage.removeItem("wallet");
-	sessionStorage.removeItem("stocks");
-	sessionStorage.removeItem("news");
-	sessionStorage.removeItem("pfp");
+function clearlocalStorage() {
+	localStorage.removeItem("name");
+	localStorage.removeItem("wallet");
+	localStorage.removeItem("stocks");
+	localStorage.removeItem("news");
+	localStorage.removeItem("pfp");
+	localStorage.removeItem("loggedin");
 }
 
 function getUserInfo() {
-	return {
-		"username": sessionStorage.getItem("name"),
-		"wallet": parseFloat((sessionStorage.getItem("wallet") == null) ? 0 : sessionStorage.getItem("wallet")),
-		"stocks": JSON.parse(sessionStorage.getItem("stocks")),
-		"news": JSON.parse(sessionStorage.getItem("news")),
-		"pfp": sessionStorage.getItem("pfp")
-	};
+	if(localStorage.getItem("loggedin") != undefined) {
+		return {
+			"loggedin": localStorage.getItem("loggedin"),
+			"username": localStorage.getItem("name"),
+			"wallet": parseFloat((localStorage.getItem("wallet") == null) ? 0 : localStorage.getItem("wallet")),
+			"stocks": JSON.parse(localStorage.getItem("stocks")),
+			"news": JSON.parse(localStorage.getItem("news")),
+			"pfp": localStorage.getItem("pfp")
+		};
+	} else {
+		return {
+			"loggedin": false
+		}
+	}
 }
 
 function displayUserInfo() {

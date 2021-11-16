@@ -12,7 +12,11 @@
 <body>
     <script>
         window.onload=function(){
-            document.getElementById("loginSubmit").addEventListener("click", login);
+            if(localStorage.getItem("loggedin")) {
+                window.location = "/home.html"
+            } else {
+                document.getElementById("loginSubmit").addEventListener("click", login);
+            }
         }
     </script>
     <nav class="navbar navbar-dark py-3" style="background-color: #50C879;">
