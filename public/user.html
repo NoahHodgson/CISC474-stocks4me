@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/userInfo.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <script src="scripts/user.js"></script>
+    <script src="scripts/userClient.js"></script>
     <title>stocks4me ◉ User</title>
 </head>
 
@@ -18,9 +18,10 @@
         window.onload=function(){
             let userInfo = getUserInfo();
             document.getElementById("username").value = userInfo["username"];
-            document.getElementById("password").value = userInfo["password"];
+            document.getElementById("password").value = "nope not yet";
             document.getElementById("wallet").value = userInfo["wallet"];
             displayUserInfo();
+            document.getElementById("pfpPreview").src = userInfo["pfp"];
             
             console.log("Loaded Page")
         }
@@ -56,9 +57,9 @@
                     <div class="userInfoOption">
                         <div class="userInfoOptionInput">
                             <label for="password">Password</label>
-                            <input class="form-control rounded" id="password" type="text" name="password" placeholder="Enter a password...">
+                            <input class="form-control rounded" id="password" type="text" name="password" placeholder="Enter a password..." disabled>
                         </div>
-                        <button class="updateUserInfoButton btn" onclick="updatePassword()">Update Password</button>
+                        <button class="updateUserInfoButton btn" onclick="updatePassword()" disabled>Update Password</button>
                     </div><br />
                     <div class="userInfoOption">
                         <div class="userInfoOptionInput">
@@ -69,6 +70,7 @@
                     </div>
                 </div>
             </div>
+            <button class="btn" onclick="logout()">Log Out</button>
         </div>
     </div>
     

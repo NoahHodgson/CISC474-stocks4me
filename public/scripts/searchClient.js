@@ -39,14 +39,18 @@ function createSellShareButton(stockObject) {
 function searchForSymbol(value) {
 	return new Promise(resolve => {
 		let req = new XMLHttpRequest();
-		req.open("GET", "/searchForSymbol?value="+value, true);
+		req.open("POST", "/searchForSymbol", true);
 		req.onreadystatechange = function() {
 			if(this.readyState == 4 && this.status == 200) {
 				resolve(JSON.parse(this.response));
 			}
 		}
 		
-		req.send();
+		req.setRequestHeader('Content-Type', 'application/json');
+		
+		req.send(JSON.stringify({
+			"value":value
+		}));
 	})
 }
 
