@@ -112,16 +112,50 @@ function clearlocalStorage() {
 	localStorage.removeItem("loggedin");
 }
 
-function getUserInfo() {
+var timer;
+
+function pushUserInfoToDatabase() {
+	if(timer) {
+		clearTimeout(timer);
+	}
+	
+	timer = setTimeout(function() {
+		let req = new XMLHttpRequest();
+		req.open("PUT", "/updateUserData", true);
+		req.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				console.log(this.response);
+			}
+		}
+		req.setRequestHeader("Content-Type", "application/json");
+		
+		req.send(JSON.stringify({
+			"username": getUserInfo()["username"],
+			"data":getUserInfo(false)
+		}));
+	}, 500);
+}
+
+function getUserInfo(includeLogin = true) {
 	if(localStorage.getItem("loggedin") != undefined) {
-		return {
-			"loggedin": localStorage.getItem("loggedin"),
-			"username": localStorage.getItem("name"),
-			"wallet": parseFloat((localStorage.getItem("wallet") == null) ? 0 : localStorage.getItem("wallet")),
-			"stocks": JSON.parse(localStorage.getItem("stocks")),
-			"news": JSON.parse(localStorage.getItem("news")),
-			"pfp": localStorage.getItem("pfp")
-		};
+		if(includeLogin) {
+			return {
+				"loggedin": localStorage.getItem("loggedin"),
+				"username": localStorage.getItem("name"),
+				"wallet": parseFloat((localStorage.getItem("wallet") == null) ? 0 : localStorage.getItem("wallet")),
+				"stocks": JSON.parse(localStorage.getItem("stocks")),
+				"news": JSON.parse(localStorage.getItem("news")),
+				"pfp": localStorage.getItem("pfp")
+			};
+		} else {
+			return {
+				"username": localStorage.getItem("name"),
+				"wallet": parseFloat((localStorage.getItem("wallet") == null) ? 0 : localStorage.getItem("wallet")),
+				"stocks": JSON.parse(localStorage.getItem("stocks")),
+				"news": JSON.parse(localStorage.getItem("news")),
+				"pfp": localStorage.getItem("pfp")
+			};
+		}
 	} else {
 		return {
 			"loggedin": false

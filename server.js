@@ -32,7 +32,8 @@ app.post("/getUserData", function(req, res) {
 
 app.put("/updateUserData", function(req, res) {
 	(async () => {
-		res.send("hi");
+		let response = await user.updateUserInfo(req.body["username"], req.body["data"]);
+		res.send(response);
 	})();
 });
 
