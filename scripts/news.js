@@ -35,15 +35,11 @@ function processData(url) {
 }
 
 function getNews(stocks, from, to) {
-	console.log(from, to);
 	return new Promise(resolve => {
 		var all_articles = [];
-		console.log(stocks);
 		for(stock of stocks) {
 			const apiKey = '0lRut9I2IboC0FlDg5wVabXmfIfb2hRU'
 			const url = `https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${from}&end_date=${to}&facet=false&q=${stock}&sort=relevance&api-key=${apiKey}`;
-			
-			console.log(url);
 			
 			all_articles = all_articles.concat(processData(url));
 		}
@@ -79,8 +75,7 @@ async function getTopNewsStory() {
 	return new Promise(async (resolve) => {
 		var topStoryURL = 'https://api.nytimes.com/svc/topstories/v2/business.json?api-key=0lRut9I2IboC0FlDg5wVabXmfIfb2hRU'
 		var topStoryObj = await processHomeNewsData(topStoryURL)
-		console.log(topStoryObj.results[0]);
-		
+				
 		resolve(topStoryObj.results[0]);
 	});
 }

@@ -130,6 +130,10 @@ function buyShare(stockObject, numShares) {
 function updateStockObject(symbol, stockObject) {
 	var storedStocks = getUserInfo()["stocks"];
 	
+	if(storedStocks[stockObject["name"]] == undefined) {
+		return;
+	}
+	
 	storedStocks[stockObject["name"]] = stockObject;
 	storedStocks[stockObject["name"]]["lastUpdated"] = new Date();
 	

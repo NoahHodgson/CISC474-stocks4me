@@ -24,7 +24,7 @@ function searchForSymbol(symbol) {
 			  });
 			
 			}).on("error", (err) => {
-			  console.log("Error: " + err.message);
+			  resolve("Error: " + err.message);
 			});
 		// r.onload = function () {
 		// 	if (this.status == 200) {

@@ -1,6 +1,6 @@
 const https = require('https');
 const WebSocket = require('ws');
-module.exports = {loadStock, openWebSocket};
+module.exports = {loadStock, openWebSocket, closeWebSocket};
 
 function loadStockPrice(symbol) {
 	return new Promise(resolve => {
@@ -17,7 +17,7 @@ function loadStockPrice(symbol) {
 			});
 			
 			resp.on('error', (err) => {
-				console.log(err);
+				resolve(err);
 			})
 		})
 			// .then(async response => {
@@ -75,7 +75,7 @@ function loadStockHistory(symbol) {
 			})
 			
 			res.on('error', (err)=> {
-				console.log(err);
+				resolve(err);
 			})
 		});
 	});
@@ -87,9 +87,6 @@ function loadStock(object) {
 		
 		let priceObject = await loadStockPrice(symbol);
 		let historyObject = await loadStockHistory(symbol);
-		
-		console.log(priceObject);
-		console.log(historyObject);
 		
 		let outputObj = {
 			"name":object["description"],
@@ -116,9 +113,10 @@ function closeWebSocket() {
 }
 
 function openWebSocket(symbol, onMessage, onError, onOpen) {
-	let socket = new WebSocket("wss://ws.finnhub.io?token=c548e3iad3ifdcrdgh80");
+	console.log("opening websocket to finnhub...");
+	currentSocket = new WebSocket("wss://ws.finnhub.io?token=c548e3iad3ifdcrdgh80");
 	
-	socket.onmessage = function(e) {
+	currentSocket.onmessage = function(e) {
 		let data = JSON.parse(e.data);
 		if (data["type"] == "trade") {
 			let date = new Date(data["data"][0]["t"]);
@@ -133,12 +131,16 @@ function openWebSocket(symbol, onMessage, onError, onOpen) {
 		}
 	};
 	
-	socket.onopen = function (e) {
-		socket.send(JSON.stringify({ 'type': 'subscribe', 'symbol': symbol }));
+	currentSocket.onopen = function (e) {
+		currentSocket.send(JSON.stringify({ 'type': 'subscribe', 'symbol': symbol }));
 		onOpen(e);
 	}
 	
-	socket.onerror = onError;
+	currentSocket.onclose = function() {
+		console.log("websocket to finnhub closed");
+	}
+	
+	currentSocket.onerror = onError;
 	
 // 	let socket = new WebSocket("wss://ws.finnhub.io?token=c548e3iad3ifdcrdgh80");
 // 	socket.onmessage = function (e) {
