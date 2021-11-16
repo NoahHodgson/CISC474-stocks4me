@@ -1,5 +1,6 @@
 const https = require('https');
-module.exports = {loadStock};
+const WebSocket = require('ws');
+module.exports = {loadStock, openWebSocket};
 
 function loadStockPrice(symbol) {
 	return new Promise(resolve => {
@@ -114,27 +115,51 @@ function closeWebSocket() {
 	}
 }
 
-function openWebSocket(symbol) {
+function openWebSocket(symbol, onMessage, onError, onOpen) {
 	let socket = new WebSocket("wss://ws.finnhub.io?token=c548e3iad3ifdcrdgh80");
-	socket.onmessage = function (e) {
+	
+	socket.onmessage = function(e) {
 		let data = JSON.parse(e.data);
 		if (data["type"] == "trade") {
 			let date = new Date(data["data"][0]["t"]);
 			let lastPrice = data["data"][0]["p"];
-			// let newDiff = Math.round((currentDiff - (currentPrice - lastPrice)) * 100) / 100;
 			
-			let searchStockContainer = document.getElementById("searchStockInfo");
-			
-			searchStockContainer.getElementsByClassName("stockObjectPrice")[0].innerHTML = "Current: "+lastPrice;
-			searchStockContainer.getElementsByClassName("stockObjectLastUpdated")[0].innerHTML = "Last Updated: "+dateToString(date)+" (Realtime)";
+			onMessage({
+				"type":"trade",
+				"symbol":symbol,
+				"date":date,
+				"lastPrice":lastPrice
+			});
 		}
 	};
+	
 	socket.onopen = function (e) {
-		socket.send(JSON.stringify({ 'type': 'subscribe', 'symbol': symbol }))
-	};
-	socket.onerror = function (e) {
-		console.log(e.data);
-	};
-
-	currentSocket = socket;
+		socket.send(JSON.stringify({ 'type': 'subscribe', 'symbol': symbol }));
+		onOpen(e);
+	}
+	
+	socket.onerror = onError;
+	
+// 	let socket = new WebSocket("wss://ws.finnhub.io?token=c548e3iad3ifdcrdgh80");
+// 	socket.onmessage = function (e) {
+// 		let data = JSON.parse(e.data);
+// 		if (data["type"] == "trade") {
+// 			let date = new Date(data["data"][0]["t"]);
+// 			let lastPrice = data["data"][0]["p"];
+// 			// let newDiff = Math.round((currentDiff - (currentPrice - lastPrice)) * 100) / 100;
+// 			
+// 			let searchStockContainer = document.getElementById("searchStockInfo");
+// 			
+// 			searchStockContainer.getElementsByClassName("stockObjectPrice")[0].innerHTML = "Current: "+lastPrice;
+// 			searchStockContainer.getElementsByClassName("stockObjectLastUpdated")[0].innerHTML = "Last Updated: "+dateToString(date)+" (Realtime)";
+// 		}
+// 	};
+// 	socket.onopen = function (e) {
+// 		socket.send(JSON.stringify({ 'type': 'subscribe', 'symbol': symbol }))
+// 	};
+// 	socket.onerror = function (e) {
+// 		console.log(e.data);
+// 	};
+// 
+// 	currentSocket = socket;
 }

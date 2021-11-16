@@ -14,6 +14,33 @@ const news = require('./scripts/news.js');
 const https = require('https');
 const fs = require('fs');
 
+const WebSocket = require('ws')
+
+const wss = new WebSocket.Server({ port: 5000 })
+
+wss.on('connection', ws => {
+  ws.on('message', message => {
+	let data = JSON.parse(message.toString());
+	
+	stocks.openWebSocket(data["symbol"],
+		function(data) {
+			ws.send(JSON.stringify(data));
+		},
+		function(e){
+			ws.send(JSON.stringify({
+				"type":"error",
+				"message":e.data
+			}));
+		},
+		function(e) {
+			ws.send(JSON.stringify({
+				"type":"message",
+				"message":"connection to finnhub made"
+			}));
+		});
+  })
+});
+
 app.post("/createUser", function(req, res) {
 	(async () => {
 		let response = await user.createUser(req.body["username"], req.body["password"]);

@@ -64,6 +64,11 @@ async function search(value) {
 		return;
 	}
 	
+	if(currentWebSocket) {
+		currentWebSocket.close();
+		currentWebSocket = null;
+	}
+	
 	searchLoaded = false;
 	
 	document.getElementById("searchButton").innerHTML = "Searching...";
@@ -87,5 +92,5 @@ async function search(value) {
 	
 	searchLoaded = true;
 	
-	// openWebSocket(stockObject["symbol"]);
+	openWebSocket(stockObject["symbol"]);
 }

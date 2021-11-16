@@ -188,3 +188,37 @@ function loadAllStocks(loadNews = true) {
 		}
 	}
 }
+
+var currentWebSocket;
+
+function openWebSocket(symbol) {
+	const url = "ws://localhost:5000";
+	currentWebSocket = new WebSocket(url);
+	
+	  currentWebSocket.onopen = () => {
+		console.log("connection to server opened");
+		currentWebSocket.send(JSON.stringify({"symbol":symbol}));
+	  };
+	
+	  currentWebSocket.onmessage = (e) => {
+		let data = JSON.parse(e.data);
+		if(data["type"] == "trade") {
+			let date = new Date(data["date"]);
+			let lastPrice = data["lastPrice"];
+			let searchStockContainer = document.getElementById("searchStockInfo");
+			searchStockContainer.getElementsByClassName("stockObjectPrice")[0].innerHTML = "Current: "+lastPrice;
+			searchStockContainer.getElementsByClassName("stockObjectLastUpdated")[0].innerHTML = "Last Updated: "+dateToString(date)+" (Realtime)";
+		} else {
+			if(data["type"] == "error") {
+				alert("websocket error: "+data["message"]);
+				currentWebSocket.close();
+			} else {
+				console.log("received message: "+data["message"]);
+			}
+		}
+	  };
+	
+	  currentWebSocket.onerror = (err) => {
+		console.log(`WebSocket error: ${err}`);
+	  };
+}
