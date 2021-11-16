@@ -35,8 +35,10 @@ function processData(url) {
 }
 
 function getNews(stocks, from, to) {
+	console.log(from, to);
 	return new Promise(resolve => {
 		var all_articles = [];
+		console.log(stocks);
 		for(stock of stocks) {
 			const apiKey = '0lRut9I2IboC0FlDg5wVabXmfIfb2hRU'
 			const url = `https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${from}&end_date=${to}&facet=false&q=${stock}&sort=relevance&api-key=${apiKey}`;

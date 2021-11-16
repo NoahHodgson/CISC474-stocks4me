@@ -38,13 +38,14 @@ async function getNews() {
 	var newsList = document.getElementById("table_holder");
 	//date setup 
 	var currentDate = new Date();
-	var pastDateNum = currentDate.getDate()-30;
 	var pastDate = new Date();
-	pastDate.setDate(pastDateNum)
+	pastDate.setMonth(pastDate.getMonth()-1);
 	
-	current_string = currentDate.getFullYear().toString() + ((currentDate.getMonth() < 10) ? "0" : "") + currentDate.getMonth().toString() + ((currentDate.getDay() < 10) ? "0" : "") + currentDate.getDay().toString()
+	console.log(pastDate, currentDate);
 	
-	past_string = currentDate.getFullYear().toString() + ((currentDate.getMonth() < 10) ? "0" : "") + currentDate.getMonth().toString() + ((currentDate.getDay() < 10) ? "0" : "") + currentDate.getDay().toString()
+	current_string = currentDate.getFullYear().toString() + (((currentDate.getMonth()+1) < 10) ? "0" : "") + (currentDate.getMonth()+1).toString() + ((currentDate.getDate() < 10) ? "0" : "") + currentDate.getDate().toString()
+	
+	past_string = pastDate.getFullYear().toString() + (((pastDate.getMonth()+1) < 10) ? "0" : "") + (pastDate.getMonth()+1).toString() + ((pastDate.getDate() < 10) ? "0" : "") + pastDate.getDate().toString()
 	
 	console.log(past_string +" " + current_string)
 	//trying Promises - https://codeburst.io/javascript-making-asynchronous-calls-inside-a-loop-and-pause-block-loop-execution-1cb713fbdf2d
