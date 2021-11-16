@@ -37,7 +37,8 @@ wss.on('connection', ws => {
 				"type":"message",
 				"message":"connection to finnhub made"
 			}));
-		});
+		}
+	);
   })
 });
 
