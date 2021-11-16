@@ -76,6 +76,7 @@ function resetStocksAndNews() {
 
 function updateUsername(newUsername) {
 	localStorage.setItem("name", newUsername);
+	pushUserInfoToDatabase();
 	window.location.reload();
 }
 
@@ -89,6 +90,7 @@ function updatePFP() {
 
 function updateWallet(newAmount, reload = false) {
 	localStorage.setItem("wallet", (Math.round(newAmount*100))/100);
+	pushUserInfoToDatabase();
 	if(reload) {
 		window.location.reload();
 	}
@@ -96,11 +98,13 @@ function updateWallet(newAmount, reload = false) {
 
 function updateStocks(newStocks) {
 	localStorage.setItem("stocks", JSON.stringify(newStocks));
+	pushUserInfoToDatabase();
 }
 
 function updateNews(newNews) {
 	localStorage.setItem("news", JSON.stringify(newNews));
-	console.log(localStorage.getItem("news"))
+	console.log(localStorage.getItem("news"));
+	pushUserInfoToDatabase();
 }
 
 function clearlocalStorage() {

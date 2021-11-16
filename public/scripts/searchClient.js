@@ -77,6 +77,8 @@ async function search(value) {
 	var stockChartContainer = document.getElementById("stockChartContainer");
 	
 	let stockObject = await searchForSymbol(value);
+	
+	updateStockObject(stockObject["symbol"], stockObject);
 		
 	searchContainer.innerHTML = "";
 	stockChartContainer.innerHTML = "";

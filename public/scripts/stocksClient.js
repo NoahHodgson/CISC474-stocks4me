@@ -127,6 +127,16 @@ function buyShare(stockObject, numShares) {
 	}
 }
 
+function updateStockObject(symbol, stockObject) {
+	var storedStocks = getUserInfo()["stocks"];
+	
+	storedStocks[stockObject["name"]] = stockObject;
+	storedStocks[stockObject["name"]]["lastUpdated"] = new Date();
+	
+	updateStocks(storedStocks);
+	loadAllStocks(false);
+}
+
 function sellShare(stockObject, numShares) {
 	console.log("selling "+numShares+" shares");
 	console.log(stockObject);
