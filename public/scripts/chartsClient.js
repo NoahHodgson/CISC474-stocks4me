@@ -24,7 +24,7 @@ function generateChart(id, object) {
 	  
 	  // x axis 
 	  var x = d3.scaleTime()
-		.domain(d3.extent(data, function(d) { return d.date; }))
+		.domain(d3.extent(data, function(d) { return new Date(d.date); }))
 		.range([ 0, width ]);
 	  var xAxis = graphContainer.append("g")
 		.attr("transform", "translate(0," + (height) + ")")
@@ -46,7 +46,7 @@ function generateChart(id, object) {
 		.attr("stroke", getGraphColor((object["color"] == undefined) ? 0 : object["color"]))
 		.attr("stroke-width", 3)
 		.attr("d", d3.line()
-		  .x(function(d) { return x(d.date) })
+		  .x(function(d) { return x(new Date(d.date)) })
 		  .y(function(d) { return y(d.value) })
 		  )
 		.classed("graphLine", true);

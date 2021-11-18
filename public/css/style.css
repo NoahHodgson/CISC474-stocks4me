@@ -291,3 +291,27 @@ body{
     color: var(--primary);
   }
 }
+
+@media screen and (orientation: portrait) {
+  #table_holder {
+    flex-direction:column;
+  }
+  .newsArticle {
+    width:100%;
+  }
+  
+  #topRow {
+    margin-top:175px;
+    flex-direction:column;
+  }
+  
+  #topNewsArticleContentContainer {
+    flex-direction:column;
+  }
+  
+  #content {
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+}
