@@ -164,21 +164,80 @@ body{
   border-radius:10px;
 }
 
+.stockInfoContainerRightColumn, .stockInfoContainerLeftColumn {
+  width:50%;
+}
+
+.stockInfoContainerLeftColumn {
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  text-align:center;
+  align-items:center;
+}
+
+.stockDetailsContainer {
+  background-color:var(--body-background);
+  width:75%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:stretch;
+  border-radius:20px;
+  padding:10px;
+}
+
+.hiObject, .loObject {
+  height:100%;
+  margin:0;
+  flex-grow:1;
+  padding:10px;
+}
+
+.stockObjectPrice {
+  margin:0;
+  padding:10px;
+  font-weight:bold;
+}
+
+.stockHiLoContainer {
+  display:flex;
+  flex-direction:row;
+  align-content:stretch;
+  align-items:center;
+  width:100%;
+}
+
+.stockHiLoDivider {
+  background-color:var(--dark);
+  width:2px;
+  height:75%;
+  border-radius:2px;
+}
+
+.stockObjectLastUpdated {
+  margin:0;
+  padding:10px;
+  font-style:italic;
+}
+
 .graphContainer {
   box-shadow: 0px 0px 10px 4px rgba(0, 0, 0, 0.05);
-  background-color:white;
+  background-color:var(--body-background);
   padding:15px;
   border-radius:10px;
 }
 
 .stockInfoContainerInList {
-  width:45%;
   flex-shrink:1;
   display:flex;
-  flex-direction:column;
+  flex-direction:row;
   justify-content:center;
   align-items:center;
   min-width: 550px;
+  width:75%;
+  gap: 10px;
 }
 
 #table_holder {
@@ -261,12 +320,12 @@ body{
 }
 
 .chartColorPicker {
-  width: 40%;
-  margin:10px;
+  width: 100%;
+  margin-top:10px;
 }
 
 .loadInSearchButton {
-  width: 40%;
+  width: 100%;
 }
 
 .axis, .chart {
@@ -296,6 +355,15 @@ body{
   #table_holder {
     flex-direction:column;
   }
+  
+  .stockInfoContainer {
+    flex-direction:column;
+  }
+  
+  .stockInfoContainerRightColumn, .stockInfoContainerLeftColumn {
+    width:100%;
+  }
+  
   .newsArticle {
     width:100%;
   }

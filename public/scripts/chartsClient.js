@@ -5,7 +5,7 @@ function generateChart(id, object) {
 	  var container = d3.select("#"+id);
 	  console.log(container.node());
 	  let width = container.node().clientWidth;
-	  let height = container.node().clientHeight;
+	  let height = container.node().clientWidth*0.5;
 	  
 	  let symbol = object["symbol"];
 	  console.log(width, height);

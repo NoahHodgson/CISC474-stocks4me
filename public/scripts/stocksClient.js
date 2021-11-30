@@ -1,27 +1,90 @@
+// function createStockObjectContainer(stockObject, addChart, showBorder, isSearch) {
+// 	var titleObject = document.createElement("h2");
+// 	titleObject.className = "stockObjectTitle";
+// 	var priceObject = document.createElement("p");
+// 	priceObject.className = "stockObjectPrice";
+// 	var hiLoObject = document.createElement("p");
+// 	hiLoObject.className = "stockObjectHiLo";
+// 	var lastUpdatedObject = document.createElement("p");
+// 	lastUpdatedObject.className = "stockObjectLastUpdated";
+// 	
+// 	titleObject.innerHTML = (stockObject["name"]+" ("+stockObject["symbol"]+")")
+// 	priceObject.innerHTML = ("Current: "+stockObject["current"]+" (<span class='"+((stockObject["delta"] < 0) ? "negativeStock" : "positiveStock")+"'>"+((stockObject["delta"] >= 0) ? "+" : "")+stockObject["delta"]+"</span>)"+((stockObject["numShares"] != undefined) ? (" | "+stockObject["numShares"]+" Share"+((parseInt(stockObject["numShares"]) == 1) ? "" : "s")) : ""));
+// 	hiLoObject.innerHTML = ("High: "+stockObject["high"]+" | Low: "+stockObject["low"]);
+// 	lastUpdatedObject.innerHTML = "Last Updated: "+dateToString(new Date(stockObject["lastUpdated"]))+" (Cached)";
+// 	
+// 	let container = document.createElement("div");
+// 	container.className = "stockInfoContainer";
+// 	if(showBorder) {
+// 		container.className += " module stockInfoContainerInList";
+// 	}
+// 	container.appendChild(titleObject);
+// 	container.appendChild(priceObject);
+// 	container.appendChild(hiLoObject);
+// 	container.appendChild(lastUpdatedObject);
+// 	container.id = "stockContainer"+((isSearch) ? "Search" : stockObject["symbol"]);
+// 	return container;
+// }
+
 function createStockObjectContainer(stockObject, addChart, showBorder, isSearch) {
 	var titleObject = document.createElement("h2");
 	titleObject.className = "stockObjectTitle";
 	var priceObject = document.createElement("p");
 	priceObject.className = "stockObjectPrice";
-	var hiLoObject = document.createElement("p");
-	hiLoObject.className = "stockObjectHiLo";
+	var hiObject = document.createElement("p");
+	var loObject = document.createElement("p");
 	var lastUpdatedObject = document.createElement("p");
 	lastUpdatedObject.className = "stockObjectLastUpdated";
 	
 	titleObject.innerHTML = (stockObject["name"]+" ("+stockObject["symbol"]+")")
 	priceObject.innerHTML = ("Current: "+stockObject["current"]+" (<span class='"+((stockObject["delta"] < 0) ? "negativeStock" : "positiveStock")+"'>"+((stockObject["delta"] >= 0) ? "+" : "")+stockObject["delta"]+"</span>)"+((stockObject["numShares"] != undefined) ? (" | "+stockObject["numShares"]+" Share"+((parseInt(stockObject["numShares"]) == 1) ? "" : "s")) : ""));
-	hiLoObject.innerHTML = ("High: "+stockObject["high"]+" | Low: "+stockObject["low"]);
+	hiObject.innerHTML = ("High: "+stockObject["high"]);
+	hiObject.className = "hiObject";
+	loObject.innerHTML = ("Low: "+stockObject["low"]);
+	loObject.className = "loObject";
 	lastUpdatedObject.innerHTML = "Last Updated: "+dateToString(new Date(stockObject["lastUpdated"]))+" (Cached)";
-	
 	let container = document.createElement("div");
 	container.className = "stockInfoContainer";
 	if(showBorder) {
 		container.className += " module stockInfoContainerInList";
 	}
-	container.appendChild(titleObject);
-	container.appendChild(priceObject);
-	container.appendChild(hiLoObject);
-	container.appendChild(lastUpdatedObject);
+	
+	var divider = document.createElement("div");
+	divider.className = "stockHiLoDivider";
+	
+	var hiLoContainer = document.createElement("div");
+	hiLoContainer.className = "stockHiLoContainer";
+	hiLoContainer.appendChild(hiObject);
+	hiLoContainer.appendChild(divider);
+	hiLoContainer.appendChild(loObject);
+	
+	if(addChart) {
+		var leftContainer = document.createElement("div");
+		var rightContainer = document.createElement("div");
+		
+		leftContainer.className = "stockInfoContainerLeftColumn";
+		rightContainer.className = "stockInfoContainerRightColumn";
+		
+		var leftContainerTextContent = document.createElement("div");
+		leftContainerTextContent.className = "stockDetailsContainer";
+		
+		leftContainerTextContent.appendChild(priceObject);
+		leftContainerTextContent.appendChild(hiLoContainer);
+		leftContainerTextContent.appendChild(lastUpdatedObject);
+		
+		leftContainer.appendChild(titleObject);
+		leftContainer.appendChild(leftContainerTextContent);
+		
+		container.appendChild(leftContainer);
+		container.appendChild(rightContainer);
+	} else {
+		container.appendChild(titleObject);
+		container.appendChild(priceObject);
+		container.appendChild(hiLoContainer);
+		container.appendChild(lastUpdatedObject);
+	}
+	
+	
 	container.id = "stockContainer"+((isSearch) ? "Search" : stockObject["symbol"]);
 	return container;
 }
@@ -35,9 +98,9 @@ function displayStock(stockObject, id, addChart, showBorder, isSearch = false) {
 		var graphContainer = document.createElement("div");
 		graphContainer.id = "graphFor"+stockObject["symbol"];
 		graphContainer.className = "graphContainer";
-		graphContainer.style.width = "500px";
-		graphContainer.style.height = "250px";
-		stockContainerObject.appendChild(graphContainer);
+		var rightColumn = stockContainerObject.getElementsByClassName("stockInfoContainerRightColumn")[0];
+		graphContainer.style.width = (rightColumn.clientWidth)+"px";
+		rightColumn.appendChild(graphContainer);
 		
 		for(date of stockObject["history"]) {
 			date["date"] = new Date(date["date"]);
@@ -46,7 +109,7 @@ function displayStock(stockObject, id, addChart, showBorder, isSearch = false) {
 		generateChart(graphContainer.id, stockObject);
 		
 		let chartColorPicker = document.createElement("select");
-		chartColorPicker.className = "chartColorPicker";
+		chartColorPicker.className = "chartColorPicker form-select";
 		chartColorPicker.oninput = function() {
 			setChartColor(stockObject, this.value);
 		}
@@ -61,7 +124,9 @@ function displayStock(stockObject, id, addChart, showBorder, isSearch = false) {
 		chartColorPicker.value = (stockObject["color"] == undefined) ? 0 : stockObject["color"];
 		
 		
-		stockContainerObject.appendChild(chartColorPicker);
+		rightColumn.appendChild(chartColorPicker);
+		
+		stockContainerObject.getElementsByClassName("stockInfoContainerLeftColumn")[0].style.height = (stockContainerObject.clientHeight-40)+"px";
 	}
 	
 	if(!isSearch) {
@@ -74,7 +139,7 @@ function displayStock(stockObject, id, addChart, showBorder, isSearch = false) {
 			search(stockObject["symbol"]);
 		})
 		loadInSearchContainer.innerHTML = "View Realtime Info";
-		stockContainerObject.appendChild(loadInSearchContainer);
+		stockContainerObject.getElementsByClassName("stockInfoContainerLeftColumn")[0].appendChild(loadInSearchContainer);
 	}
 	
 	return stockContainerObject;
@@ -105,16 +170,16 @@ function buyShare(stockObject, numShares) {
 		
 		var loadNews = false;
 		
-		if(storedStocks[stockObject["name"]] == undefined) {
-			storedStocks[stockObject["name"]] = stockObject;
-			storedStocks[stockObject["name"]]["numShares"] = 1;
-			storedNews.push(stockObject["name"]);
+		if(storedStocks[stockObject["symbol"]] == undefined) {
+			storedStocks[stockObject["symbol"]] = stockObject;
+			storedStocks[stockObject["symbol"]]["numShares"] = 1;
+			storedNews.push(stockObject["symbol"]);
 			loadNews = true;
 		} else {
-			oldObject = storedStocks[stockObject["name"]];
-			storedStocks[stockObject["name"]] = stockObject;
-			storedStocks[stockObject["name"]]["numShares"] = oldObject["numShares"]+1;
-			storedStocks[stockObject["name"]]["lastUpdated"] = stockObject["lastUpdated"];
+			oldObject = storedStocks[stockObject["symbol"]];
+			storedStocks[stockObject["symbol"]] = stockObject;
+			storedStocks[stockObject["symbol"]]["numShares"] = oldObject["numShares"]+1;
+			storedStocks[stockObject["symbol"]]["lastUpdated"] = stockObject["lastUpdated"];
 		}
 		
 		updateWallet(wallet);
@@ -153,14 +218,14 @@ function sellShare(stockObject, numShares) {
 	var storedNews = getUserInfo()["news"];
 	var storedStocks = getUserInfo()["stocks"];
 	
-	if(storedStocks[stockObject["name"]]["numShares"] == 1) {
-		delete storedStocks[stockObject["name"]];
-		storedNews.splice(storedNews.indexOf(stockObject["name"]),1);
+	if(storedStocks[stockObject["symbol"]]["numShares"] == 1) {
+		delete storedStocks[stockObject["symbol"]];
+		storedNews.splice(storedNews.indexOf(stockObject["symbol"]),1);
 	} else {
-		oldObject = storedStocks[stockObject["name"]];
-		storedStocks[stockObject["name"]] = stockObject;
-		storedStocks[stockObject["name"]]["numShares"] = oldObject["numShares"]-1;
-		storedStocks[stockObject["name"]]["lastUpdated"] = new Date();
+		oldObject = storedStocks[stockObject["symbol"]];
+		storedStocks[stockObject["symbol"]] = stockObject;
+		storedStocks[stockObject["symbol"]]["numShares"] = oldObject["numShares"]-1;
+		storedStocks[stockObject["symbol"]]["lastUpdated"] = new Date();
 	}
 	
 	updateWallet(wallet);
@@ -171,8 +236,25 @@ function sellShare(stockObject, numShares) {
 	loadAllStocks();
 }
 
+var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
 function dateToString(date) {
-	return ((date.getHours() < 10) ? "0" : "") + date.getHours() + ":" + ((date.getMinutes() < 10) ? "0" : "") + date.getMinutes() + ":" + ((date.getSeconds() < 10) ? "0" : "") + date.getSeconds();
+	return (
+		(
+			months[date.getMonth()] +
+			" " + 
+			date.getDate()
+		) + 
+		", " + 
+		((date.getHours() < 10) ? "0" : "") + 
+		date.getHours() + 
+		":" + 
+		((date.getMinutes() < 10) ? "0" : "") + 
+		date.getMinutes() + 
+		":" + 
+		((date.getSeconds() < 10) ? "0" : "") + 
+		date.getSeconds()
+	);
 }
 
 function loadAllStocks(loadNews = true) {
@@ -196,7 +278,7 @@ function loadAllStocks(loadNews = true) {
 			displayStock(stocks[stock], "allStocksHolder", true, true);
 		}
 		if(loadNews) {
-			getNews();
+			// getNews();
 		}
 	}
 }
