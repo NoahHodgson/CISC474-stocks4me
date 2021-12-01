@@ -1,30 +1,30 @@
-// function createStockObjectContainer(stockObject, addChart, showBorder, isSearch) {
-// 	var titleObject = document.createElement("h2");
-// 	titleObject.className = "stockObjectTitle";
-// 	var priceObject = document.createElement("p");
-// 	priceObject.className = "stockObjectPrice";
-// 	var hiLoObject = document.createElement("p");
-// 	hiLoObject.className = "stockObjectHiLo";
-// 	var lastUpdatedObject = document.createElement("p");
-// 	lastUpdatedObject.className = "stockObjectLastUpdated";
-// 	
-// 	titleObject.innerHTML = (stockObject["name"]+" ("+stockObject["symbol"]+")")
-// 	priceObject.innerHTML = ("Current: "+stockObject["current"]+" (<span class='"+((stockObject["delta"] < 0) ? "negativeStock" : "positiveStock")+"'>"+((stockObject["delta"] >= 0) ? "+" : "")+stockObject["delta"]+"</span>)"+((stockObject["numShares"] != undefined) ? (" | "+stockObject["numShares"]+" Share"+((parseInt(stockObject["numShares"]) == 1) ? "" : "s")) : ""));
-// 	hiLoObject.innerHTML = ("High: "+stockObject["high"]+" | Low: "+stockObject["low"]);
-// 	lastUpdatedObject.innerHTML = "Last Updated: "+dateToString(new Date(stockObject["lastUpdated"]))+" (Cached)";
-// 	
-// 	let container = document.createElement("div");
-// 	container.className = "stockInfoContainer";
-// 	if(showBorder) {
-// 		container.className += " module stockInfoContainerInList";
-// 	}
-// 	container.appendChild(titleObject);
-// 	container.appendChild(priceObject);
-// 	container.appendChild(hiLoObject);
-// 	container.appendChild(lastUpdatedObject);
-// 	container.id = "stockContainer"+((isSearch) ? "Search" : stockObject["symbol"]);
-// 	return container;
-// }
+/*function createStockObjectContainer(stockObject, addChart, showBorder, isSearch) {
+	var titleObject = document.createElement("h2");
+	titleObject.className = "stockObjectTitle";
+	var priceObject = document.createElement("p");
+	priceObject.className = "stockObjectPrice";
+	var hiLoObject = document.createElement("p");
+	hiLoObject.className = "stockObjectHiLo";
+	var lastUpdatedObject = document.createElement("p");
+	lastUpdatedObject.className = "stockObjectLastUpdated";
+	
+	titleObject.innerHTML = (stockObject["name"]+" ("+stockObject["symbol"]+")")
+	priceObject.innerHTML = ("Current: "+stockObject["current"]+" (<span class='"+((stockObject["delta"] < 0) ? "negativeStock" : "positiveStock")+"'>"+((stockObject["delta"] >= 0) ? "+" : "")+stockObject["delta"]+"</span>)"+((stockObject["numShares"] != undefined) ? (" | "+stockObject["numShares"]+" Share"+((parseInt(stockObject["numShares"]) == 1) ? "" : "s")) : ""));
+	hiLoObject.innerHTML = ("High: "+stockObject["high"]+" | Low: "+stockObject["low"]);
+	lastUpdatedObject.innerHTML = "Last Updated: "+dateToString(new Date(stockObject["lastUpdated"]))+" (Cached)";
+	
+	let container = document.createElement("div");
+	container.className = "stockInfoContainer";
+	if(showBorder) {
+		container.className += " module stockInfoContainerInList";
+	}
+	container.appendChild(titleObject);
+	container.appendChild(priceObject);
+	container.appendChild(hiLoObject);
+	container.appendChild(lastUpdatedObject);
+	container.id = "stockContainer"+((isSearch) ? "Search" : stockObject["symbol"]);
+	return container;
+} OLD CODE */
 
 function createStockObjectContainer(stockObject, addChart, showBorder, isSearch) {
 	var titleObject = document.createElement("h2");
@@ -44,9 +44,10 @@ function createStockObjectContainer(stockObject, addChart, showBorder, isSearch)
 	loObject.className = "loObject";
 	lastUpdatedObject.innerHTML = "Last Updated: "+dateToString(new Date(stockObject["lastUpdated"]))+" (Cached)";
 	let container = document.createElement("div");
-	container.className = "stockInfoContainer";
-	if(showBorder) {
-		container.className += " module stockInfoContainerInList";
+	if(!isSearch) {
+		container.className = "stockInfoContainerInList";
+	} else {
+		container.className = "stockInfoContainerSearch";
 	}
 	
 	var divider = document.createElement("div");
@@ -77,16 +78,34 @@ function createStockObjectContainer(stockObject, addChart, showBorder, isSearch)
 		
 		container.appendChild(leftContainer);
 		container.appendChild(rightContainer);
+		
+		var wrapper = document.createElement("div");
+		wrapper.id =  "stockContainer"+((isSearch) ? "Search" : stockObject["symbol"]);
+		wrapper.className = "stockContainerWrapper"
+		
+		if(showBorder) {
+			wrapper.className += " module";
+		}
+		
+		wrapper.appendChild(container);
+		
+		return wrapper;
 	} else {
 		container.appendChild(titleObject);
-		container.appendChild(priceObject);
-		container.appendChild(hiLoContainer);
-		container.appendChild(lastUpdatedObject);
+		let detailContainer = document.createElement("div");
+		detailContainer.className = "stockDetailsContainer";
+		detailContainer.appendChild(priceObject);
+		detailContainer.appendChild(hiLoContainer);
+		detailContainer.appendChild(lastUpdatedObject);
+		container.appendChild(detailContainer);
+		
+		detailContainer.style.marginTop = "20px";
+		detailContainer.style.marginBottom = "20px";
+		
+		container.id =  "stockContainer"+((isSearch) ? "Search" : stockObject["symbol"]);
+		
+		return container;
 	}
-	
-	
-	container.id = "stockContainer"+((isSearch) ? "Search" : stockObject["symbol"]);
-	return container;
 }
 
 function displayStock(stockObject, id, addChart, showBorder, isSearch = false) {
@@ -99,6 +118,7 @@ function displayStock(stockObject, id, addChart, showBorder, isSearch = false) {
 		graphContainer.id = "graphFor"+stockObject["symbol"];
 		graphContainer.className = "graphContainer";
 		var rightColumn = stockContainerObject.getElementsByClassName("stockInfoContainerRightColumn")[0];
+		
 		graphContainer.style.width = (rightColumn.clientWidth)+"px";
 		rightColumn.appendChild(graphContainer);
 		
@@ -266,7 +286,6 @@ function loadAllStocks(loadNews = true) {
 		newsStoriesContainer.innerHTML = "News stories will show up after you add stocks to your portfolio.";
 		return;
 	}
-	console.log(stocks);
 	
 	allStocksHolder.innerHTML = "";
 	
@@ -278,7 +297,7 @@ function loadAllStocks(loadNews = true) {
 			displayStock(stocks[stock], "allStocksHolder", true, true);
 		}
 		if(loadNews) {
-			// getNews();
+			getNews();
 		}
 	}
 }

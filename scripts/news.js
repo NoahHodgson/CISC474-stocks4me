@@ -1,7 +1,7 @@
 const https = require('https');
 module.exports = {getNews, getTopNewsStory};
 
-function processData(url) {
+function processData(url, stockName) {
 	return new Promise((resolve, reject) => {
 		// console.log(url);
 		// const options = {
@@ -28,7 +28,7 @@ function processData(url) {
 			
 			resp.on('end', () => {
 				var object = JSON.parse(data);
-				resolve(object.response.docs);
+				resolve({"name": stockName, "articles": object.response.docs});
 			})
 		})
 	})
@@ -41,9 +41,11 @@ function getNews(stocks, from, to) {
 			const apiKey = '0lRut9I2IboC0FlDg5wVabXmfIfb2hRU'
 			const url = `https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${from}&end_date=${to}&facet=false&q=${stock}&sort=relevance&api-key=${apiKey}`;
 			
-			all_articles = all_articles.concat(processData(url));
+			all_articles = all_articles.concat(processData(url, stock));
 		}
+		
 		Promise.all(all_articles).then((full_article_list) => {
+			console.log(full_article_list);
 			resolve({
 				"code":200,
 				"articles": {
