@@ -1,0 +1,22 @@
+{
+  "name": "cisc474-stocks4me",
+  "version": "1.0.0",
+  "description": "The stocks4me web application is the brainchild of\r                     Noah Hodgson, Justin Hamilton, Himanshu Patel, Matt\r                     Pangilinan, and Vraj Patel.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NoahHodgson/CISC474-stocks4me.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NoahHodgson/CISC474-stocks4me/issues"
+  },
+  "homepage": "https://github.com/NoahHodgson/CISC474-stocks4me#readme",
+  "dependencies": {
+    "firebase": "^9.5.0"
+  }
+}
