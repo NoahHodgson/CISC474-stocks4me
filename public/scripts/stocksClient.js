@@ -146,7 +146,9 @@ function displayStock(stockObject, id, addChart, showBorder, isSearch = false) {
 		
 		rightColumn.appendChild(chartColorPicker);
 		
-		stockContainerObject.getElementsByClassName("stockInfoContainerLeftColumn")[0].style.height = (stockContainerObject.clientHeight-40)+"px";
+		if(!window.matchMedia("(orientation:portrait)").matches) {
+			stockContainerObject.getElementsByClassName("stockInfoContainerLeftColumn")[0].style.height = (stockContainerObject.clientHeight-40)+"px";
+		}
 	}
 	
 	if(!isSearch) {

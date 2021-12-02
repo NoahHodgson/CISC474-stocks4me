@@ -413,6 +413,25 @@ body{
     flex-direction:column;
   }
   
+  .stockInfoContainerInList {
+    flex-direction:column;
+  }
+  
+  .stockDetailsContainer {
+    width:100%;
+    margin-top:20px;
+    margin-bottom:20px;
+    min-width:none;
+  }
+  
+  #searchContainer, #stockChartContainer {
+    width:100%;
+  }
+  
+  .graphContainer {
+    margin-top:10px;
+  }
+  
   .stockInfoContainerRightColumn, .stockInfoContainerLeftColumn {
     width:100%;
   }
@@ -421,9 +440,19 @@ body{
     width:100%;
   }
   
+  #allStocksHolder {
+    width:100%;
+  }
+  
+  .stockContainerWrapper {
+    width:100%;
+    min-width:none;
+  }
+  
   #topRow {
     margin-top:175px;
     flex-direction:column;
+    margin-left:0;
   }
   
   #topNewsArticleContentContainer {

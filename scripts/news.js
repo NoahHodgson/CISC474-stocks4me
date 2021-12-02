@@ -28,7 +28,11 @@ function processData(url, stockName) {
 			
 			resp.on('end', () => {
 				var object = JSON.parse(data);
-				resolve({"name": stockName, "articles": object.response.docs});
+				if(object.response == undefined) {
+					resolve({"name": stockName, "articles": []});
+				} else {
+					resolve({"name": stockName, "articles": object.response.docs});
+				}
 			})
 		})
 	})
@@ -45,7 +49,6 @@ function getNews(stocks, from, to) {
 		}
 		
 		Promise.all(all_articles).then((full_article_list) => {
-			console.log(full_article_list);
 			resolve({
 				"code":200,
 				"articles": {
