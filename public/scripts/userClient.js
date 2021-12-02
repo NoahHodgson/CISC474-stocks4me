@@ -10,7 +10,7 @@ function createUser(e) {
 			console.log(this.response);
 			let response = JSON.parse(this.response);
 			if(response["error"]) {
-				alert(response["error"]["message"]);
+				alert(response["error"]["message"]); 
 			} else {
 				alert("user created");
 				window.location = "/";
@@ -29,6 +29,21 @@ function createUser(e) {
 function logout() {
 	clearlocalStorage();
 	window.location = "/";
+}
+
+function getPortfolioValue(stocks, wallet){
+	var portVal = wallet;
+	for (const [key, value] of Object.entries(stocks)){
+		console.log(value.current)
+		console.log(value.numShares)
+		if(value.numShares === undefined){
+			portVal += value.current
+		}
+		else{
+			portVal += value.current * value.numShares;
+		}
+	}
+	return portVal
 }
 
 function login(e) {
@@ -114,6 +129,7 @@ function clearlocalStorage() {
 	localStorage.removeItem("news");
 	localStorage.removeItem("pfp");
 	localStorage.removeItem("loggedin");
+	localStorage.removeItem("total value");
 }
 
 var timer;
@@ -175,6 +191,8 @@ function displayUserInfo() {
 	link.style.padding = "10px";
 	var pfp = userInfo["pfp"];
 	var wallet = userInfo["wallet"];
+	var stocks = JSON.parse(localStorage.getItem("stocks"));
+	var portfolioVal = getPortfolioValue(stocks, wallet);
 	
 	var userInfoContainer = document.createElement("div");
 	userInfoContainer.id = "userInfoContainerNavbar";
@@ -184,12 +202,23 @@ function displayUserInfo() {
 	pfpPreview.src = pfp;
 	pfpPreview.style.height = "10%";
 	
+
+	let moneyContainer = document.createElement("div");
+	moneyContainer.className = "navbarMoneyContainer";
+	
+
 	let walletAmountPreview = document.createElement("p");
 	walletAmountPreview.id = "walletAmountPreviewNavbar";
-	walletAmountPreview.innerHTML = "$"+wallet;
+	walletAmountPreview.innerHTML = "Current Wallet: $"+wallet;
+
+	let portfolioValuePreview = document.createElement("p");
+	portfolioValuePreview.id = "portfolioValue";
+	portfolioValuePreview.innerHTML = "Portfolio Value: $"+portfolioVal;
 	
 	userInfoContainer.appendChild(pfpPreview);
-	userInfoContainer.appendChild(walletAmountPreview);
+	moneyContainer.appendChild(walletAmountPreview);
+	userInfoContainer.appendChild(moneyContainer);
+	moneyContainer.appendChild(portfolioValuePreview);
 	
 	link.appendChild(userInfoContainer);
 	

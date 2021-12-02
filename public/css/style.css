@@ -213,6 +213,13 @@ body{
   /* background-color:orange; */
 }
 
+.navbarMoneyContainer {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+
 #topNewsArticleContentContainer {
   /* background-color:red; */
   display:flex;
