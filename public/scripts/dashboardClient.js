@@ -16,8 +16,8 @@ function getAllStocks() {
 		}
 	}
 	
-	let minVal = Math.min.apply(Math, stockPrices);
-	let maxVal = Math.max.apply(Math, stockPrices);
+	let minVal = 0
+	let maxVal = parseInt(Math.max.apply(Math, stockPrices)*1.1);
 	
 	var graphContainer = createGraphContainer("stockChartContainer", minVal, maxVal, dates);
 	
