@@ -6,33 +6,55 @@ function getAllStocks() {
 	var stockPrices = [];
 	var dates = [];
 	
-	for(stock of Object.keys(stocks)) {
-		
-		for(price of stocks[stock]["history"]) {
-			stockPrices = stockPrices.concat(parseFloat(price["value"]));
-			if(!dates.includes(price["date"])) {
-				dates = dates.concat(price["date"]);
+	var firstLoad = false;
+	
+	if(stocksOnGraph.length == 0) {
+		firstLoad = true;
+		for(stock of Object.keys(stocks)) {
+			stocksOnGraph = stocksOnGraph.concat({"name": stocks[stock]["name"], "symbol": stocks[stock]["symbol"], "enabled": true});
+		}
+	}
+	
+	for(stock of stocksOnGraph) {
+		if(stock["enabled"]) {
+			for(price of stocks[stock["name"]]["history"]) {
+				stockPrices = stockPrices.concat(parseFloat(price["value"]));
+				if(!dates.includes(price["date"])) {
+					dates = dates.concat(price["date"]);
+				}
 			}
 		}
 	}
 	
-	let minVal = Math.min.apply(Math, stockPrices);
-	let maxVal = Math.max.apply(Math, stockPrices);
+	document.getElementById("stockChartContainer").innerHTML = "";
+	
+	if(stockPrices.length == 0) {
+		let notice = document.createElement("h2");
+		notice.innerHTML = "No stocks enabled.";
+		document.getElementById("stockChartContainer").appendChild(notice);
+		return;
+	}
+	
+	let minVal = parseInt(Math.min.apply(Math, stockPrices)*0.8); 
+	let maxVal = parseInt(Math.max.apply(Math, stockPrices)*1.1);
+	
 	
 	var graphContainer = createGraphContainer("stockChartContainer", minVal, maxVal, dates);
 	
 	var i = 0;
-	for(stock of Object.keys(stocks)) {
-		let stockObject = stocks[stock];
-		
-		stocksOnGraph = stocksOnGraph.concat({"name": stockObject["name"], "enabled": true});
-		
-		let color = graphColors[i]["light"];
-		
-		addStockToGraph(graphContainer[0], graphContainer[1], graphContainer[2], stockObject["history"], color);
-		i = (i+1)%graphColors.length;
-		
-		addCheckboxToList(stockObject["name"], stockObject["symbol"], color);
+	for(stock of stocksOnGraph) {
+		if(stock["enabled"]) {
+			let stockObject = stocks[stock["name"]];
+			
+			let color = graphColors[i]["light"];
+			
+			addStockToGraph(graphContainer[0], graphContainer[1], graphContainer[2], stockObject["history"], color);
+			i = (i+1)%graphColors.length;
+			
+			if(firstLoad) {
+				addCheckboxToList(stockObject["name"], stockObject["symbol"], color);
+			}
+		}
 	}
 }
 
@@ -100,7 +122,7 @@ function addStockToGraph(graphContainer, x, y, data, color) {
 }
 
 function addCheckboxToList(name, symbol, color) {
-	let listContainer = document.getElementById("searchContainer");
+	let listContainer = document.getElementById("checkBoxContainer");
 	
 	/*
 		<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
@@ -114,6 +136,7 @@ function addCheckboxToList(name, symbol, color) {
 	checkBox.type = "checkbox";
 	checkBox.checked = true;
 	checkBox.name = "checkbox"+symbol;
+	checkBox.addEventListener("input", hideStockOnGraph);
 	checkBox.style.backgroundColor = color;
 	checkBox.style.borderColor = color;
 	checkBox.style.marginRight = "10px";
@@ -126,4 +149,16 @@ function addCheckboxToList(name, symbol, color) {
 	listContainer.appendChild(checkBox);
 	listContainer.appendChild(labelElement);
 	listContainer.appendChild(document.createElement("br"));
+}
+
+function hideStockOnGraph(e) {
+	var checked = (e.target.checked);
+	var symbol = (e.target.name.replace("checkbox", ""))
+	
+	for(stock of stocksOnGraph) {
+		if(stock["symbol"] == symbol) {
+			stock["enabled"] = checked;
+		}
+	}
+	getAllStocks()
 }
