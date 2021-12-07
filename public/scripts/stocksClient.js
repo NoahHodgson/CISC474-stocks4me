@@ -153,7 +153,7 @@ function sellShare(stockObject, numShares) {
 	var storedNews = getUserInfo()["news"];
 	var storedStocks = getUserInfo()["stocks"];
 	
-	if(storedStocks[stockObject["name"]]["numShares"] == 1) {
+	if(storedStocks[stockObject["name"]]["numShares"] <= 1) {
 		delete storedStocks[stockObject["name"]];
 		storedNews.splice(storedNews.indexOf(stockObject["name"]),1);
 	} else {

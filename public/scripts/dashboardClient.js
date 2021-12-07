@@ -25,7 +25,6 @@ function getAllStocks() {
 			}
 		}
 	}
-	
 	document.getElementById("stockChartContainer").innerHTML = "";
 	
 	if(stockPrices.length == 0) {
@@ -37,7 +36,6 @@ function getAllStocks() {
 	
 	let minVal = parseInt(Math.min.apply(Math, stockPrices)*0.8); 
 	let maxVal = parseInt(Math.max.apply(Math, stockPrices)*1.1);
-	
 	
 	var graphContainer = createGraphContainer("stockChartContainer", minVal, maxVal, dates);
 	
