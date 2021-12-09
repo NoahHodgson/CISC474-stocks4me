@@ -1,11 +1,8 @@
 async function getNews() {
-	var table = document.getElementById('table_holder')
-	table.innerHTML = ""
 	
 	var storedNews = getUserInfo();
 	storedNews = storedNews["news"];
 	console.log(storedNews);
-	
 	
 	if (!storedNews.length) {
 		console.log("idiot")
@@ -35,7 +32,6 @@ async function getNews() {
 	//awful code
 	uniq_stocks = first_symb;
 	console.log(uniq_stocks)
-	var newsList = document.getElementById("table_holder");
 	//date setup 
 	var currentDate = new Date();
 	var pastDate = new Date();
@@ -59,21 +55,71 @@ async function getNews() {
 			cleaned_list=response["articles"]["full_article_list"];
 			cleaned_list = cleaned_list.flat()
 			console.log(cleaned_list)
-			//shuffling list -
-			function fy(a,b,c,d){//array,placeholder,placeholder,placeholder
-				c=a.length;while(c)b=Math.random()*(--c+1)|0,d=a[c],a[c]=a[b],a[b]=d
+			
+			for (stock of cleaned_list) {
+				var storedStocks = getUserInfo()["stocks"];
+				var symbol;
+				
+				for(storedStock of Object.keys(storedStocks)) {
+					if(storedStocks[storedStock]["name"].includes(stock["name"])) {
+						symbol = storedStocks[storedStock]["symbol"];
+						break;
+					}
+					
+				}
+				
+				if(symbol != undefined) {
+					console.log(symbol);
+					var articleList = stock["articles"];
+					function fy(a,b,c,d){
+						c=a.length;while(c)b=Math.random()*(--c+1)|0,d=a[c],a[c]=a[b],a[b]=d
+					}
+					fy(articleList,[],[]);
+					
+					
+					var stockObject = document.getElementById("stockContainer"+symbol);
+					
+					var newsTitle = document.createElement("h2");
+					newsTitle.innerHTML = "News Stories";
+					newsTitle.style.marginTop = "10px";
+					
+					stockObject.appendChild(newsTitle);
+					
+					let container = document.createElement("div");
+					container.className = "newsArticleList";
+					
+					if(articleList.length > 0) {
+						for(article of articleList) {
+							let newsArticleObject = generateNewsArticleObject(article);
+							container.appendChild(newsArticleObject);
+						}
+					}
+					
+					container.addEventListener("scroll", handleNewsListScroll);
+					
+					stockObject.appendChild(container);
+					displayFade(container); 
+				} else {
+					console.log("could not find symbol for name");
+				}
+				
 			}
-			fy(cleaned_list,[],[])
+			
+			//shuffling list -
+			// function fy(a,b,c,d){//array,placeholder,placeholder,placeholder
+			// 	c=a.length;while(c)b=Math.random()*(--c+1)|0,d=a[c],a[c]=a[b],a[b]=d
+			// }
+			// fy(cleaned_list,[],[])
 			//creating pages - https://stackoverflow.com/questions/55331172/pass-array-to-includes-javascript
-			cleaned_list.forEach(article => {
-				if (article.multimedia.length === 0) {
-					console.log("no image or bad title")
-				}
-				else {
-					let newsArticleObject = generateNewsArticleObject(article);
-					newsList.appendChild(newsArticleObject);
-				}
-			})
+			// cleaned_list.forEach(article => {
+			// 	if (article.multimedia.length === 0) {
+			// 		console.log("no image or bad title")
+			// 	}
+			// 	else {
+			// 		let newsArticleObject = generateNewsArticleObject(article);
+			// 		newsList.appendChild(newsArticleObject);
+			// 	}
+			// })
 		}
 	}
 	
@@ -86,32 +132,55 @@ async function getNews() {
 	}));
 }
 
+function handleNewsListScroll(e) {
+	displayFade(e.target);
+}
+
+function displayFade(target) {
+	
+	var scrollLeft = target.scrollLeft;
+	var scrollRight = (target.scrollWidth-target.clientWidth)-scrollLeft;
+	
+	if(scrollLeft == 0 && scrollRight == 0) {
+		target.className = "newsArticleList showGradientNone";
+	} else if(scrollLeft > 0 && scrollRight == 0) {
+		target.className = "newsArticleList showGradientLeft";
+	} else if(scrollLeft == 0 && scrollRight > 0) {
+		target.className = "newsArticleList showGradientRight";
+	} else {
+		target.className = "newsArticleList showGradientBoth";
+	}
+}
+
 function generateNewsArticleObject(article) {
 	let container = document.createElement("div");
 	container.className = "newsArticle";
-	container.style.textAlign = "center";
 	
 	let img = document.createElement('img')
-	let imgURL="https://www.nytimes.com/"+article.multimedia[0].url;
+	var imgURL = "";
+	if(article.multimedia.length > 0) {
+		console.log("HI");
+		imgURL = "https://www.nytimes.com/"+article.multimedia[0].url;
+	} else {
+		imgURL = "/img/noimage.png";
+	}
 	img.src = imgURL;
-	img.style.width = "75%";
 	img.className = "articleImage";
 	
+	let headlineContent = document.createElement("p");
+	headlineContent.innerHTML = article.headline.main;
+	headlineContent.className = "articleHeadline";
+
+	container.appendChild(img);
+	container.appendChild(headlineContent);
+		
 	let link = document.createElement("a");
 	link.href=article.web_url;
 	link.target = "_blank";
 	
-	link.appendChild(img);
+	link.appendChild(container);
 	
-	let headlineContent = document.createElement("p");
-	headlineContent.innerHTML = article.headline.main;
-	headlineContent.style.maxWidth = "50%";
-	headlineContent.style.marginTop = "10px";
-	
-	container.appendChild(link);
-	container.appendChild(headlineContent);
-	
-	return container;
+	return link;
 }
 
 function getTopNewsStory() {
@@ -142,7 +211,7 @@ function generateTopNewsStoryObject(article) {
 	let img = document.createElement('img')
 	let imgURL=imageURL;
 	img.src = imgURL;
-	img.className = "articleImage";
+	img.className = "articleImageTop";
 	img.style.width = "100%";
 	
 	let link = document.createElement("a");

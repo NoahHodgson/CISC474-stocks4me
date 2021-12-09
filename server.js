@@ -16,9 +16,9 @@ const news = require('./scripts/news.js');
 const https = require('https');
 const fs = require('fs');
 
-const WebSocket = require('ws')
+const WebSocket = require('ws');
 
-const wss = new WebSocket.Server({ port: 5000 })
+const wss = new WebSocket.Server({ port: 5000 });
 
 wss.on('connection', ws => {
 	console.log("websocket opened");

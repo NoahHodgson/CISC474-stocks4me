@@ -38,29 +38,26 @@
     </nav>
     <!--Everything from here on out is placeholders for the actual content-->
     <div id="content">
-    <div class="row" id="topRow">
-        <div class="module" id="stockChartContainer">
-        </div>
-        <div class="module" id="searchContainer">
-            <h2 style="text-align: center;">Search</h2>
-            <div class="input-group" style="max-width: 90%; margin: auto; padding: 5px;">
-                <input type="search" class="form-control rounded" placeholder="Search for stocks..." aria-label="Search"
-                    aria-describedby="search-addon" id="searchInput" onfocus="onSearchFocused()" onblur="onSearchBlurred()"/>
-                <button type="button" class="btn" id="searchButton" onclick="search()" style="border-radius:5px;margin-left:10px;">Search</button>
+        <div class="row" id="topRow">
+            <div class="module" id="stockChartContainer">
             </div>
-            <div id="searchStockInfo">
+            <div class="module" id="searchContainer">
+                <h2 style="text-align: center;">Search</h2>
+                <div class="input-group" style="max-width: 90%; margin: auto; padding: 5px;">
+                    <input type="search" class="form-control rounded" placeholder="Search for stocks..." aria-label="Search"
+                        aria-describedby="search-addon" id="searchInput" onfocus="onSearchFocused()" onblur="onSearchBlurred()"/>
+                    <button type="button" class="btn" id="searchButton" onclick="search()" style="border-radius:5px;margin-left:10px;">Search</button>
+                </div>
+                <div id="searchStockInfo">
+                </div>
+                <!-- https://mdbootstrap.com/docs/standard/forms/search/ -->
             </div>
-            <!-- https://mdbootstrap.com/docs/standard/forms/search/ -->
         </div>
-    </div>
-    
-    <h2 style="text-align: center; padding-top: 10px; text-decoration: underline;">Your Stocks:</h2>
-    <div class="row" style="padding: 10px;" id="allStocksHolder">
         
-    </div>
-    <h2 style="text-align: center; padding-top: 10px; text-decoration: underline;">Curated News Stories:</h2>
-    <div class="row" style="padding: 10px;" id="table_holder">
-    </div>
+        <h2 style="text-align: center; padding-top: 10px; text-decoration: underline;">Your Stocks:</h2>
+        <div class="row" style="padding: 10px;" id="allStocksHolder">
+            
+        </div>
     </div>
 </body>
 
