@@ -18,7 +18,6 @@
         window.onload=function(){
             let userInfo = getUserInfo();
             document.getElementById("username").value = userInfo["username"];
-            document.getElementById("password").value = "nope not yet";
             document.getElementById("wallet").value = userInfo["wallet"];
             displayUserInfo();
             document.getElementById("pfpPreview").src = userInfo["pfp"];
@@ -53,13 +52,6 @@
                         <input class="form-control rounded" id="username" type="text" name="username" placeholder="Enter a username...">
                         </div>
                         <button class="updateUserInfoButton btn" onclick="updateUsername(document.getElementById('username').value)">Update Username</button>
-                    </div><br />
-                    <div class="userInfoOption">
-                        <div class="userInfoOptionInput">
-                            <label for="password">Password</label>
-                            <input class="form-control rounded" id="password" type="text" name="password" placeholder="Enter a password..." disabled>
-                        </div>
-                        <button class="updateUserInfoButton btn" onclick="updatePassword()" disabled>Update Password</button>
                     </div><br />
                     <div class="userInfoOption">
                         <div class="userInfoOptionInput">
