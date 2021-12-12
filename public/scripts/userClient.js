@@ -206,15 +206,10 @@ function displayUserInfo() {
 	let walletAmountPreview = document.createElement("p");
 	walletAmountPreview.id = "walletAmountPreviewNavbar";
 	walletAmountPreview.innerHTML = "Current Wallet: $"+wallet;
-
-	let portfolioValuePreview = document.createElement("p");
-	portfolioValuePreview.id = "portfolioValue";
-	portfolioValuePreview.innerHTML = "Portfolio Value: $"+portfolioVal;
 	
 	userInfoContainer.appendChild(pfpPreview);
 	moneyContainer.appendChild(walletAmountPreview);
 	userInfoContainer.appendChild(moneyContainer);
-	moneyContainer.appendChild(portfolioValuePreview);
 	
 	link.appendChild(userInfoContainer);
 	

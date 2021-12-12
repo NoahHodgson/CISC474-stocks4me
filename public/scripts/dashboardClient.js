@@ -160,3 +160,8 @@ function hideStockOnGraph(e) {
 	}
 	getAllStocks()
 }
+
+function displayPortfolioValue() {
+	const userInfo = getUserInfo();
+	document.getElementById("portfolioValueDisplay").innerHTML = '$'+getPortfolioValue(userInfo["stocks"], userInfo["wallet"]);
+}

@@ -23,6 +23,7 @@
         window.onload = function () {
             displayUserInfo();
             getAllStocks();
+            displayPortfolioValue();
         }
     </script>
     <nav class="navbar navbar-dark py-3" style="background-color: #50C878;">
@@ -41,13 +42,22 @@
         <div class="row" id="topRow">
             <div class="module" id="stockChartContainer">
             </div>
-            <div class="module" id="searchContainer">
-                <h2 style="text-align: center;">Stocks</h2>
-                
-                <div id="checkBoxContainer">
+            <div class="column" id="rightDashboardContentContainer">
+                <div class="module" id="searchContainer">
+                    <h2 style="text-align: center;">Stocks</h2>
+                    
+                    <div id="checkBoxContainer">
+                    </div>
+                    
+                    <!-- https://mdbootstrap.com/docs/standard/forms/search/ -->
                 </div>
-                
-                <!-- https://mdbootstrap.com/docs/standard/forms/search/ -->
+                <div class="module" id="portfolioValueContainer">
+                    <h2 style="text-align:center">Portfolio Value</h2>
+                    <h3 id="portfolioValueDisplay" style="text-align:center">
+                        $xx.00
+                    </h3>
+                    <p style="text-align:center"><em>If you sold all stocks in your portfolio, you would have this amount in your wallet.</em></p>
+                </div>
             </div>
         </div>
     </div>

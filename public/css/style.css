@@ -51,8 +51,23 @@ body{
   align-items:center;
 }
 
-#searchContainer {
+#rightDashboardContentContainer {
   width:32%;
+  padding:0;
+  margin:10px;
+}
+
+#searchContainer, #portfolioValueContainer {
+  width:100%;
+  margin:0;
+}
+
+#portfolioValueContainer {
+  margin-top:20px;
+}
+
+#portfolioValueDisplay {
+  font-size:1.5em;
 }
 
 .navbar {
