@@ -1,31 +1,3 @@
-/*function createStockObjectContainer(stockObject, addChart, showBorder, isSearch) {
-	var titleObject = document.createElement("h2");
-	titleObject.className = "stockObjectTitle";
-	var priceObject = document.createElement("p");
-	priceObject.className = "stockObjectPrice";
-	var hiLoObject = document.createElement("p");
-	hiLoObject.className = "stockObjectHiLo";
-	var lastUpdatedObject = document.createElement("p");
-	lastUpdatedObject.className = "stockObjectLastUpdated";
-	
-	titleObject.innerHTML = (stockObject["name"]+" ("+stockObject["symbol"]+")")
-	priceObject.innerHTML = ("Current: "+stockObject["current"]+" (<span class='"+((stockObject["delta"] < 0) ? "negativeStock" : "positiveStock")+"'>"+((stockObject["delta"] >= 0) ? "+" : "")+stockObject["delta"]+"</span>)"+((stockObject["numShares"] != undefined) ? (" | "+stockObject["numShares"]+" Share"+((parseInt(stockObject["numShares"]) == 1) ? "" : "s")) : ""));
-	hiLoObject.innerHTML = ("High: "+stockObject["high"]+" | Low: "+stockObject["low"]);
-	lastUpdatedObject.innerHTML = "Last Updated: "+dateToString(new Date(stockObject["lastUpdated"]))+" (Cached)";
-	
-	let container = document.createElement("div");
-	container.className = "stockInfoContainer";
-	if(showBorder) {
-		container.className += " module stockInfoContainerInList";
-	}
-	container.appendChild(titleObject);
-	container.appendChild(priceObject);
-	container.appendChild(hiLoObject);
-	container.appendChild(lastUpdatedObject);
-	container.id = "stockContainer"+((isSearch) ? "Search" : stockObject["symbol"]);
-	return container;
-} OLD CODE */
-
 function createStockObjectContainer(stockObject, addChart, showBorder, isSearch) {
 	var titleObject = document.createElement("h2");
 	titleObject.className = "stockObjectTitle";
