@@ -2,27 +2,27 @@ function createUser(e) {
 	e.preventDefault();
 	let newUsername = document.getElementById("usernameInput").value;
 	let newPassword = document.getElementById("passwordInput").value;
-	
+
 	let req = new XMLHttpRequest();
 	req.open("POST", "/createUser", true);
-	req.onreadystatechange = function() {
-		if(this.readyState == 4 && this.status == 200) {
+	req.onreadystatechange = function () {
+		if (this.readyState == 4 && this.status == 200) {
 			console.log(this.response);
 			let response = JSON.parse(this.response);
-			if(response["error"]) {
-				alert(response["error"]["message"]); 
+			if (response["error"]) {
+				alert(response["error"]["message"]);
 			} else {
 				alert("user created");
 				window.location = "/";
 			}
 		}
 	}
-	
-	req.setRequestHeader('Content-Type','application/json');
-	
+
+	req.setRequestHeader('Content-Type', 'application/json');
+
 	req.send(JSON.stringify({
-		"username":newUsername,
-		"password":newPassword
+		"username": newUsername,
+		"password": newPassword
 	}));
 }
 
@@ -31,15 +31,15 @@ function logout() {
 	window.location = "/";
 }
 
-function getPortfolioValue(stocks, wallet){
+function getPortfolioValue(stocks, wallet) {
 	var portVal = wallet;
-	for (const [key, value] of Object.entries(stocks)){
+	for (const [key, value] of Object.entries(stocks)) {
 		console.log(value.current)
 		console.log(value.numShares)
-		if(value.numShares === undefined){
+		if (value.numShares === undefined) {
 			portVal += value.current
 		}
-		else{
+		else {
 			portVal += value.current * value.numShares;
 		}
 	}
@@ -47,42 +47,47 @@ function getPortfolioValue(stocks, wallet){
 }
 
 async function refreshStock() {
-	stocksCopy = localStorage.getItem("stocks");
+	stocksCopy = JSON.parse(localStorage.getItem("stocks"));
 	console.log(stocksCopy);
-	for(stock of Object.keys(stocksCopy)) {
-		var stockObject = stocksCopy[stock];
-		if(stocksCopy.length > 5) {
-			setTimeout(async () => {
-				stockObject["history"] = await loadStockHistory(stockObject["symbol"]);
-			}, 12000);
-		} else {
-			(async () => {
-				stockObject["history"] = await loadStockHistory(stockObject["symbol"]);
-			})();
+	var promise = new Promise(function refreshLoop() {
+		for (stock of Object.keys(stocksCopy)) {
+			var stockObject = stocksCopy[stock];
+			console.log(stockObject)
+			if (stocksCopy.length > 5) {
+				setTimeout(async () => {
+					console.log(stockObject["symbol"])
+					stockObject["history"] = await loadStockHistory(stockObject["symbol"]);
+				}, 12000);
+			} else {
+				(async () => {
+					console.log(stockObject["symbol"])
+					stockObject["history"] = await loadStockHistory(stockObject["symbol"]);
+				})();
+			}
 		}
-	}
-	
-	localStorage.setItem("stocks", stocksCopy);
-	console.log("pushing to data base");
-	pushUserInfoToDatabase();
-	localStorage.setItem("refreshStocks", false);
+		return stocksCopy
+	});
+	promise.then(
+		updateStocks(promise),
+		localStorage.setItem("refreshStocks", false),
+		console.log("I am in then"))
 }
 
 function login(e) {
 	e.preventDefault();
 	let inputUsername = document.getElementById("usernameInput").value;
 	let inputPassword = document.getElementById("passwordInput").value;
-	
+
 	let req = new XMLHttpRequest();
 	req.open("POST", "/getUserData", true);
-	req.onreadystatechange = function() {
-		if(this.readyState == 4 && this.status == 200) {
+	req.onreadystatechange = function () {
+		if (this.readyState == 4 && this.status == 200) {
 			let response = JSON.parse(this.response);
 			console.log(response);
-			if(response["error"]) {
+			if (response["error"]) {
 				alert(response["error"]["message"]);
 			}
-			if(response["code"] == 200) {
+			if (response["code"] == 200) {
 				let userData = response["userData"];
 				localStorage.setItem("loggedin", true);
 				localStorage.setItem("name", userData["username"]);
@@ -95,12 +100,12 @@ function login(e) {
 			}
 		}
 	}
-	
-	req.setRequestHeader('Content-Type','application/json');
-	
+
+	req.setRequestHeader('Content-Type', 'application/json');
+
 	req.send(JSON.stringify({
-		"username":inputUsername,
-		"password":inputPassword
+		"username": inputUsername,
+		"password": inputPassword
 	}));
 }
 
@@ -123,9 +128,9 @@ function updatePFP() {
 }
 
 function updateWallet(newAmount, reload = false) {
-	localStorage.setItem("wallet", (Math.round(newAmount*100))/100);
+	localStorage.setItem("wallet", (Math.round(newAmount * 100)) / 100);
 	pushUserInfoToDatabase();
-	if(reload) {
+	if (reload) {
 		window.location.reload();
 	}
 }
@@ -154,30 +159,30 @@ function clearlocalStorage() {
 var timer;
 
 function pushUserInfoToDatabase() {
-	if(timer) {
+	if (timer) {
 		clearTimeout(timer);
 	}
-	
-	timer = setTimeout(function() {
+
+	timer = setTimeout(function () {
 		let req = new XMLHttpRequest();
 		req.open("PUT", "/updateUserData", true);
-		req.onreadystatechange = function() {
-			if(this.readyState == 4 && this.status == 200) {
+		req.onreadystatechange = function () {
+			if (this.readyState == 4 && this.status == 200) {
 				console.log(this.response);
 			}
 		}
 		req.setRequestHeader("Content-Type", "application/json");
-		
+
 		req.send(JSON.stringify({
 			"username": getUserInfo()["username"],
-			"data":getUserInfo(false)
+			"data": getUserInfo(false)
 		}));
 	}, 500);
 }
 
 function getUserInfo(includeLogin = true) {
-	if(localStorage.getItem("loggedin") != undefined) {
-		if(includeLogin) {
+	if (localStorage.getItem("loggedin") != undefined) {
+		if (includeLogin) {
 			return {
 				"loggedin": localStorage.getItem("loggedin"),
 				"username": localStorage.getItem("name"),
@@ -205,37 +210,37 @@ function getUserInfo(includeLogin = true) {
 function displayUserInfo() {
 	var link = document.createElement("a");
 	let userInfo = getUserInfo();
-	link.href="user.html";
-	link.className="nav-link";
+	link.href = "user.html";
+	link.className = "nav-link";
 	link.style.padding = "10px";
 	var pfp = userInfo["pfp"];
 	var wallet = userInfo["wallet"];
 	var stocks = JSON.parse(localStorage.getItem("stocks"));
 	var portfolioVal = getPortfolioValue(stocks, wallet);
-	
+
 	var userInfoContainer = document.createElement("div");
 	userInfoContainer.id = "userInfoContainerNavbar";
-	
+
 	let pfpPreview = document.createElement("img");
 	pfpPreview.id = "userPFPNavbar";
 	pfpPreview.src = pfp;
 	pfpPreview.style.height = "10%";
-	
+
 
 	let moneyContainer = document.createElement("div");
 	moneyContainer.className = "navbarMoneyContainer";
-	
+
 
 	let walletAmountPreview = document.createElement("p");
 	walletAmountPreview.id = "walletAmountPreviewNavbar";
-	walletAmountPreview.innerHTML = "Current Wallet: $"+wallet;
-	
+	walletAmountPreview.innerHTML = "Current Wallet: $" + wallet;
+
 	userInfoContainer.appendChild(pfpPreview);
 	moneyContainer.appendChild(walletAmountPreview);
 	userInfoContainer.appendChild(moneyContainer);
-	
+
 	link.appendChild(userInfoContainer);
-	
+
 	document.getElementById("nav-user").innerHTML = "";
 	document.getElementById("nav-user").appendChild(link);
 }
