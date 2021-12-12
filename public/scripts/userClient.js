@@ -95,10 +95,6 @@ function updateUsername(newUsername) {
 	window.location.reload();
 }
 
-function updatePassword(newPassword) {
-	alert("not yet implemented");
-}
-
 function updatePFP() {
 	alert("not yet implemented");
 }

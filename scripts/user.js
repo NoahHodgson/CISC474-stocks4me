@@ -79,7 +79,8 @@ function getUserInfo(username, password) {
 			if(error) {
 				resolve(error);
 			}
-			var userData = (JSON.parse(data.toString()));
+			var userData = (JSON.parse(data.toString())["users"]);
+			
 			if(userData[username] == undefined) {
 				resolve({"error":{"code":404,"message":"user not found"}});
 				return;

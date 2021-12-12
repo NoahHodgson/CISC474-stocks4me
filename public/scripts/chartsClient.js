@@ -1,11 +1,15 @@
-function generateChart(id, object) {
+function generateChart(id, object, useObjectSize = false) {
 	var margin = 50;
 	
 	  // append the svg object to the body of the page
 	  var container = d3.select("#"+id);
-	  console.log(container.node());
+	  console.log("IN CHART");
+	  console.log(container.node().clientWidth);
 	  let width = container.node().clientWidth;
-	  let height = container.node().clientHeight;
+		var height = container.node().clientHeight;
+	  if(!useObjectSize) {
+		height = container.node().clientWidth*0.5;
+	    }
 	  
 	  let symbol = object["symbol"];
 	  console.log(width, height);
