@@ -23,6 +23,9 @@
             displayUserInfo();
             loadAllStocks();
             getTopNewsStory();
+            if(localStorage.getItem("refreshStocks")){
+                refreshStock()
+            }
         }
     </script>
     <nav class="navbar navbar-dark py-3" style="background-color: #50C878;">

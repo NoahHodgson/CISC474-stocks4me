@@ -46,6 +46,28 @@ function getPortfolioValue(stocks, wallet){
 	return portVal
 }
 
+async function refreshStock() {
+	stocksCopy = localStorage.getItem("stocks");
+	console.log(stocksCopy);
+	for(stock of Object.keys(stocksCopy)) {
+		var stockObject = stocksCopy[stock];
+		if(stocksCopy.length > 5) {
+			setTimeout(async () => {
+				stockObject["history"] = await loadStockHistory(stockObject["symbol"]);
+			}, 12000);
+		} else {
+			(async () => {
+				stockObject["history"] = await loadStockHistory(stockObject["symbol"]);
+			})();
+		}
+	}
+	
+	localStorage.setItem("stocks", stocksCopy);
+	console.log("pushing to data base");
+	pushUserInfoToDatabase();
+	localStorage.setItem("refreshStocks", false);
+}
+
 function login(e) {
 	e.preventDefault();
 	let inputUsername = document.getElementById("usernameInput").value;
@@ -64,6 +86,7 @@ function login(e) {
 				let userData = response["userData"];
 				localStorage.setItem("loggedin", true);
 				localStorage.setItem("name", userData["username"]);
+				localStorage.setItem("refreshStocks", true);
 				localStorage.setItem("wallet", parseFloat(userData["wallet"]));
 				localStorage.setItem("stocks", JSON.stringify(userData["stocks"]));
 				localStorage.setItem("news", JSON.stringify(userData["news"]));
