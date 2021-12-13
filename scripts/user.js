@@ -9,9 +9,10 @@ function createUser(username, password) {
 			if(error) {
 				resolve(error);
 			}
+			
 			var userData = (JSON.parse(data.toString()));
 			
-			if(userData[username] != undefined) {
+			if(userData["users"][username] != undefined) {
 				resolve({"error":{"code":403,"message":"username taken"}});
 			}
 			
@@ -21,10 +22,11 @@ function createUser(username, password) {
 				"wallet": 0,
 				"stocks": {},
 				"news": [],
-				"pfp": ""
+				"pfp": "/img/pfpPlaceholder.svg",
+				"showTutorial": 1
 			}
 			
-			userData[username] = newUserData;
+			userData["users"][username] = newUserData;
 			
 			fs.writeFile("testUserInfo.json", JSON.stringify(userData), function(error) {
 				if(error) {
@@ -44,16 +46,17 @@ function updateUserInfo(username, data) {
 			if(error) {
 				resolve(error);
 			}
+			console.log(data);
 			var userData = (JSON.parse(fileData.toString()));
-			if(userData[username] == undefined) {
+			if(userData["users"][username] == undefined) {
 				resolve({"error":{"code":404,"message":"user not found"}});
 				return;
 			}
 			
-			var password = userData[username]["password"]
+			var password = userData["users"][username]["password"]
 			
-			userData[username] = data;
-			userData[username]["password"] = password;
+			userData["users"][username] = data;
+			userData["users"][username]["password"] = password;
 			
 			fs.writeFile("testUserInfo.json", JSON.stringify(userData), function(error) {
 				if(error) {

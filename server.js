@@ -76,8 +76,6 @@ app.post("/getUserData", function(req, res) {
 app.post("/getStockInfo", function(req, res) {
 	console.log("getting stock info...");
 	(async () => {
-		console.log("BODY");
-		console.log(req.body);
 		let response = await stocks.loadStock(req.body);
 		res.json(response);
 	})();

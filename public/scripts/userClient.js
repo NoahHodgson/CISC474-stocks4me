@@ -69,6 +69,7 @@ function login(e) {
 				localStorage.setItem("stocks", JSON.stringify(userData["stocks"]));
 				localStorage.setItem("news", JSON.stringify(userData["news"]));
 				localStorage.setItem("pfp", userData["pfp"]);
+				localStorage.setItem("showTutorial", userData["showTutorial"]);
 				window.location = "/home.html";
 			}
 		}
@@ -128,6 +129,7 @@ function clearlocalStorage() {
 	localStorage.removeItem("pfp");
 	localStorage.removeItem("loggedin");
 	localStorage.removeItem("total value");
+	localStorage.removeItem("showTutorial");
 }
 
 var timer;
@@ -163,7 +165,8 @@ function getUserInfo(includeLogin = true) {
 				"wallet": parseFloat((localStorage.getItem("wallet") == null) ? 0 : localStorage.getItem("wallet")),
 				"stocks": JSON.parse(localStorage.getItem("stocks")),
 				"news": JSON.parse(localStorage.getItem("news")),
-				"pfp": localStorage.getItem("pfp")
+				"pfp": localStorage.getItem("pfp"),
+				"showTutorial": parseInt(localStorage.getItem("showTutorial"))
 			};
 		} else {
 			return {
@@ -171,7 +174,8 @@ function getUserInfo(includeLogin = true) {
 				"wallet": parseFloat((localStorage.getItem("wallet") == null) ? 0 : localStorage.getItem("wallet")),
 				"stocks": JSON.parse(localStorage.getItem("stocks")),
 				"news": JSON.parse(localStorage.getItem("news")),
-				"pfp": localStorage.getItem("pfp")
+				"pfp": localStorage.getItem("pfp"),
+				"showTutorial": parseInt(localStorage.getItem("showTutorial"))
 			};
 		}
 	} else {

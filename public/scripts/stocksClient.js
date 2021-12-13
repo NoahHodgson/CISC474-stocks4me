@@ -246,16 +246,16 @@ function buyShare(stockObject, numShares) {
 		
 		var loadNews = false;
 		
-		if(storedStocks[stockObject["symbol"]] == undefined) {
-			storedStocks[stockObject["symbol"]] = stockObject;
-			storedStocks[stockObject["symbol"]]["numShares"] = 1;
-			storedNews.push(stockObject["symbol"]);
+		if(storedStocks[stockObject["name"]] == undefined) {
+			storedStocks[stockObject["name"]] = stockObject;
+			storedStocks[stockObject["name"]]["numShares"] = 1;
+			storedNews.push(stockObject["name"]);
 			loadNews = true;
 		} else {
-			oldObject = storedStocks[stockObject["symbol"]];
-			storedStocks[stockObject["symbol"]] = stockObject;
-			storedStocks[stockObject["symbol"]]["numShares"] = oldObject["numShares"]+1;
-			storedStocks[stockObject["symbol"]]["lastUpdated"] = stockObject["lastUpdated"];
+			oldObject = storedStocks[stockObject["name"]];
+			storedStocks[stockObject["name"]] = stockObject;
+			storedStocks[stockObject["name"]]["numShares"] = oldObject["numShares"]+1;
+			storedStocks[stockObject["name"]]["lastUpdated"] = stockObject["lastUpdated"];
 		}
 		
 		updateWallet(wallet);
@@ -299,9 +299,9 @@ function sellShare(stockObject, numShares) {
 		storedNews.splice(storedNews.indexOf(stockObject["name"]),1);
 	} else {
 		oldObject = storedStocks[stockObject["symbol"]];
-		storedStocks[stockObject["symbol"]] = stockObject;
-		storedStocks[stockObject["symbol"]]["numShares"] = oldObject["numShares"]-1;
-		storedStocks[stockObject["symbol"]]["lastUpdated"] = new Date();
+		storedStocks[stockObject["name"]] = stockObject;
+		storedStocks[stockObject["name"]]["numShares"] = oldObject["numShares"]-1;
+		storedStocks[stockObject["name"]]["lastUpdated"] = new Date();
 	}
 	
 	updateWallet(wallet);
