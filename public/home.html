@@ -23,6 +23,13 @@
             displayUserInfo();
             loadAllStocks();
             getTopNewsStory();
+            if(getUserInfo()["showTutorial"]) {
+                if(window.confirm("Welcome to stocks4me!\n\nWould you like some help getting started?")) {
+                    window.location = "/tutorial.html";
+                }
+                localStorage.setItem("showTutorial", 0);
+                pushUserInfoToDatabase();
+            }
             if(parseInt(localStorage.getItem("refreshStocks"))){
                 refreshAllStocks();
             }

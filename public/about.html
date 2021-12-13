@@ -6,38 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <script src="app.js"></script>
+    <link rel="stylesheet" href="css/userInfo.css">
+    <script src="scripts/userClient.js"></script>
     <title>stocks4me ◉ About</title>
 </head>
 
 <body>
     <script>
         window.onload = function () {
-            getUserWallet()
-            getUserStocks()
-            showUsername();
-            console.log("Loaded Page")
+            displayUserInfo();
         }
     </script>
     <nav class="navbar navbar-dark py-3" style="background-color: #50C878;">
         <div class="container-fluid">
             <a class="navbar-brand" href="home.html"><img src="img/logo.png" style="width: 50px" />stocks4me</a>
-            <div class="navbar-nav" style="flex-direction: row;" id="nav">
-                <a class="nav-link" style="padding:10px;" href="home.html">Home</a>
-                <a class="nav-text" style="padding:10px; color: #d9d9d9; text-decoration: none;">Dashboard</a>
-                <a class="nav-link active" style="padding:10px;" aria-current="page" href="about.html">About</a>
+            <div class="navbar-nav" style="flex-direction: row" id="nav">
+                <a class="nav-link" style="padding:10px;" aria-current="page" href="home.html">Home</a>
+                <a class="nav-link" style="padding:10px;" href="dashboard.html">Dashboard</a>
+                <a class="nav-link active" style="padding:10px;" href="about.html">About</a>
                 <div id="nav-user"></div>
             </div>
         </div>
     </nav>
-    <!--Everything from here on out is placeholders for the actual content-->
-    <div class="row">
-        <div class="col-md-3">
-
-        </div>
-        <div class="col-md-6" style="justify-content: center;">
-            <h1 style="text-align: center;">About:</h1>
-            <div style="border: 5px solid green; padding: 10px;">
+    <div id="content">
+        <div id="container">
+            <h1 id="title">About stocks4me</h1><br />
+            <div id="aboutContainer">
+            <div class="module">
                 <p>
                     The stocks4me web application is the brainchild of
                     Noah Hodgson, Justin Hamilton, Himanshu Patel, Matt
@@ -49,7 +44,7 @@
                     buy and sell shares of stocks. The user would be able to modify a chart that displayed stock
                     information. Also, the user would be fed a custom news feed that would feed them information about
                     the stocks in their portfolio, so they can keep up with the companies that they invest in. Currently
-                    it uses the following API:
+                    it uses the following APIs:
                     <br>
                     <br>
                     D3:
@@ -64,17 +59,13 @@
                     Provides a history of a stock symbol, going back over 10 years. This is the data for the chart.
                     <br>
                     <br>
-                    News API:
+                    New York Times News API:
                     Returns JSON object with all necessary information such as author, title, description, url, image,
                     and date published
-
-
-
                 </p>
             </div>
-        </div>
-        <div class="col-md3">
-
+            <button class="btn" onclick="window.location = '/tutorial.html'">stocks4me Tutorial</button>
+            </div>
         </div>
     </div>
 </body>
