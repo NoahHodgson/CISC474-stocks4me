@@ -3,6 +3,8 @@ var stocksOnGraph = []
 function getAllStocks() {
 	let stocks = getUserInfo()["stocks"];
 	
+	console.log(stocks);
+	
 	var stockPrices = [];
 	var dates = [];
 	
@@ -14,6 +16,8 @@ function getAllStocks() {
 			stocksOnGraph = stocksOnGraph.concat({"name": stocks[stock]["name"], "symbol": stocks[stock]["symbol"], "enabled": true});
 		}
 	}
+	
+	console.log(stocksOnGraph);
 	
 	for(stock of stocksOnGraph) {
 		if(stock["enabled"]) {

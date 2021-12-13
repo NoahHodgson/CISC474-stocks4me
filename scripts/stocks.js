@@ -71,6 +71,7 @@ function loadStockHistory(symbol) {
 					
 					newObject.push(dateObject);
 				}
+				console.log(newObject);
 				resolve(newObject);
 			})
 			

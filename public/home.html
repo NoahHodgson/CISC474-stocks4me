@@ -23,8 +23,8 @@
             displayUserInfo();
             loadAllStocks();
             getTopNewsStory();
-            if(localStorage.getItem("refreshStocks")){
-                refreshStock()
+            if(parseInt(localStorage.getItem("refreshStocks"))){
+                refreshAllStocks();
             }
         }
     </script>

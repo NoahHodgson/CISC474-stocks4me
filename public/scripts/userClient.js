@@ -46,33 +46,6 @@ function getPortfolioValue(stocks, wallet) {
 	return portVal
 }
 
-async function refreshStock() {
-	stocksCopy = JSON.parse(localStorage.getItem("stocks"));
-	console.log(stocksCopy);
-	var promise = new Promise(function refreshLoop() {
-		for (stock of Object.keys(stocksCopy)) {
-			var stockObject = stocksCopy[stock];
-			console.log(stockObject)
-			if (stocksCopy.length > 5) {
-				setTimeout(async () => {
-					console.log(stockObject["symbol"])
-					stockObject["history"] = await loadStockHistory(stockObject["symbol"]);
-				}, 12000);
-			} else {
-				(async () => {
-					console.log(stockObject["symbol"])
-					stockObject["history"] = await loadStockHistory(stockObject["symbol"]);
-				})();
-			}
-		}
-		return stocksCopy
-	});
-	promise.then(
-		updateStocks(promise),
-		localStorage.setItem("refreshStocks", false),
-		console.log("I am in then"))
-}
-
 function login(e) {
 	e.preventDefault();
 	let inputUsername = document.getElementById("usernameInput").value;
@@ -91,7 +64,7 @@ function login(e) {
 				let userData = response["userData"];
 				localStorage.setItem("loggedin", true);
 				localStorage.setItem("name", userData["username"]);
-				localStorage.setItem("refreshStocks", true);
+				localStorage.setItem("refreshStocks", 1);
 				localStorage.setItem("wallet", parseFloat(userData["wallet"]));
 				localStorage.setItem("stocks", JSON.stringify(userData["stocks"]));
 				localStorage.setItem("news", JSON.stringify(userData["news"]));
@@ -137,6 +110,7 @@ function updateWallet(newAmount, reload = false) {
 
 function updateStocks(newStocks) {
 	localStorage.setItem("stocks", JSON.stringify(newStocks));
+	console.log(newStocks);
 	pushUserInfoToDatabase();
 }
 

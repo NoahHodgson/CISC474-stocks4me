@@ -4,7 +4,7 @@
             "username": "userA",
             "wallet": 4309287.59,
             "stocks": {
-                "AMZN": {
+                "AMAZON.COM INC": {
                     "name": "AMAZON.COM INC",
                     "symbol": "AMZN",
                     "current": 3544.975,
@@ -264,7 +264,7 @@
                     "lastUpdated": "2021-11-16T20:45:42.264Z",
                     "color": 0
                 },
-                "TWTR": {
+                "TWITTER INC": {
                     "name": "TWITTER INC",
                     "symbol": "TWTR",
                     "current": 52.155,

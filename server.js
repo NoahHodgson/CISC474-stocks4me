@@ -73,6 +73,16 @@ app.post("/getUserData", function(req, res) {
 	})();
 });
 
+app.post("/getStockInfo", function(req, res) {
+	console.log("getting stock info...");
+	(async () => {
+		console.log("BODY");
+		console.log(req.body);
+		let response = await stocks.loadStock(req.body);
+		res.json(response);
+	})();
+});
+
 app.put("/updateUserData", function(req, res) {
 	console.log("updating user data...");
 	(async () => {
@@ -87,6 +97,7 @@ app.post("/searchForSymbol", function(req, res) {
 		stocks.closeWebSocket();
 		let symbol = req.body["value"];
 		let response = await search.searchForSymbol(symbol);
+		console.log(response);
 		let stockObject = await stocks.loadStock(response);
 		
 		res.send(stockObject);

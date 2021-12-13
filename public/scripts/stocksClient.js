@@ -139,6 +139,88 @@ function displayStock(stockObject, id, addChart, showBorder, isSearch = false) {
 	return stockContainerObject;
 }
 
+// description is only included here for cleanliness of the final object
+function loadStockInfo(symbol, description) {
+	return new Promise(resolve => {
+		let req = new XMLHttpRequest();
+		req.open("POST", "/getStockInfo", true);
+		req.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				console.log(this.response);
+				resolve(JSON.parse(this.response));
+			}
+		}
+		
+		req.setRequestHeader('Content-Type', 'application/json');
+		
+		req.send(JSON.stringify({
+			"symbol":symbol,
+			"description": description
+		}));
+	})
+}
+
+function refreshStock(stock) {
+	return new Promise(async (resolve) => {
+		let result = await loadStockInfo(stock["symbol"], stock["name"]);
+		resolve(result);
+	});
+}
+
+async function refreshAllStocks() {
+	var storedStocks = getUserInfo()["stocks"];
+	var newStocks = [];
+	console.log("REFRESHING STOCKS");
+	if(storedStocks.length > 5) {
+		var i = 1;
+		var timeOffset  = 0;
+		for(stock of Object.keys(storedStocks)) {
+			setTimeout(() => {
+				newStocks.push(refreshStock(storedStocks[stock]));
+			}, timeOffset);
+			i += 1;
+			if(i%5 == 0) {
+				timeOffset+=60000;
+			}
+		}
+	} else {
+		for(stock of Object.keys(storedStocks)) {
+			newStocks.push(refreshStock(storedStocks[stock]));
+		}
+	}
+	
+	Promise.all(newStocks).then((stocks) => {
+		for(stock of stocks) {
+			storedStocks[stock["name"]] = stock;
+		}
+		updateStocks(storedStocks);
+		localStorage.setItem("refreshStocks", 0);
+		loadAllStocks(false);
+	});
+	
+	// for (stock of Object.keys(stocksCopy)) {
+	// 	var stockObject = stocksCopy[stock];
+	// 	console.log(stockObject)
+	// 	if (stocksCopy.length > 5) {
+	// 		setTimeout(async () => {
+	// 			console.log(stockObject["symbol"])
+	// 			stocksCopy["history"] = await loadStockInfo(stockObject["symbol"], stockObject["name"]);
+	// 		}, 12000);
+	// 	} else {
+	// 		(async () => {
+	// 			console.log(stockObject["symbol"])
+	// 			stocksCopy["history"] = await loadStockInfo(stockObject["symbol"], stockObject["name"]);
+	// 		})();
+	// 	}
+	// }
+	// 
+	// Promise.all(stocksCopy).then((stocks) => {
+	// 	console.log("STOCKS!!!!!!!!!!!!!!");
+	// 	updateStocks(stocks);
+	// 	localStorage.setItem("refreshStocks", false);
+	// });
+}
+
 function buyShare(stockObject, numShares) {
 	console.log("buying "+numShares+" shares");
 	console.log(stockObject);
