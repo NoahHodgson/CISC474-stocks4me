@@ -34,7 +34,10 @@ function createSellShareButton(stockObject) {
 	button.className = "btn interactStockButton";
 	button.id = "sellButton";
 	button.addEventListener("click", () => {
-		sellShare(stockObject, 1);
+		var userInput = prompt("Please enter number of stocks", "1");
+		var num = parseInt(userInput);
+
+		sellShare(stockObject, num);
 	})
 	button.innerHTML = "Sell Share";
 	return button;

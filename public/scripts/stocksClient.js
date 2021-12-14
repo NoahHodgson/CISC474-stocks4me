@@ -311,7 +311,7 @@ function sellShare(stockObject, numShares) {
 	} else {
 		oldObject = storedStocks[stockObject["symbol"]];
 		storedStocks[stockObject["name"]] = stockObject;
-		storedStocks[stockObject["name"]]["numShares"] = oldObject["numShares"]-1;
+		storedStocks[stockObject["name"]]["numShares"] = parseInt(oldObject["numShares"])-numShares;
 		storedStocks[stockObject["name"]]["lastUpdated"] = new Date();
 	}
 	
