@@ -85,7 +85,7 @@ async function search(value) {
 	
 	let stockObject = await searchForSymbol(value);
 	
-	updateStockObject(stockObject["symbol"], stockObject);
+	//updateStockObject(stockObject["symbol"], stockObject);
 		
 	searchContainer.innerHTML = "";
 	stockChartContainer.innerHTML = "";
