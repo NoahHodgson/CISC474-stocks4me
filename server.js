@@ -95,7 +95,6 @@ app.post("/searchForSymbol", function(req, res) {
 		stocks.closeWebSocket();
 		let symbol = req.body["value"];
 		let response = await search.searchForSymbol(symbol);
-		console.log(response);
 		let stockObject = await stocks.loadStock(response);
 		
 		res.send(stockObject);
