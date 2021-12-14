@@ -23,9 +23,6 @@ function createBuyShareButton(stockObject) {
 		var userInput = prompt("Please enter number of stocks", "1");
 		var num = parseInt(userInput);
 		
-		console.log(stockObject);
-		console.log("=========4");
-		
 		buyShare(stockObject, num);
 	})
 	button.innerHTML = "Buy Share";
