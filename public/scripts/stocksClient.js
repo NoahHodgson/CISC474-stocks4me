@@ -376,7 +376,7 @@ function openWebSocket(stockObject) {
 	let price = stockObject["current"];
 	let delta = stockObject["delta"];
 	
-	const url = "ws://localhost:5000";
+	const url = "ws://localhost:3000";
 	currentWebSocket = new WebSocket(url);
 	
 	  currentWebSocket.onopen = () => {
