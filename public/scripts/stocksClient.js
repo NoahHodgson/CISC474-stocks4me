@@ -305,13 +305,13 @@ function sellShare(stockObject, numShares) {
 	var storedNews = getUserInfo()["news"];
 	var storedStocks = getUserInfo()["stocks"];
 	
-	if(storedStocks[stockObject["name"]]["numShares"] <= 1) {
+	if(storedStocks[stockObject["name"]]["numShares"]-numShares < 1) {
 		delete storedStocks[stockObject["name"]];
 		storedNews.splice(storedNews.indexOf(stockObject["name"]),1);
 	} else {
-		oldObject = storedStocks[stockObject["symbol"]];
+		var oldObject = storedStocks[stockObject["name"]];
 		storedStocks[stockObject["name"]] = stockObject;
-		storedStocks[stockObject["name"]]["numShares"] = parseInt(oldObject["numShares"])-numShares;
+		storedStocks[stockObject["name"]]["numShares"] = oldObject["numShares"]-numShares;
 		storedStocks[stockObject["name"]]["lastUpdated"] = new Date();
 	}
 	

@@ -46,7 +46,6 @@ function updateUserInfo(username, data) {
 			if(error) {
 				resolve(error);
 			}
-			console.log(data);
 			var userData = (JSON.parse(fileData.toString()));
 			if(userData["users"][username] == undefined) {
 				resolve({"error":{"code":404,"message":"user not found"}});
