@@ -248,13 +248,13 @@ function buyShare(stockObject, numShares) {
 		
 		if(storedStocks[stockObject["name"]] == undefined) {
 			storedStocks[stockObject["name"]] = stockObject;
-			storedStocks[stockObject["name"]]["numShares"] = 1;
+			storedStocks[stockObject["name"]]["numShares"] = numShares;
 			storedNews.push(stockObject["name"]);
 			loadNews = true;
 		} else {
 			oldObject = storedStocks[stockObject["name"]];
 			storedStocks[stockObject["name"]] = stockObject;
-			storedStocks[stockObject["name"]]["numShares"] = oldObject["numShares"]+1;
+			storedStocks[stockObject["name"]]["numShares"] = oldObject["numShares"]+numShares;
 			storedStocks[stockObject["name"]]["lastUpdated"] = stockObject["lastUpdated"];
 		}
 		
