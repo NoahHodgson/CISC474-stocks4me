@@ -191,6 +191,8 @@ async function refreshAllStocks() {
 	
 	Promise.all(newStocks).then((stocks) => {
 		for(stock of stocks) {
+			oldNumShares = storedStocks[stock["name"]]["numShares"];
+			stock["numShares"] = oldNumShares;
 			storedStocks[stock["name"]] = stock;
 		}
 		updateStocks(storedStocks);
@@ -233,6 +235,7 @@ function buyShare(stockObject, numShares) {
 		
 		var storedNews = getUserInfo()["news"];
 		var storedStocks = getUserInfo()["stocks"];
+		console.log(storedStocks);
 		
 		if(storedNews == null) {
 			storedNews = []
@@ -247,16 +250,21 @@ function buyShare(stockObject, numShares) {
 		var loadNews = false;
 		
 		if(storedStocks[stockObject["name"]] == undefined) {
+			console.log("CREATING NEW OBJECT");
 			storedStocks[stockObject["name"]] = stockObject;
 			storedStocks[stockObject["name"]]["numShares"] = numShares;
+			console.log(numShares);
+			console.log(storedStocks[stockObject["name"]["numShares"]]);
 			storedNews.push(stockObject["name"]);
 			loadNews = true;
 		} else {
+			console.log("UPDATING EXISTING OBJECT");
 			oldObject = storedStocks[stockObject["name"]];
 			storedStocks[stockObject["name"]] = stockObject;
-			storedStocks[stockObject["name"]]["numShares"] = oldObject["numShares"]+numShares;
+			storedStocks[stockObject["name"]]["numShares"] = parseInt(oldObject["numShares"])+numShares;
 			storedStocks[stockObject["name"]]["lastUpdated"] = stockObject["lastUpdated"];
 		}
+		console.log("=========");
 		
 		updateWallet(wallet);
 		updateStocks(storedStocks);
@@ -275,7 +283,10 @@ function updateStockObject(symbol, stockObject) {
 		return;
 	}
 	
+	oldNumShares = storedStocks[stockObject["name"]]["numShares"];
+	
 	storedStocks[stockObject["name"]] = stockObject;
+	storedStocks[stockObject["name"]]["numShares"] = oldNumShares;
 	storedStocks[stockObject["name"]]["lastUpdated"] = new Date();
 	
 	updateStocks(storedStocks);

@@ -125,8 +125,7 @@ function addStockToGraph(graphContainer, x, y, data, color) {
 
 function addCheckboxToList(name, symbol, color) {
 	let listContainer = document.getElementById("checkBoxContainer");
-	let stocks = getUserInfo()["stocks"];
-	console.log(stocks);
+	
 	/*
 		<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
 		  <label class="form-check-label" for="flexCheckDefault">
@@ -147,16 +146,8 @@ function addCheckboxToList(name, symbol, color) {
 	let labelElement = document.createElement("label");
 	labelElement.setAttribute("for", "checkbox"+symbol);
 	labelElement.className = "form-check-label";
-	labelElement.innerHTML = name+": ";
-
-	let value = stocks[name]["current"];
-	if(stocks[name]["history"].at(-1).value < value){
-		labelElement.innerHTML += `<span class="positiveStock">`+value+`</span>`;
-	}
-	else{
-		labelElement.innerHTML += `<span class="negativeStock">`+value+`</span>`;
-	}
-
+	labelElement.innerHTML = name;
+	
 	listContainer.appendChild(checkBox);
 	listContainer.appendChild(labelElement);
 	listContainer.appendChild(document.createElement("br"));
@@ -171,7 +162,7 @@ function hideStockOnGraph(e) {
 			stock["enabled"] = checked;
 		}
 	}
-	getAllStocks()
+	getAllStocks();
 }
 
 function displayPortfolioValue() {
