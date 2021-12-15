@@ -10,7 +10,7 @@
     <title>stocks4me ◉ Log In</title>
 </head>
 <body>
-    <script>
+    <!-- <script>
         window.onload=function(){
             if(localStorage.getItem("loggedin")) {
                 window.location = "/home.html"
@@ -18,7 +18,7 @@
                 document.getElementById("loginSubmit").addEventListener("click", login);
             }
         }
-    </script>
+    </script> -->
     <nav class="navbar navbar-dark py-3" style="background-color: #50C879;">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.html" onclick="loginBlock()"><img src="img/logo.png"
@@ -36,20 +36,18 @@
     <div id="content">
         <div class="login-form">
             <form action="home.html">
-                <h2 class="text-center">Log in</h2>
                 <div class="form-group">
-                    <input type="text" id="usernameInput" class="form-control" placeholder="Username" required="required" id="name">
+                    <!--
+                        type="submit"
+                    -->
+                    <button id="login" class="btn btn-primary btn-block"><img width="20px" style="margin-bottom:2px; margin-right:8px" alt="Google sign-in" 
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />Log in with Google</button>
                 </div>
-                <div class="form-group">
-                    <input type="password" id="passwordInput" class="form-control" placeholder="Password" required="required">
-                </div>
-                <div class="form-group">
-                    <button type="submit" id="loginSubmit" class="btn btn-primary btn-block">Log in</button>
-                </div>
+                
             </form>
-            <p><a href="/createAccount.html">New Account?</a></p>
         </div>
     </div>
 </body>
+<script type="module" src="scripts/firebase.js"></script>
 
 </html>
