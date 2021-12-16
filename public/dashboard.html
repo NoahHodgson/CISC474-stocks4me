@@ -21,9 +21,13 @@
 <body>
     <script>
         window.onload = function () {
-            displayUserInfo();
-            getAllStocks();
-            displayPortfolioValue();
+            if(!getUserInfo["loggedIn"] == "true") {
+                window.location = "/index.html";
+            } else {
+                displayUserInfo();
+                getAllStocks();
+                displayPortfolioValue();
+            }
         }
     </script>
     <nav class="navbar navbar-dark py-3" style="background-color: #50C878;">

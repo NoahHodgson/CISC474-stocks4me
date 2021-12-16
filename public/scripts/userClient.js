@@ -1,31 +1,3 @@
-function createUser(e) {
-	e.preventDefault();
-	let newUsername = document.getElementById("usernameInput").value;
-	let newPassword = document.getElementById("passwordInput").value;
-
-	let req = new XMLHttpRequest();
-	req.open("POST", "/createUser", true);
-	req.onreadystatechange = function () {
-		if (this.readyState == 4 && this.status == 200) {
-			console.log(this.response);
-			let response = JSON.parse(this.response);
-			if (response["error"]) {
-				alert(response["error"]["message"]);
-			} else {
-				alert("user created");
-				window.location = "/";
-			}
-		}
-	}
-
-	req.setRequestHeader('Content-Type', 'application/json');
-
-	req.send(JSON.stringify({
-		"username": newUsername,
-		"password": newPassword
-	}));
-}
-
 function logout() {
 	clearlocalStorage();
 	window.location = "/";
@@ -46,13 +18,10 @@ function getPortfolioValue(stocks, wallet) {
 	return portVal
 }
 
-function login(e) {
-	e.preventDefault();
-	let inputUsername = document.getElementById("usernameInput").value;
-	let inputPassword = document.getElementById("passwordInput").value;
+function login(userObject) {
 
 	let req = new XMLHttpRequest();
-	req.open("POST", "/getUserData", true);
+	req.open("POST", "/logIn", true);
 	req.onreadystatechange = function () {
 		if (this.readyState == 4 && this.status == 200) {
 			let response = JSON.parse(this.response);
@@ -61,15 +30,17 @@ function login(e) {
 				alert(response["error"]["message"]);
 			}
 			if (response["code"] == 200) {
-				let userData = response["userData"];
+				console.log(response);
+				let userData = response["userInfo"];
 				localStorage.setItem("loggedin", true);
 				localStorage.setItem("name", userData["username"]);
 				localStorage.setItem("refreshStocks", 1);
 				localStorage.setItem("wallet", parseFloat(userData["wallet"]));
-				localStorage.setItem("stocks", JSON.stringify(userData["stocks"]));
-				localStorage.setItem("news", JSON.stringify(userData["news"]));
-				localStorage.setItem("pfp", userData["pfp"]);
+				localStorage.setItem("stocks", (userData["stocks"] == undefined) ? "{}" : JSON.stringify(userData["stocks"]));
+				localStorage.setItem("news", (userData["news"] == undefined) ? "[]" : JSON.stringify(userData["news"]));
+				localStorage.setItem("pfp", userData["pfp"].split("=")[0]+"=s300-c");
 				localStorage.setItem("showTutorial", userData["showTutorial"]);
+				localStorage.setItem("uid", userData["uid"]);
 				window.location = "/home.html";
 			}
 		}
@@ -78,8 +49,7 @@ function login(e) {
 	req.setRequestHeader('Content-Type', 'application/json');
 
 	req.send(JSON.stringify({
-		"username": inputUsername,
-		"password": inputPassword
+		"user": JSON.stringify(userObject)
 	}));
 }
 
@@ -104,9 +74,7 @@ function updatePFP() {
 function updateWallet(newAmount, reload = false) {
 	localStorage.setItem("wallet", (Math.round(newAmount * 100)) / 100);
 	pushUserInfoToDatabase();
-	if (reload) {
-		window.location.reload();
-	}
+	displayUserInfo();
 }
 
 function updateStocks(newStocks) {
@@ -150,7 +118,7 @@ function pushUserInfoToDatabase() {
 		req.setRequestHeader("Content-Type", "application/json");
 
 		req.send(JSON.stringify({
-			"username": getUserInfo()["username"],
+			"id": getUserInfo()["uid"],
 			"data": getUserInfo(false)
 		}));
 	}, 500);
@@ -166,6 +134,7 @@ function getUserInfo(includeLogin = true) {
 				"stocks": JSON.parse(localStorage.getItem("stocks")),
 				"news": JSON.parse(localStorage.getItem("news")),
 				"pfp": localStorage.getItem("pfp"),
+				"uid": localStorage.getItem("uid"),
 				"showTutorial": parseInt(localStorage.getItem("showTutorial"))
 			};
 		} else {
@@ -175,6 +144,7 @@ function getUserInfo(includeLogin = true) {
 				"stocks": JSON.parse(localStorage.getItem("stocks")),
 				"news": JSON.parse(localStorage.getItem("news")),
 				"pfp": localStorage.getItem("pfp"),
+				"uid": localStorage.getItem("uid"),
 				"showTutorial": parseInt(localStorage.getItem("showTutorial"))
 			};
 		}

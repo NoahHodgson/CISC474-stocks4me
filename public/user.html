@@ -16,13 +16,17 @@
 <body>
     <script>
         window.onload=function(){
-            let userInfo = getUserInfo();
-            document.getElementById("username").value = userInfo["username"];
-            document.getElementById("wallet").value = userInfo["wallet"];
-            displayUserInfo();
-            document.getElementById("pfpPreview").src = userInfo["pfp"];
-            
-            console.log("Loaded Page")
+            if(!getUserInfo["loggedIn"] == "true") {
+                window.location = "/index.html";
+            } else {
+                let userInfo = getUserInfo();
+                document.getElementById("title").innerHTML = userInfo["username"];
+                document.getElementById("wallet").value = userInfo["wallet"];
+                displayUserInfo();
+                document.getElementById("pfpPreview").src = userInfo["pfp"];
+                
+                console.log("Loaded Page")
+            }
         }
     </script>
     <nav class="navbar navbar-dark py-3" style="background-color: #50C878;">
@@ -41,18 +45,7 @@
         <div id="container">
             <h1 id="title">User Profile</h1><br />
             <div class="module" id="userInfoContent">
-                <div id="userPfp">
-                    <img id="pfpPreview" src="/img/pfpPlaceholder.svg" /><br />
-                    <button class="updateUserInfoButton btn" id="updatePFPButton" onclick="updatePFP()">Update Profile Picture</button>
-                </div>
-                <div id="userInfo">
-                    <div class="userInfoOption">
-                        <div class="userInfoOptionInput">
-                        <label for="username">Username</label>
-                        <input class="form-control rounded" id="username" type="text" name="username" placeholder="Enter a username...">
-                        </div>
-                        <button class="updateUserInfoButton btn" onclick="updateUsername(document.getElementById('username').value)">Update Username</button>
-                    </div><br />
+                    <img src="img/pfpPlaceholder.svg" id="pfpPreview">
                     <div class="userInfoOption">
                         <div class="userInfoOptionInput">
                         <label for="wallet">Wallet</label>
@@ -60,7 +53,6 @@
                         </div>
                         <button class="updateUserInfoButton btn" onclick="updateWallet(document.getElementById('wallet').value, true)">Update Wallet</button>
                     </div>
-                </div>
             </div>
             <button class="btn" onclick="logout()">Log Out</button>
         </div>

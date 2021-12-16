@@ -138,7 +138,7 @@ function updateAllChartColors() {
 
 function setChartColor(object, value) {
 	var storedStocks = getUserInfo()["stocks"];
-	storedStocks[object["name"]]["color"] = value;
+	storedStocks[removeBadCharacters(object["name"])]["color"] = value;
 	updateStocks(storedStocks);
-	updateChartColor(storedStocks[object["name"]]);
+	updateChartColor(storedStocks[removeBadCharacters(object["name"])]);
 }

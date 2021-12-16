@@ -1,3 +1,7 @@
+function removeBadCharacters(name) {
+	return name.replace(new RegExp("([\\.\\#\\$\\/\\[\\]])","g"), "");
+}
+
 function createStockObjectContainer(stockObject, addChart, showBorder, isSearch) {
 	var titleObject = document.createElement("h2");
 	titleObject.className = "stockObjectTitle";
@@ -103,7 +107,7 @@ function displayStock(stockObject, id, addChart, showBorder, isSearch = false) {
 		let chartColorPicker = document.createElement("select");
 		chartColorPicker.className = "chartColorPicker form-select";
 		chartColorPicker.oninput = function() {
-			setChartColor(stockObject, this.value);
+			setChartColor(stockObject, parseInt(this.value));
 		}
 		
 		for(var i = 0; i < graphColors.length; i++) {
@@ -249,20 +253,18 @@ function buyShare(stockObject, numShares) {
 		
 		var loadNews = false;
 		
-		if(storedStocks[stockObject["name"]] == undefined) {
+		if(storedStocks[removeBadCharacters(stockObject["name"])] == undefined) {
 			console.log("CREATING NEW OBJECT");
-			storedStocks[stockObject["name"]] = stockObject;
-			storedStocks[stockObject["name"]]["numShares"] = numShares;
-			console.log(numShares);
-			console.log(storedStocks[stockObject["name"]["numShares"]]);
-			storedNews.push(stockObject["name"]);
+			storedStocks[removeBadCharacters(stockObject["name"])] = stockObject;
+			storedStocks[removeBadCharacters(stockObject["name"])]["numShares"] = numShares;
+			storedNews.push(removeBadCharacters(stockObject["name"]));
 			loadNews = true;
 		} else {
 			console.log("UPDATING EXISTING OBJECT");
-			oldObject = storedStocks[stockObject["name"]];
-			storedStocks[stockObject["name"]] = stockObject;
-			storedStocks[stockObject["name"]]["numShares"] = parseInt(oldObject["numShares"])+numShares;
-			storedStocks[stockObject["name"]]["lastUpdated"] = stockObject["lastUpdated"];
+			oldObject = storedStocks[removeBadCharacters(stockObject["name"])];
+			storedStocks[removeBadCharacters(stockObject["name"])] = stockObject;
+			storedStocks[removeBadCharacters(stockObject["name"])]["numShares"] = parseInt(oldObject["numShares"])+numShares;
+			storedStocks[removeBadCharacters(stockObject["name"])]["lastUpdated"] = stockObject["lastUpdated"];
 		}
 		console.log("=========");
 		
@@ -279,15 +281,15 @@ function buyShare(stockObject, numShares) {
 function updateStockObject(symbol, stockObject) {
 	var storedStocks = getUserInfo()["stocks"];
 	
-	if(storedStocks[stockObject["name"]] == undefined) {
+	if(storedStocks[removeBadCharacters(stockObject["name"])] == undefined) {
 		return;
 	}
 	
-	oldNumShares = storedStocks[stockObject["name"]]["numShares"];
+	oldNumShares = storedStocks[removeBadCharacters(stockObject["name"])]["numShares"];
 	
-	storedStocks[stockObject["name"]] = stockObject;
-	storedStocks[stockObject["name"]]["numShares"] = oldNumShares;
-	storedStocks[stockObject["name"]]["lastUpdated"] = new Date();
+	storedStocks[removeBadCharacters(stockObject["name"])] = stockObject;
+	storedStocks[removeBadCharacters(stockObject["name"])]["numShares"] = oldNumShares;
+	storedStocks[removeBadCharacters(stockObject["name"])]["lastUpdated"] = new Date();
 	
 	updateStocks(storedStocks);
 	loadAllStocks(false);
@@ -305,14 +307,14 @@ function sellShare(stockObject, numShares) {
 	var storedNews = getUserInfo()["news"];
 	var storedStocks = getUserInfo()["stocks"];
 	
-	if(storedStocks[stockObject["name"]]["numShares"]-numShares < 1) {
-		delete storedStocks[stockObject["name"]];
-		storedNews.splice(storedNews.indexOf(stockObject["name"]),1);
+	if(storedStocks[removeBadCharacters(stockObject["name"])]["numShares"]-numShares < 1) {
+		delete storedStocks[removeBadCharacters(stockObject["name"])];
+		storedNews.splice(storedNews.indexOf(removeBadCharacters(stockObject["name"])),1);
 	} else {
-		var oldObject = storedStocks[stockObject["name"]];
-		storedStocks[stockObject["name"]] = stockObject;
-		storedStocks[stockObject["name"]]["numShares"] = oldObject["numShares"]-numShares;
-		storedStocks[stockObject["name"]]["lastUpdated"] = new Date();
+		var oldObject = storedStocks[removeBadCharacters(stockObject["name"])];
+		storedStocks[removeBadCharacters(stockObject["name"])] = stockObject;
+		storedStocks[removeBadCharacters(stockObject["name"])]["numShares"] = oldObject["numShares"]-numShares;
+		storedStocks[removeBadCharacters(stockObject["name"])]["lastUpdated"] = new Date();
 	}
 	
 	updateWallet(wallet);

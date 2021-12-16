@@ -18,7 +18,7 @@ const fs = require('fs');
 
 const WebSocket = require('ws');
 
-const wss = new WebSocket.Server({ port: 3000 });
+const wss = new WebSocket.Server({ port: 3000 })
 
 wss.on('connection', ws => {
 	console.log("websocket opened");
@@ -55,28 +55,19 @@ wss.on('connection', ws => {
 	})
 });
 
-app.post("/createUser", function(req, res) {
-	console.log("creating user...");
+app.post("/logIn", function(req, res) {
+	console.log("signing in...");
 	(async () => {
-		let response = await user.createUser(req.body["username"], req.body["password"]);
-		
+		let response = await user.logIn(JSON.parse(req.body["user"]));
 		res.json(response);
 	})();
-});
+})
 
 app.post("/getUserData", function(req, res) {
 	console.log("getting user data...");
 	(async () => {
-		let response = await user.getUserInfo(req.body["username"], req.body["password"]);
+		let response = await user.getUserInfo(JSON.parse(req.body["id"]));
 		
-		res.json(response);
-	})();
-});
-
-app.post("/getStockInfo", function(req, res) {
-	console.log("getting stock info...");
-	(async () => {
-		let response = await stocks.loadStock(req.body);
 		res.json(response);
 	})();
 });
@@ -84,8 +75,8 @@ app.post("/getStockInfo", function(req, res) {
 app.put("/updateUserData", function(req, res) {
 	console.log("updating user data...");
 	(async () => {
-		let response = await user.updateUserInfo(req.body["username"], req.body["data"]);
-		res.send(response);
+		let response = await user.updateUserInfo(req.body["id"], req.body["data"]);
+		res.json(response);
 	})();
 });
 
