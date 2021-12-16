@@ -234,8 +234,8 @@ function buyShare(stockObject, numShares) {
 	let price = stockObject["current"];
 	var wallet = getUserInfo()["wallet"];
 	
-	if (price <= wallet) {
-		wallet-=price;
+	if (price * numShares <= wallet) {
+		wallet-=price * numShares;
 		
 		var storedNews = getUserInfo()["news"];
 		var storedStocks = getUserInfo()["stocks"];
@@ -302,7 +302,7 @@ function sellShare(stockObject, numShares) {
 	let price = stockObject["current"];
 	var wallet = getUserInfo()["wallet"];
 	
-	wallet+=price;
+	wallet+=price * numShares;
 	
 	var storedNews = getUserInfo()["news"];
 	var storedStocks = getUserInfo()["stocks"];
